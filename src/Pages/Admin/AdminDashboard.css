@@ -1,0 +1,16 @@
+.nav-link.active {
+  background: #000d62 !important;
+}
+
+.nav-link {
+  border: none !important;
+}
+
+.nav-tabs {
+  border: none !important;
+}
+
+.nav-tabs .nav-link {
+  margin-bottom: 0px !important;
+  color: white !important;
+}
