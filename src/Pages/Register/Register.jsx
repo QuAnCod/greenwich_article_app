@@ -47,6 +47,12 @@ function Register(props) {
     //     }
     // }, [data])
 
+    useEffect(() => {
+        if (data) {
+            navigate('/login')
+        }
+    }, [])
+
     return (
         <div style={{
             backgroundImage: `url(${require('../../assets/img/Background_1.jpg')})`,

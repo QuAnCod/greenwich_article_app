@@ -3,11 +3,15 @@ import "./AdminDashboard.css"
 import { Table } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserListAction } from '../../Redux/reducers/userReducer';
+import { useNavigate } from 'react-router';
 
 export default function AdminDashboard(props) {
 
     const dispatch = useDispatch()
 
+    const navigate = useNavigate()
+
+    const { data } = useSelector(state => state.userReducer.userLogin)
     const { userList, loadingList } = useSelector(state => state.userReducer)
 
     const columns = [
@@ -35,6 +39,9 @@ export default function AdminDashboard(props) {
     ];
 
     useEffect(() => {
+        if (!localStorage.getItem('token')) {
+            navigate('/login')
+        }
         dispatch(getUserListAction())
     }, [])
 
@@ -52,8 +59,12 @@ export default function AdminDashboard(props) {
                         <h6 className='text-white text-2xl font-bold'>Admin</h6>
                         <h6 className='text-white text-lg'>
                             <span>Role: </span>
-                            <span>Admin</span>
+                            <span>{data?.roleName}</span>
                         </h6>
+                        <button onClick={() => {
+                            localStorage.removeItem('token')
+                            navigate('/login')
+                        }} className='bg-[#235895] text-white px-10 py-3 rounded-lg font-bold'>Sign out</button>
                     </div>
                 </div>
             </div>
