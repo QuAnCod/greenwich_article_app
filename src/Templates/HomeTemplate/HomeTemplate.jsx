@@ -14,7 +14,7 @@ export default function HomeTemplate(props) {
     if (!localStorage.getItem(LOCAL_STORAGE.TOKEN)) {
       navigate("/login");
     }
-    if (data?.roleId !== ROLE.STUDENT && data?.roleId !== ROLE.GUEST) {
+    if (data?.role.id !== ROLE.STUDENT && data?.role.id !== ROLE.GUEST) {
       navigate("/login");
     }
   }, []);
@@ -45,12 +45,12 @@ export default function HomeTemplate(props) {
             </h6>
             <h6 className="text-black text-xl">
               <span>Role: </span>
-              <span>{data?.roleName}</span>
+              <span>{data?.role?.name}</span>
             </h6>
-            <h6 className="text-black text-xl">
+            {data?.role?.id === ROLE.STUDENT ? (<h6 className="text-black text-xl">
               <span>Faculty: </span>
-              <span>{data?.facultyName}</span>
-            </h6>
+              <span>{data?.falcuty?.name}</span>
+            </h6>) : null}
             <SignOutBtn />
           </div>
         </div>

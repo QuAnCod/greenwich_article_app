@@ -13,7 +13,8 @@ export default function MarketingCordinator(props) {
     if (!localStorage.getItem("token")) {
       navigate("/login");
     }
-    if (data?.roleId !== ROLE.MARKETING_CORDINATOR) {
+    if (data?.role?.id !== ROLE.MARKETING_CORDINATOR) {
+      alert("You dont have permission to access this page");
       navigate("/login");
     }
   }, []);

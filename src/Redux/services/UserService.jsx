@@ -10,8 +10,12 @@ class UserService extends BaseService {
         return this.post(`${API.REGISTER}`, data);
     }
 
-    getUser = () => {
-        return this.get(`${API.GET_USER}`);
+    getAllUser = () => {
+        return this.get(`${API.GET_ALL_USER}`);
+    }
+
+    getUserDetail = () => {
+        return this.post(`${API.GET_USER}`);
     }
 }
 

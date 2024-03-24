@@ -21,6 +21,7 @@ function Register(props) {
 
   const [formRegis, setFormRegis] = React.useState({
     username: "",
+    email: "",
     password: "",
     retype_password: "",
     role_id: ROLE.GUEST,
@@ -97,18 +98,34 @@ function Register(props) {
         <form onSubmit={handleOnSubmit}>
           <div className="form-group mb-10">
             <label htmlFor="username" className="font-bold text-2xl">
-              Email
+              Username
             </label>
             <input
               type="text"
               className={`form-control ${style.input}`}
               id="username"
               name="username"
+              placeholder="Enter username"
+              onChange={handleOnChange}
+            />
+            <small className="text-red-500">
+              {formRegis.username && formRegis.username.length < 6 ? "Username must be at least 6 characters" : ""}
+            </small>
+          </div>
+          <div className="form-group mb-10">
+            <label htmlFor="username" className="font-bold text-2xl">
+              Email
+            </label>
+            <input
+              type="text"
+              className={`form-control ${style.input}`}
+              id="email"
+              name="email"
               placeholder="Enter email"
               onChange={handleOnChange}
             />
             <small className="text-red-500">
-              {formRegis.username && !validateEmail(formRegis.username)
+              {formRegis.email && !validateEmail(formRegis.email)
                 ? "Invalid email"
                 : ""}
             </small>
@@ -145,10 +162,10 @@ function Register(props) {
             />
             <small className="text-red-500">
               {formRegis.confirmPassword &&
-              !validateConfirmPassword(
-                formRegis.password,
-                formRegis.confirmPassword
-              )
+                !validateConfirmPassword(
+                  formRegis.password,
+                  formRegis.confirmPassword
+                )
                 ? "Password does not match"
                 : ""}
             </small>

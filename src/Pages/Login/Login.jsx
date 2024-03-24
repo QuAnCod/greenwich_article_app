@@ -8,13 +8,13 @@ import {
 } from "../../Utils/function/helperFunc";
 import { useDispatch, useSelector } from "react-redux";
 import { loginAction } from "../../Redux/reducers/userReducer";
-import { ROLE } from "../../Utils/constanst/localConstanst";
+import { LOCAL_STORAGE, ROLE } from "../../Utils/constanst/localConstanst";
 
 // module css
 import style from "./Login.module.css";
 
 function Login(props) {
-  const { data } = useSelector((state) => state.userReducer.userLogin);
+  const { error, data, loading } = useSelector((state) => state.userReducer.userLogin);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ function Login(props) {
     e.preventDefault();
     // console.log(formLogin)
     if (
-      !validateEmail(formLogin.username) ||
+      formLogin.username.length < 3 ||
       !validatePassword(formLogin.password)
     )
       return;
@@ -45,8 +45,8 @@ function Login(props) {
   };
 
   useEffect(() => {
-    if (localStorage.getItem("token")) {
-      switch (data?.roleId) {
+    if (data && localStorage.getItem(LOCAL_STORAGE.TOKEN)) {
+      switch (data.role.id) {
         case ROLE.ADMIN:
           navigate("/admin");
           break;
@@ -67,6 +67,7 @@ function Login(props) {
       }
     }
   }, [data]);
+
 
   return (
     <div
@@ -108,24 +109,22 @@ function Login(props) {
       >
         <form onSubmit={handleOnSubmit}>
           <div className="form-group mb-16">
-            <label htmlFor="username" className="font-bold text-2xl">
-              Email
+            <label htmlFor="username" className="font-bold text-2xl form-label">
+              Username
             </label>
             <input
               type="text"
               className={`form-control ${style.input}`}
               id="username"
-              placeholder="Enter email"
+              placeholder="Enter username"
               onChange={handleOnChange}
             />
             <small className="text-red-500">
-              {formLogin.username && !validateEmail(formLogin.username)
-                ? "Invalid email"
-                : ""}
+              {formLogin.username && formLogin.username.length < 3 ? "Username must be at least 6 characters" : ""}
             </small>
           </div>
-          <div className="form-group mb-16">
-            <label htmlFor="password" className="font-bold text-2xl">
+          <div className="form-group mb-2">
+            <label htmlFor="password" className="font-bold text-2xl form-label">
               Password
             </label>
             <input
@@ -140,6 +139,14 @@ function Login(props) {
                 ? "Password must be at least 8 characters"
                 : ""}
             </small>
+          </div>
+          <div className="form-group flex justify-end mb-16">
+            <NavLink
+              className="hover:text-[#5E5BFF] text-[#333] no-underline"
+              to="/forgot-password"
+            >
+              Forgot password?
+            </NavLink>
           </div>
           <div className="form-group mb-10 flex justify-center">
             <ButtonsMod htmlContent="Sign-in" />

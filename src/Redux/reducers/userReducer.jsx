@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
-import { API, LOCAL_STORAGE } from '../../Utils/constanst/localConstanst';
+import { API, LOCAL_STORAGE, STATUS_CODE } from '../../Utils/constanst/localConstanst';
 import { userService } from '../services/UserService';
+import { setModalOpen } from './modalReducer';
 
 const initialState = {
     // Add your initial state here
@@ -62,16 +63,22 @@ export const loginAction = (data) => {
         }))
         try {
             const res = await userService.login(data)
-            dispatch(setUserLogin({
-                loading: false,
-                error: null,
-                data: res.data
-            }))
-            localStorage.setItem(LOCAL_STORAGE.TOKEN, res.data.token)
+            if (res.status === STATUS_CODE.SUCCESS) {
+                localStorage.setItem(LOCAL_STORAGE.TOKEN, res.data.token)
+                const userRes = await userService.getUserDetail()
+                // console.log(userRes)
+                if (userRes.status === STATUS_CODE.SUCCESS) {
+                    dispatch(setUserLogin({
+                        loading: false,
+                        error: null,
+                        data: userRes.data
+                    }))
+                }
+            }
         } catch (error) {
             dispatch(setUserLogin({
                 loading: false,
-                error: error,
+                error: error.message,
                 data: null
             }))
         }
@@ -88,11 +95,16 @@ export const registerAction = (data) => {
         }))
         try {
             const res = await userService.register(data)
-            dispatch(setUserRegister({
-                loading: false,
-                error: null,
-                data: res.data
-            }))
+            if (res.status === STATUS_CODE.SUCCESS) {
+                dispatch(setUserRegister({
+                    loading: false,
+                    error: null,
+                    data: res.data
+                }))
+                alert("Register success")
+                dispatch(setModalOpen(false))
+                dispatch(getUserListAction())
+            }
         } catch (error) {
             dispatch(setUserRegister({
                 loading: false,
@@ -107,7 +119,7 @@ export const getUserListAction = () => {
     return async (dispatch) => {
         dispatch(setLoadingList(true))
         try {
-            const res = await userService.getUser()
+            const res = await userService.getAllUser()
             if (res.status === 200) {
                 dispatch(setUserList(res.data))
                 dispatch(setLoadingList(false))

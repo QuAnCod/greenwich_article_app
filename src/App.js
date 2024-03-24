@@ -9,6 +9,8 @@ import Guest from "./Pages/Guest/Guest";
 import AdminDashboard from "./Pages/Admin/AdminDashboard";
 import MarketingCordinator from "./Pages/MarketingCordinator/MarketingCordinator";
 import MarketingManager from "./Pages/MarketingManager/MarketingManager";
+import ForgotPassword from "./Pages/ForgotPassword/ForgotPassword";
+import EditableTable from "./Components/EditableTable/EditableTable";
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
         <Route path="admin" element={<AdminDashboard />}></Route>
         <Route path="cordinator" element={<MarketingCordinator />} />
         <Route path="manager" element={<MarketingManager />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/testEditTable" element={<EditableTable />} />
       </Routes>
     </BrowserRouter>
   );

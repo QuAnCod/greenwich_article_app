@@ -12,7 +12,8 @@ export default function MarketingManager(props) {
     if (!localStorage.getItem("token")) {
       navigate("/login");
     }
-    if (data?.roleId !== ROLE.MARKETING_MANAGER) {
+    if (data?.role?.id !== ROLE.MARKETING_MANAGER) {
+      alert("You dont have permission to access this page");
       navigate("/login");
     }
   }, []);

@@ -7,7 +7,8 @@ export const API = {
     REGISTER: DOMAIN + "users/register",
 
     // --------------- USER ---------------
-    GET_USER: DOMAIN + "users/all",
+    GET_ALL_USER: DOMAIN + "users/all",
+    GET_USER: DOMAIN + "users/details",
     // UPDATE_USER: DOMAIN + "user",
     // DELETE_USER: DOMAIN + "user",
 
