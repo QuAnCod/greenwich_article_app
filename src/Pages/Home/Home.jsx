@@ -1,50 +1,35 @@
-import React from 'react'
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setModalOpen } from "../../Redux/reducers/modalReducer";
+import WriteModal from "../../Components/WriteModal/WriteModal";
 
 export default function Home(props) {
-    return (
-        <div className='bg-[#FF751F] p-10 px-20'>
-            <form>
-                <div className="form-group mb-4">
-                    <label htmlFor="name" className='font-bold text-2xl'>Name</label>
-                    <input
-                        type="name"
-                        className="form-control"
-                        id="name"
-                        placeholder="Enter article name"
-                    />
-                </div>
-                <div className="form-group mb-4">
-                    <label htmlFor="description" className='font-bold text-2xl'>Description</label>
-                    <textarea
-                        type="description"
-                        className="form-control"
-                        id="description"
-                        placeholder="Enter article description"
-                        rows={4}
-                        style={{
-                            resize: 'none'
-                        }}
-                    />
-                </div>
-                <div className='flex justify-end items-center'>
-                    <input style={{
-                        width: '1.25rem',
-                        height: '1.25rem',
-                    }} className='form-check-input mr-2' type='checkbox' name='term' id='term' /> <label htmlFor="term" className='font-normal text-2xl'>Term of Conditions</label>
-                </div>
-                <div className='flex justify-between mt-4'>
-                    <div className="btn-group-vertical" role="group" aria-label="Vertical button group">
-                        <div className="">
-                            <button style={{ width: '100px', marginBottom: '5px', marginRight: '5px' }} type='button' className='bg-[#235895] text-white px-10 py-3 rounded-lg font-bold'>Browse</button>
-                            <span>No file choosen</span>
-                        </div>
-                        <button style={{ width: '100px' }} type='button' className='bg-[#235895] text-white px-10 py-3 rounded-lg font-bold'>Pictures</button>
-                    </div>
-                    <div className=''>
-                        <button type='button' className='bg-[#235895] text-white px-10 py-3 rounded-lg font-bold'>Submit</button>
-                    </div>
-                </div>
-            </form>
+  const dispatch = useDispatch();
+  return (
+    <div>
+      <div className="bg-[#FF751F] p-10 px-20">
+        <h5 className="text-4xl font-bold text-white">
+          Write from inside your heart:
+        </h5>
+        <div
+          id="articleSetPopup"
+          className="form-control hover:bg-slate-200 cursor-pointer"
+          onClick={() => {
+            console.log("click");
+            dispatch(setModalOpen(true));
+          }}
+        >
+          <span
+            style={{
+              lineHheight: "2rem",
+              fontSize: "1.5rem",
+            }}
+          >
+            Write something ...
+          </span>
         </div>
-    )
+      </div>
+      <WriteModal />
+    </div>
+  );
 }

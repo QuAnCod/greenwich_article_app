@@ -19,7 +19,7 @@ function App() {
         <Route path="*">"404 Not Found"</Route>
         <Route path="/register" element={<Register />} />
         <Route element={<HomeTemplate />}>
-          <Route path="/home/:id" element={<Home />}></Route>
+          <Route path="/students/:id" element={<Home />}></Route>
           <Route path="/guest" element={<Guest />}></Route>
         </Route>
         <Route path="admin" element={<AdminDashboard />}></Route>
