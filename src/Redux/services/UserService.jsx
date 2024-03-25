@@ -17,6 +17,10 @@ class UserService extends BaseService {
     getUserDetail = () => {
         return this.post(`${API.GET_USER}`);
     }
+
+    updateUser = (data) => {
+        return this.put(`${API.UPDATE_USER}/${data.id}`, data);
+    }
 }
 
 export const userService = new UserService();

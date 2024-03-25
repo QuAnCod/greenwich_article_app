@@ -9,7 +9,7 @@ export const API = {
     // --------------- USER ---------------
     GET_ALL_USER: DOMAIN + "users/all",
     GET_USER: DOMAIN + "users/details",
-    // UPDATE_USER: DOMAIN + "user",
+    UPDATE_USER: DOMAIN + "users/update",
     // DELETE_USER: DOMAIN + "user",
 
     // // --------------- ARTICLE ---------------

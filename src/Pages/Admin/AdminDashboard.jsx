@@ -1,164 +1,16 @@
 import React, { useEffect, useState } from "react";
 import "./AdminDashboard.css";
-import { Input, InputNumber, Popconfirm, Table, Typography } from "antd";
+import { Input, InputNumber, Popconfirm, Table, Typography, Form } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { getUserListAction } from "../../Redux/reducers/userReducer";
+import { getUserListAction, setUserEdit } from "../../Redux/reducers/userReducer";
 import { useNavigate } from "react-router";
 import SignOutBtn from "../../Components/Buttons/SignOutBtn/SignOutBtn";
 import { ROLE } from "../../Utils/constanst/localConstanst";
 import CreateUser from "../../Components/CreateUserModal/CreateUser";
-import { setModalOpen } from "../../Redux/reducers/modalReducer";
-import { Form } from "react-router-dom";
-
-const originData = [];
-for (let i = 0; i < 100; i++) {
-    originData.push({
-        key: i.toString(),
-        name: `Edward ${i}`,
-        age: 32,
-        address: `London Park no. ${i}`,
-    });
-}
-
-const EditableCell = ({
-    editing,
-    dataIndex,
-    title,
-    inputType,
-    record,
-    index,
-    children,
-    ...restProps
-}) => {
-    const inputNode = inputType === "number" ? <InputNumber /> : <Input />;
-    return (
-        <td {...restProps}>
-            {editing ? (
-                <Form.Item
-                    name={dataIndex}
-                    style={{
-                        margin: 0,
-                    }}
-                    rules={[
-                        {
-                            required: true,
-                            message: `Please Input ${title}!`,
-                        },
-                    ]}
-                >
-                    {inputNode}
-                </Form.Item>
-            ) : (
-                children
-            )}
-        </td>
-    );
-}
-
-
+import { setModalEditOpen, setModalOpen } from "../../Redux/reducers/modalReducer";
+import EditUserModal from "../../Components/EditUserModal/EditUserModal";
 
 export default function AdminDashboard(props) {
-
-    // Editable Table props
-    const [form] = Form.useForm();
-    const [dataEditTable, setDataEditTable] = useState(originData);
-    const [editingKey, setEditingKey] = useState('');
-    const isEditing = (record) => record.key === editingKey;
-    const edit = (record) => {
-        form.setFieldsValue({
-            name: '',
-            age: '',
-            address: '',
-            ...record,
-        });
-        setEditingKey(record.key);
-    };
-    const cancel = () => {
-        setEditingKey('');
-    };
-    const save = async (key) => {
-        try {
-            const row = await form.validateFields();
-            const newData = [...dataEditTable];
-            const index = newData.findIndex((item) => key === item.key);
-            if (index > -1) {
-                const item = newData[index];
-                newData.splice(index, 1, { ...item, ...row });
-                setDataEditTable(newData);
-                setEditingKey('');
-            } else {
-                newData.push(row);
-                setDataEditTable(newData);
-                setEditingKey('');
-            }
-        } catch (errInfo) {
-            console.log('Validate Failed:', errInfo);
-        }
-    };
-    const columnsEditTable = [
-        {
-            title: 'name',
-            dataIndex: 'name',
-            width: '25%',
-            editable: true,
-        },
-        {
-            title: 'age',
-            dataIndex: 'age',
-            width: '15%',
-            editable: true,
-        },
-        {
-            title: 'address',
-            dataIndex: 'address',
-            width: '40%',
-            editable: true,
-        },
-        {
-            title: 'operation',
-            dataIndex: 'operation',
-            render: (_, record) => {
-                const editable = isEditing(record);
-                return editable ? (
-                    <span>
-                        <Typography.Link
-                            href="javascript:;"
-                            onClick={() => save(record.key)}
-                            style={{
-                                marginRight: 8,
-                            }}
-                        >
-                            Save
-                        </Typography.Link>
-                        <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-                            <a>Cancel</a>
-                        </Popconfirm>
-                    </span>
-
-                ) : (
-                    <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
-                        Edit
-                    </Typography.Link>
-                );
-            },
-        },
-    ];
-    const mergedColumns = columns.map((col) => {
-        if (!col.editable) {
-            return col;
-        }
-        return {
-            ...col,
-            onCell: (record) => ({
-                record,
-                inputType: col.dataIndex === 'age' ? 'number' : 'text',
-                dataIndex: col.dataIndex,
-                title: col.title,
-                editing: isEditing(record),
-            }),
-        };
-    });
-
 
     const dispatch = useDispatch();
 
@@ -174,11 +26,16 @@ export default function AdminDashboard(props) {
             key: "username",
         },
         {
+            title: "Email",
+            dataIndex: "email",
+            key: "email",
+        },
+        {
             title: "Role",
             dataIndex: "role",
             key: "role",
             render: (_, record) => {
-                return record.role.name;
+                return record.role.name.split("_").join(" ");
             },
         },
         {
@@ -213,6 +70,7 @@ export default function AdminDashboard(props) {
     return (
         <div>
             <CreateUser />
+            <EditUserModal />
             <div className="bg-[#FF751F] p-10 px-20 flex justify-between">
                 <div className="flex justify-start items-center">
                     <img
@@ -310,6 +168,15 @@ export default function AdminDashboard(props) {
                                 (user) => user.role?.id !== ROLE.ADMIN
                             )}
                             columns={columns}
+                            onRow={(record, rowIndex) => {
+                                return {
+                                    onClick: (event) => {
+                                        console.log(record);
+                                        dispatch(setModalEditOpen(true));
+                                        dispatch(setUserEdit(record))
+                                    },
+                                }
+                            }}
                             bordered
                         />
                     </div>

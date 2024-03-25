@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { API, LOCAL_STORAGE, STATUS_CODE } from '../../Utils/constanst/localConstanst';
 import { userService } from '../services/UserService';
-import { setModalOpen } from './modalReducer';
+import { setModalEditOpen, setModalOpen } from './modalReducer';
 
 const initialState = {
     // Add your initial state here
@@ -18,6 +18,13 @@ const initialState = {
     },
     userList: [],
     loadingList: false,
+    userEdit: {
+        username: "",
+        email: "",
+        role: "",
+        faculty: "",
+        active: ""
+    }
 }
 
 const userReducer = createSlice({
@@ -44,10 +51,13 @@ const userReducer = createSlice({
         setLoadingList: (state, action) => {
             state.loadingList = action.payload
         },
+        setUserEdit: (state, action) => {
+            state.userEdit = action.payload
+        },
     },
 });
 
-export const { setUserLogin, logOut, setUserList, setUserRegister, setLoadingList } = userReducer.actions
+export const { setUserLogin, logOut, setUserList, setUserRegister, setLoadingList, setUserEdit } = userReducer.actions
 
 export default userReducer.reducer
 
@@ -120,12 +130,33 @@ export const getUserListAction = () => {
         dispatch(setLoadingList(true))
         try {
             const res = await userService.getAllUser()
-            if (res.status === 200) {
+            if (res.status === STATUS_CODE.SUCCESS) {
                 dispatch(setUserList(res.data))
-                dispatch(setLoadingList(false))
             }
+            dispatch(setLoadingList(false))
         } catch (error) {
             console.log(error)
+            console.log(error.response?.data)
         }
     }
 }
+
+export const updateUserForAdminAction = (data) => {
+    return async (dispatch) => {
+        dispatch(setLoadingList(true))
+        console.log(data)
+        try {
+            const res = await userService.updateUser(data)
+            if (res.status === STATUS_CODE.SUCCESS) {
+                alert("Update success")
+                dispatch(setModalEditOpen(false))
+                dispatch(getUserListAction())
+            }
+            dispatch(setLoadingList(false))
+        } catch (error) {
+            console.log(error)
+            console.log(error.response?.data)
+        }
+    }
+}
+

@@ -21,4 +21,15 @@ export class BaseService {
             }
         })
     }
+
+    put = (url, data) => {
+        return axios({
+            method: "PUT",
+            url: url,
+            data: data,
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        })
+    }
 }
