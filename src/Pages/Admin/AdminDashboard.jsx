@@ -15,6 +15,7 @@ import {
   setModalOpen,
 } from "../../Redux/reducers/modalReducer";
 import EditUserModal from "../../Components/EditUserModal/EditUserModal";
+import { deleteAcademicYear, getAllAcademicYears, updateAcademicYear } from "../../Redux/reducers/academicYearsReducer";
 
 export default function AdminDashboard(props) {
   const dispatch = useDispatch();
@@ -23,6 +24,7 @@ export default function AdminDashboard(props) {
 
   const { data } = useSelector((state) => state.userReducer.userLogin);
   const { userList, loadingList } = useSelector((state) => state.userReducer);
+  const { academicYears } = useSelector((state) => state.academicYearsReducer);
 
   const columns = [
     {
@@ -61,6 +63,62 @@ export default function AdminDashboard(props) {
     },
   ];
 
+  const columnsOfYears = [
+    {
+      title: "Year",
+      dataIndex: "year",
+      key: "year",
+      width: "50%",
+    },
+    {
+      title: 'Current Academic Year',
+      dataIndex: 'current',
+      key: 'current',
+      // width: "50%",
+      render: (_, record) => {
+        return record.current ? "Current" : "Not Current";
+      }
+    },
+    {
+      title: "Action",
+      dataIndex: "action",
+      key: "action",
+      render: (_, record) => {
+        return (
+          <div className="">
+            <Popconfirm
+              title="Are you sure to delete this academic year?"
+              onConfirm={() => {
+                // console.log(record);
+                dispatch(deleteAcademicYear(record.id));
+              }}
+              okText="Yes"
+              cancelText="No"
+              okType="text"
+              cancelButtonProps={{ type: "text" }}
+            >
+              <button className="btn btn-danger">Delete</button>
+            </Popconfirm>
+            <Popconfirm
+              title="Are you sure to set this academic year as current?"
+              onConfirm={() => {
+                // console.log(record);
+                dispatch(updateAcademicYear({ ...record, current: 1 }));
+              }}
+              okText="Yes"
+              okType="text"
+              cancelButtonProps={{ type: "text" }}
+              cancelText="No"
+              className="ml-2"
+            >
+              <button className="btn btn-primary">Set as current</button>
+            </Popconfirm>
+          </div>
+        );
+      },
+    }
+  ]
+
   useEffect(() => {
     if (!localStorage.getItem("token")) {
       navigate("/login");
@@ -70,6 +128,7 @@ export default function AdminDashboard(props) {
       navigate("/login");
     }
     dispatch(getUserListAction());
+    dispatch(getAllAcademicYears());
   }, []);
 
   return (
@@ -193,7 +252,34 @@ export default function AdminDashboard(props) {
             role="tabpanel"
             aria-labelledby="date-tab"
           >
-            date
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="text-2xl font-bold">Academic Years</h3>
+              <button
+                className="btn btn-primary"
+                onClick={() => {
+                  // navigate("/register");
+                  // dispatch(setModalOpen(true));
+                }}
+              >
+                New Academic Year
+              </button>
+            </div>
+            <Table
+              rowKey={(record) => record.id}
+              loading={loadingList}
+              dataSource={academicYears}
+              columns={columnsOfYears}
+              bordered
+              onRow={(record, rowIndex) => {
+                return {
+                  onClick: (event) => {
+                    console.log(record);
+                    // dispatch(setModalEditOpen(true));
+                    // dispatch(setUserEdit(record));
+                  },
+                };
+              }}
+            />
           </div>
         </div>
       </div>

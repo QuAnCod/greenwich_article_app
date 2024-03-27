@@ -1,12 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./reducers/userReducer";
 import modalReducer from "./reducers/modalReducer";
-import editableTableReducer from "./reducers/editableTableReducer";
+import closuresReducer from "./reducers/closuresReducer";
+import articleReducer from "./reducers/articleReducer";
+import academicYearsReducer from "./reducers/academicYearsReducer";
 
 export const store = configureStore({
   reducer: {
     userReducer: userReducer,
     modalReducer: modalReducer,
-    editableTableReducer: editableTableReducer
+    articleReducer: articleReducer,
+    closuresReducer: closuresReducer,
+    academicYearsReducer: academicYearsReducer,
   },
 });

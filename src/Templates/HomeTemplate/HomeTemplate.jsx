@@ -1,14 +1,30 @@
 import React, { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router";
 import { LOCAL_STORAGE, ROLE } from "../../Utils/constanst/localConstanst";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import SignOutBtn from "../../Components/Buttons/SignOutBtn/SignOutBtn";
 import WriteModal from "../../Components/WriteModal/WriteModal";
+import { getAllClosures } from "../../Redux/reducers/closuresReducer";
+import { getAllAcademicYears } from "../../Redux/reducers/academicYearsReducer";
+
+const findDeadlineByFaculty = (closures, faculty_id) => {
+  const closuresFound = closures.find((closure) => closure.faculty.id === faculty_id);
+  return closuresFound?.finalDeadline.split("T").join(" ");
+}
+
+const findClosureByFaculty = (closures, faculty_id) => {
+  const closuresFound = closures.find((closure) => closure.faculty.id === faculty_id);
+  return closuresFound?.deadline.split("T").join(" ");
+}
 
 export default function HomeTemplate(props) {
   const navigate = useNavigate();
+  const dispatch = useDispatch()
 
   const { data } = useSelector((state) => state.userReducer.userLogin);
+
+  const { closures } = useSelector((state) => state.closuresReducer);
+  const { academicYears } = useSelector((state) => state.academicYearsReducer);
 
   useEffect(() => {
     if (!localStorage.getItem(LOCAL_STORAGE.TOKEN)) {
@@ -17,6 +33,8 @@ export default function HomeTemplate(props) {
     if (data?.role.id !== ROLE.STUDENT && data?.role.id !== ROLE.GUEST) {
       navigate("/login");
     }
+    dispatch(getAllClosures())
+    dispatch(getAllAcademicYears())
   }, []);
 
   return (
@@ -144,10 +162,10 @@ export default function HomeTemplate(props) {
           <div className="">
             <h4 className="mb-3 flex justify-between">
               Closure date
-              <small className="font-light">20th November 2020</small>
+              <small className="font-light">{findClosureByFaculty(closures, data?.faculty?.id)}</small>
             </h4>
             <h4 className="flex justify-between">
-              Final date <small className="font-light">1st December 2020</small>
+              Final date <small className="font-light">{findDeadlineByFaculty(closures, data?.faculty?.id)}</small>
             </h4>
           </div>
         </div>
@@ -220,15 +238,15 @@ export default function HomeTemplate(props) {
                   lineHeight: "2rem",
                   fontSize: "1.5rem",
                 }}
+                onChange={(e) => console.log(e.target.value)}
                 className="form-select"
               >
                 <option disabled selected>
                   Choose Academic year
                 </option>
-                <option>2016-2017</option>
-                <option>2017-2018</option>
-                <option>2018-2019</option>
-                <option>2019-2020</option>
+                {academicYears?.map((academicYear, index) => {
+                  return <option key={index} value={academicYear.id}>{academicYear.year}</option>
+                })}
               </select>
             </div>
             <div className="form-group text-center">

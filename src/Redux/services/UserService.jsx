@@ -22,7 +22,7 @@ class UserService extends BaseService {
         return this.put(`${API.UPDATE_USER}/${data.id}`, data);
     }
 
-    sendEmail = (data) => {
+    forgotPassword = (data) => {
         return this.post()
     }
 }

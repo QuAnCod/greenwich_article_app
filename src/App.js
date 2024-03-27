@@ -27,6 +27,7 @@ function App() {
         <Route path="cordinator" element={<MarketingCordinator />} />
         <Route path="manager" element={<MarketingManager />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="accept-article" element={<MarketingCordinator />}></Route>
       </Routes>
     </BrowserRouter>
   );

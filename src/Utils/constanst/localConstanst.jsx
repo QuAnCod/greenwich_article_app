@@ -13,10 +13,15 @@ export const API = {
 
   // // --------------- ARTICLE ---------------
   POST_ARTICLE: DOMAIN + "articles",
+  SEND_NOTIFICATION: DOMAIN + "articles/sendMail",
 
-  // // --------------- CATEGORY ---------------
+  // ----------------- CLOSURES -----------------
+  GET_ALL_CLOSURES: DOMAIN + "closures",
 
-  // // --------------- TAG ---------------
+  // ----------------- ACADEMIC YEAR -----------------
+  GET_ALL_ACADEMIC_YEARS: DOMAIN + "academic_years",
+  CREATE_NEW_ACADEMIC_YEAR: DOMAIN + "academic_years",
+  UPDATE_ACADEMIC_YEAR: DOMAIN + "academic_years",
 
   // // --------------- COMMENT ---------------
   // GET_COMMENT: DOMAIN + "comment",

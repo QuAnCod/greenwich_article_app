@@ -38,39 +38,47 @@ export const postArticle = (data) => {
       }
 
       // call api to send email to request accept article from marketing cordinator
-      //   const resSendMail = await
-      const resPostArticle = await articleService.postArticle(newArticle);
+      // get the faculty id from the newArticle data
+      const faculty_id = newArticle.faculty_id;
+      const resSendMail = await articleService.sendNotification({
+        faculty_id,
+        url: "http://localhost:3000/accept-article"
+      })
+      if (resSendMail.status === STATUS_CODE.SUCCESS) {
 
-      //   console.log(resPostArticle);
-      if (
-        resPostArticle.status === STATUS_CODE.CREATED ||
-        resPostArticle.status === STATUS_CODE.SUCCESS
-      ) {
-        // console.log("Write article success", resPostArticle.data);
-        const resPostFile = await articleService.postFile(
-          resPostArticle.data?.id,
-          formDataFile
-        );
+        const resPostArticle = await articleService.postArticle(newArticle);
+
+        //   console.log(resPostArticle);
         if (
-          resPostFile.status === STATUS_CODE.SUCCESS ||
-          resPostFile.status === STATUS_CODE.CREATED
+          resPostArticle.status === STATUS_CODE.CREATED ||
+          resPostArticle.status === STATUS_CODE.SUCCESS
         ) {
-          // console.log("Write article with file success", resPostFile.data);
-          const resPostImage = await articleService.postImage(
+          // console.log("Write article success", resPostArticle.data);
+          const resPostFile = await articleService.postFile(
             resPostArticle.data?.id,
-            formDataPictures
+            formDataFile
           );
           if (
-            resPostImage.status === STATUS_CODE.SUCCESS ||
-            resPostImage.status === STATUS_CODE.CREATED
+            resPostFile.status === STATUS_CODE.SUCCESS ||
+            resPostFile.status === STATUS_CODE.CREATED
           ) {
-            // console.log("Write article with file and picture success", resPostImage.data);
-            alert("Write article success");
-            dispatch(setModalOpen(false));
-            // dispatch(getArticles());
+            // console.log("Write article with file success", resPostFile.data);
+            const resPostImage = await articleService.postImage(
+              resPostArticle.data?.id,
+              formDataPictures
+            );
+            if (
+              resPostImage.status === STATUS_CODE.SUCCESS ||
+              resPostImage.status === STATUS_CODE.CREATED
+            ) {
+              // console.log("Write article with file and picture success", resPostImage.data);
+              alert("Write article success");
+              // dispatch(getArticles());
+            }
           }
         }
       }
+      dispatch(setModalOpen(false));
     } catch (error) {
       console.log(error);
     }

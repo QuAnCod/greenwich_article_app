@@ -14,6 +14,10 @@ class ArticleService extends BaseService {
   postImage = (article_id, data) => {
     return this.post(`${API.POST_ARTICLE}/uploads/${article_id}`, data);
   };
+
+  sendNotification = (data) => {
+    return this.post(API.SEND_NOTIFICATION, data);
+  }
 }
 
 export const articleService = new ArticleService();
