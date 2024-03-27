@@ -1,10 +1,44 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { setModalOpen } from "../../Redux/reducers/modalReducer";
 import { useSelector, useDispatch } from "react-redux";
+import { set } from "lodash";
+import { postArticle } from "../../Redux/reducers/articleReducer";
 
 export default function WriteModal(props) {
   const { modalOpen } = useSelector((state) => state.modalReducer);
+
+  // get user data from redux store
+  const { data } = useSelector((state) => state.userReducer.userLogin);
+
   const dispatch = useDispatch();
+
+  // create a new article state
+  const [newArticle, setNewArticle] = useState({
+    name: "",
+    description: "",
+    status: "pending",
+    view: 0,
+    academic_id: 1,
+    user_id: data?.id,
+    faculty_id: data?.faculty?.id,
+  });
+
+  // create a file state
+  const [file, setFile] = useState(null);
+
+  // create a picture state
+  const [pictures, setPictures] = useState([]);
+
+  // console.log(pictures.length);
+
+  const handleChangeArticle = (e) => {
+    setNewArticle({ ...newArticle, [e.target.name]: e.target.value });
+  };
+
+  // handle submit form
+  const handleOnSubmitArticle = (e) => {
+    e.preventDefault();
+  };
 
   return modalOpen ? (
     <div
@@ -32,6 +66,13 @@ export default function WriteModal(props) {
           <button
             className="text-white"
             onClick={() => {
+              setNewArticle({
+                ...newArticle,
+                name: "",
+                description: "",
+              });
+              setFile(null);
+              setPictures([]);
               dispatch(setModalOpen(false));
             }}
           >
@@ -42,6 +83,13 @@ export default function WriteModal(props) {
           onSubmit={(e) => {
             // write code to submit the form
             e.preventDefault();
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("newArticle", JSON.stringify(newArticle));
+            // formData.append("newArticle", newArticle);
+            formData.append("pictures", pictures);
+            // write code to dispatch the action
+            dispatch(postArticle(formData));
           }}
         >
           <div className="form-group mb-4">
@@ -49,10 +97,12 @@ export default function WriteModal(props) {
               Name
             </label>
             <input
-              type="name"
+              type="text"
               className="form-control"
               id="name"
+              name="name"
               placeholder="Enter article name"
+              onChange={handleChangeArticle}
             />
           </div>
           <div className="form-group mb-4">
@@ -60,14 +110,16 @@ export default function WriteModal(props) {
               Description
             </label>
             <textarea
-              type="description"
+              type="text"
               className="form-control"
               id="description"
+              name="description"
               placeholder="Enter article description"
               rows={4}
               style={{
                 resize: "none",
               }}
+              onChange={handleChangeArticle}
             />
           </div>
           <div className="flex justify-end items-center">
@@ -110,6 +162,8 @@ export default function WriteModal(props) {
                       input.onchange = (event) => {
                         const file = event.target.files[0];
                         // do something with the selected file
+                        // console.log(file);
+                        setFile(file);
                       };
                       input.click();
                     };
@@ -118,7 +172,7 @@ export default function WriteModal(props) {
                 >
                   Browse
                 </button>
-                <span>No file choosen</span>
+                <span>{file?.name || "No file was choosen"}</span>
               </div>
               <div>
                 <button
@@ -132,11 +186,13 @@ export default function WriteModal(props) {
                       input.type = "file";
                       input.accept = "image/*"; // specify the file types you want to allow
                       input.multiple = true;
-                      input.max = 5; // specify the maximum number of files allowed
+                      input.max = 3; // specify the maximum number of files allowed
                       input.onchange = (event) => {
                         const files = event.target.files;
                         // do something with the selected files
-                        console.log(files);
+                        // console.log(files);
+                        const filesArray = Array.from(files);
+                        setPictures(filesArray);
                       };
                       input.click();
                     };
@@ -145,7 +201,13 @@ export default function WriteModal(props) {
                 >
                   Pictures
                 </button>
-                <span>No picture choosen</span>
+                <span>
+                  {pictures.length !== 0
+                    ? pictures
+                        .map((picture, index) => `${picture.name}`)
+                        .join(", ")
+                    : "No pictures choosen"}
+                </span>
               </div>
             </div>
             <div className="">
