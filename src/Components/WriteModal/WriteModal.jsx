@@ -87,7 +87,10 @@ export default function WriteModal(props) {
             formData.append("file", file);
             formData.append("newArticle", JSON.stringify(newArticle));
             // formData.append("newArticle", newArticle);
-            formData.append("pictures", pictures);
+            // formData.append("pictures", pictures);
+            for (let index = 0; index < pictures.length; index++) {
+              formData.append("pictures", pictures[index]);
+            }
             // write code to dispatch the action
             dispatch(postArticle(formData));
           }}
@@ -204,8 +207,8 @@ export default function WriteModal(props) {
                 <span>
                   {pictures.length !== 0
                     ? pictures
-                        .map((picture, index) => `${picture.name}`)
-                        .join(", ")
+                      .map((picture, index) => `${picture.name}`)
+                      .join(", ")
                     : "No pictures choosen"}
                 </span>
               </div>

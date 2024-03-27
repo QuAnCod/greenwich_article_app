@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { articleService } from "../services/ArticleService";
 import { STATUS_CODE } from "../../Utils/constanst/localConstanst";
+import { setModalOpen } from "./modalReducer";
 
 const initialState = {};
 
@@ -10,7 +11,7 @@ const articleReducer = createSlice({
   reducers: {},
 });
 
-export const {} = articleReducer.actions;
+export const { } = articleReducer.actions;
 
 export default articleReducer.reducer;
 
@@ -32,7 +33,9 @@ export const postArticle = (data) => {
       const formDataFile = new FormData();
       formDataFile.append("file", file);
       const formDataPictures = new FormData();
-      formDataPictures.append("files", pictures);
+      for (let index = 0; index < pictures.length; index++) {
+        formDataPictures.append("files", pictures[index]);
+      }
 
       // call api to send email to request accept article from marketing cordinator
       //   const resSendMail = await
@@ -52,7 +55,7 @@ export const postArticle = (data) => {
           resPostFile.status === STATUS_CODE.SUCCESS ||
           resPostFile.status === STATUS_CODE.CREATED
         ) {
-          //   console.log("Write article with file success", resPostFile.data);
+          // console.log("Write article with file success", resPostFile.data);
           const resPostImage = await articleService.postImage(
             resPostArticle.data?.id,
             formDataPictures
@@ -63,6 +66,8 @@ export const postArticle = (data) => {
           ) {
             // console.log("Write article with file and picture success", resPostImage.data);
             alert("Write article success");
+            dispatch(setModalOpen(false));
+            // dispatch(getArticles());
           }
         }
       }

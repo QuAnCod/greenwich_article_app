@@ -2,11 +2,37 @@ import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { ROLE } from "../../Utils/constanst/localConstanst";
+import { Table } from "antd";
+
+const columns = [
+  {
+    title: "Date",
+    dataIndex: "date",
+    key: "date",
+  },
+  {
+    title: "Title",
+    dataIndex: "title",
+    key: "title",
+  },
+  {
+    title: "Author",
+    dataIndex: "author",
+    key: "author",
+  },
+  {
+    title: "Description",
+    dataIndex: "description",
+    key: "description",
+  }
+]
 
 export default function MarketingManager(props) {
   const navigate = useNavigate();
 
   const { data } = useSelector((state) => state.userReducer.userLogin);
+
+  const { articles } = useSelector((state) => state.articleReducer);
 
   useEffect(() => {
     if (!localStorage.getItem("token")) {
@@ -58,6 +84,9 @@ export default function MarketingManager(props) {
             </button>
           </form>
         </div>
+      </div>
+      <div className="p-10">
+        <Table columns={columns} dataSource={articles} />
       </div>
     </div>
   );
