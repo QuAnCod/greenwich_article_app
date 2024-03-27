@@ -11,11 +11,13 @@ import SignOutBtn from "../../Components/Buttons/SignOutBtn/SignOutBtn";
 import { ROLE } from "../../Utils/constanst/localConstanst";
 import CreateUser from "../../Components/CreateUserModal/CreateUser";
 import {
+  setModalCreateAcademicYearOpen,
   setModalEditOpen,
   setModalOpen,
 } from "../../Redux/reducers/modalReducer";
 import EditUserModal from "../../Components/EditUserModal/EditUserModal";
-import { deleteAcademicYear, getAllAcademicYears, updateAcademicYear } from "../../Redux/reducers/academicYearsReducer";
+import { deleteAcademicYear, getAllAcademicYears, setDetailAcademicYear, setDisplayDetailAcademicYear, updateAcademicYear } from "../../Redux/reducers/academicYearsReducer";
+import CreateNewAcademicYear from "../../Components/NewAcademicYear/CreateNewAcademicYear";
 
 export default function AdminDashboard(props) {
   const dispatch = useDispatch();
@@ -25,6 +27,8 @@ export default function AdminDashboard(props) {
   const { data } = useSelector((state) => state.userReducer.userLogin);
   const { userList, loadingList } = useSelector((state) => state.userReducer);
   const { academicYears } = useSelector((state) => state.academicYearsReducer);
+
+  const { displayDetailAcademicYear } = useSelector((state) => state.academicYearsReducer);
 
   const columns = [
     {
@@ -135,6 +139,7 @@ export default function AdminDashboard(props) {
     <div>
       <CreateUser />
       <EditUserModal />
+      <CreateNewAcademicYear />
       <div className="bg-[#FF751F] p-10 px-20 flex justify-between">
         <div className="flex justify-start items-center">
           <img
@@ -252,34 +257,73 @@ export default function AdminDashboard(props) {
             role="tabpanel"
             aria-labelledby="date-tab"
           >
-            <div className="flex justify-between items-center mb-3">
-              <h3 className="text-2xl font-bold">Academic Years</h3>
-              <button
-                className="btn btn-primary"
-                onClick={() => {
-                  // navigate("/register");
-                  // dispatch(setModalOpen(true));
+            {displayDetailAcademicYear ? (<div>
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="text-2xl font-bold">Academic Years</h3>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => {
+                    // navigate("/register");
+                    // dispatch(setModalOpen(true));
+                    dispatch(setModalCreateAcademicYearOpen(true));
+                  }}
+                >
+                  New Academic Year
+                </button>
+              </div>
+              <Table
+                rowKey={(record) => record.id}
+                loading={loadingList}
+                dataSource={academicYears}
+                columns={columnsOfYears}
+                bordered
+                onRow={(record, rowIndex) => {
+                  return {
+                    onClick: (event) => {
+                      console.log(record);
+                      // dispatch(setModalEditOpen(true));
+                      // dispatch(setUserEdit(record));
+                      dispatch(setDisplayDetailAcademicYear(true));
+                      dispatch(setDetailAcademicYear(record));
+                    },
+                  };
                 }}
-              >
-                New Academic Year
-              </button>
-            </div>
-            <Table
-              rowKey={(record) => record.id}
-              loading={loadingList}
-              dataSource={academicYears}
-              columns={columnsOfYears}
-              bordered
-              onRow={(record, rowIndex) => {
-                return {
-                  onClick: (event) => {
-                    console.log(record);
-                    // dispatch(setModalEditOpen(true));
-                    // dispatch(setUserEdit(record));
-                  },
-                };
-              }}
-            />
+              />
+            </div>) : (
+              <div>
+                <div className="flex justify-between items-center mb-3">
+                  <h3 className="text-2xl font-bold">Academic Years</h3>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => {
+                      // navigate("/register");
+                      // dispatch(setModalOpen(true));
+                      dispatch(setModalCreateAcademicYearOpen(true));
+                    }}
+                  >
+                    New Academic Year
+                  </button>
+                </div>
+                <Table
+                  rowKey={(record) => record.id}
+                  loading={loadingList}
+                  dataSource={academicYears}
+                  columns={columnsOfYears}
+                  bordered
+                  onRow={(record, rowIndex) => {
+                    return {
+                      onClick: (event) => {
+                        console.log(record);
+                        // dispatch(setModalEditOpen(true));
+                        // dispatch(setUserEdit(record));
+                        dispatch(setDisplayDetailAcademicYear(true));
+                        dispatch(setDetailAcademicYear(record));
+                      },
+                    };
+                  }}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

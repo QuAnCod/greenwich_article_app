@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   modalOpen: false,
   modalEditOpen: false,
+  modalCreateAcademicYearOpen: false,
 };
 
 const modalReducer = createSlice({
@@ -16,9 +17,12 @@ const modalReducer = createSlice({
     setModalEditOpen: (state, action) => {
       state.modalEditOpen = action.payload;
     },
+    setModalCreateAcademicYearOpen: (state, action) => {
+      state.modalCreateAcademicYearOpen = action.payload;
+    }
   },
 });
 
-export const { setModalOpen, setModalEditOpen } = modalReducer.actions;
+export const { setModalOpen, setModalEditOpen, setModalCreateAcademicYearOpen } = modalReducer.actions;
 
 export default modalReducer.reducer;

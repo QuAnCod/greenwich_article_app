@@ -60,6 +60,7 @@ export const ROLE = {
 export const STATUS_CODE = {
   SUCCESS: 200,
   CREATED: 201,
+  NO_CONTENT: 204,
   ERROR: 500,
   NOT_FOUND: 404,
   UNAUTHORIZED: 401,

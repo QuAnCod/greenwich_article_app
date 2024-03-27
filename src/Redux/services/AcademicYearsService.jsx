@@ -13,6 +13,10 @@ class AcademicYearsService extends BaseService {
     updateAcademicYear = (data) => {
         return this.put(`${API.CREATE_NEW_ACADEMIC_YEAR}/${data.id}`, data);
     }
+
+    deleteAcademicYear = (id) => {
+        return this.delete(`${API.CREATE_NEW_ACADEMIC_YEAR}/${id}`);
+    }
 }
 
 export const academicYearsService = new AcademicYearsService();

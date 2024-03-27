@@ -32,4 +32,14 @@ export class BaseService {
             }
         })
     }
+
+    delete = (url) => {
+        return axios({
+            method: "DELETE",
+            url: url,
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        })
+    }
 }
