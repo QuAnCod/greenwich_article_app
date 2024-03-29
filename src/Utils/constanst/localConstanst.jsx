@@ -14,6 +14,10 @@ export const API = {
   // // --------------- ARTICLE ---------------
   POST_ARTICLE: DOMAIN + "articles",
   SEND_NOTIFICATION: DOMAIN + "articles/sendMail",
+  GET_ARTICLE: DOMAIN + "articles/all",
+  GET_ARTICLE_IMAGE: DOMAIN + "articles/images",
+  DOWNLOAD_FILE: DOMAIN + "articles/downloads",
+  READ_FILE: DOMAIN + "articles/views",
 
   // ----------------- CLOSURES -----------------
   GET_ALL_CLOSURES: DOMAIN + "closures",

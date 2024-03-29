@@ -7,9 +7,10 @@ import Home from "./Pages/Home/Home";
 import HomeTemplate from "./Templates/HomeTemplate/HomeTemplate";
 import Guest from "./Pages/Guest/Guest";
 import AdminDashboard from "./Pages/Admin/AdminDashboard";
-import MarketingCordinator from "./Pages/MarketingCordinator/MarketingCordinator";
+import MarketingCoordinator from "./Pages/MarketingCordinator/MarketingCoordinator";
 import MarketingManager from "./Pages/MarketingManager/MarketingManager";
 import ForgotPassword from "./Pages/ForgotPassword/ForgotPassword";
+import AcceptArticle from "./Components/AcceptArticle/AcceptArticle";
 
 function App() {
   return (
@@ -24,10 +25,11 @@ function App() {
           <Route path="/guest" element={<Guest />}></Route>
         </Route>
         <Route path="admin" element={<AdminDashboard />}></Route>
-        <Route path="cordinator" element={<MarketingCordinator />} />
+        <Route path="coordinator" element={<MarketingCoordinator />} />
         <Route path="manager" element={<MarketingManager />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="accept-article" element={<MarketingCordinator />}></Route>
+        <Route path="accept-article" element={<MarketingCoordinator />}></Route>
+        <Route path="accept-article/:id" element={<AcceptArticle />}></Route>
       </Routes>
     </BrowserRouter>
   );

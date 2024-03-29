@@ -3,15 +3,55 @@ import { articleService } from "../services/ArticleService";
 import { STATUS_CODE } from "../../Utils/constanst/localConstanst";
 import { setModalOpen } from "./modalReducer";
 
-const initialState = {};
+const initialState = {
+  articleList: [],
+  articleDetail: {},
+  loading: false,
+  error: null,
+  pagination: {
+    page: 0,
+    limit: 10,
+    totalPages: 1,
+  },
+};
 
 const articleReducer = createSlice({
   name: "articleReducer",
   initialState,
-  reducers: {},
+  reducers: {
+    setArticleList: (state, action) => {
+      state.articleList = action.payload;
+    },
+    setArticleDetail: (state, action) => {
+      state.articleDetail = action.payload;
+    },
+    setLoading: (state, action) => {
+      state.loading = action.payload;
+    },
+    setError: (state, action) => {
+      state.error = action.payload;
+    },
+    setPagination: (state, action) => {
+      state.pagination = action.payload;
+    },
+    setCurrentPage: (state, action) => {
+      state.pagination.page = action.payload;
+    },
+    setTotalPages: (state, action) => {
+      state.pagination.totalPages = action.payload;
+    },
+  },
 });
 
-export const { } = articleReducer.actions;
+export const {
+  setArticleList,
+  setArticleDetail,
+  setLoading,
+  setError,
+  setPagination,
+  setCurrentPage,
+  setTotalPages,
+} = articleReducer.actions;
 
 export default articleReducer.reducer;
 
@@ -42,10 +82,9 @@ export const postArticle = (data) => {
       const faculty_id = newArticle.faculty_id;
       const resSendMail = await articleService.sendNotification({
         faculty_id,
-        url: "http://localhost:3000/accept-article"
-      })
+        url: "http://localhost:3000/accept-article",
+      });
       if (resSendMail.status === STATUS_CODE.SUCCESS) {
-
         const resPostArticle = await articleService.postArticle(newArticle);
 
         //   console.log(resPostArticle);
@@ -79,6 +118,46 @@ export const postArticle = (data) => {
         }
       }
       dispatch(setModalOpen(false));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
+export const getArticles = (data) => {
+  return async (dispatch) => {
+    try {
+      const res = await articleService.getArticles(data);
+      // console.log(res);
+      if (res.status === STATUS_CODE.SUCCESS) {
+        dispatch(setArticleList(res.data.articles));
+        dispatch(setTotalPages(res.data.totalPages));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
+export const downloadFile = (fileName) => {
+  return async (dispatch) => {
+    try {
+      const res = await articleService.downloadFile(fileName);
+      console.log(res);
+      if (res.status === STATUS_CODE.SUCCESS) {
+        // console.log(res.data);
+
+        const url = window.URL.createObjectURL(new Blob([res.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", fileName);
+        document.body.appendChild(link);
+        link.click();
+
+        // remove the previous url
+        window.URL.revokeObjectURL(url);
+        link.remove();
+      }
     } catch (error) {
       console.log(error);
     }

@@ -8,18 +8,24 @@ import { getAllClosures } from "../../Redux/reducers/closuresReducer";
 import { getAllAcademicYears } from "../../Redux/reducers/academicYearsReducer";
 
 const findDeadlineByFaculty = (closures, faculty_id) => {
-  const closuresFound = closures.find((closure) => closure.faculty.id === faculty_id);
-  return closuresFound?.finalDeadline.split("T").join(" ");
-}
+  const closuresFound = closures.find(
+    (closure) => closure.faculty.id === faculty_id
+  );
+  const date = new Date(closuresFound?.finalDeadline).toDateString();
+  return date;
+};
 
 const findClosureByFaculty = (closures, faculty_id) => {
-  const closuresFound = closures.find((closure) => closure.faculty.id === faculty_id);
-  return closuresFound?.deadline.split("T").join(" ");
-}
+  const closuresFound = closures.find(
+    (closure) => closure.faculty.id === faculty_id
+  );
+  const date = new Date(closuresFound?.deadline).toDateString();
+  return date;
+};
 
 export default function HomeTemplate(props) {
   const navigate = useNavigate();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const { data } = useSelector((state) => state.userReducer.userLogin);
 
@@ -33,8 +39,8 @@ export default function HomeTemplate(props) {
     if (data?.role.id !== ROLE.STUDENT && data?.role.id !== ROLE.GUEST) {
       navigate("/login");
     }
-    dispatch(getAllClosures())
-    dispatch(getAllAcademicYears())
+    dispatch(getAllClosures());
+    dispatch(getAllAcademicYears());
   }, []);
 
   return (
@@ -65,10 +71,12 @@ export default function HomeTemplate(props) {
               <span>Role: </span>
               <span>{data?.role?.name}</span>
             </h6>
-            {data?.role?.id === ROLE.STUDENT ? (<h6 className="text-black text-xl">
-              <span>Faculty: </span>
-              <span>{data?.falcuty?.name}</span>
-            </h6>) : null}
+            {data?.role?.id === ROLE.STUDENT ? (
+              <h6 className="text-black text-xl">
+                <span>Faculty: </span>
+                <span>{data?.falcuty?.name}</span>
+              </h6>
+            ) : null}
             <SignOutBtn />
           </div>
         </div>
@@ -162,10 +170,15 @@ export default function HomeTemplate(props) {
           <div className="">
             <h4 className="mb-3 flex justify-between">
               Closure date
-              <small className="font-light">{findClosureByFaculty(closures, data?.faculty?.id)}</small>
+              <small className="font-light">
+                {findClosureByFaculty(closures, data?.faculty?.id)}
+              </small>
             </h4>
             <h4 className="flex justify-between">
-              Final date <small className="font-light">{findDeadlineByFaculty(closures, data?.faculty?.id)}</small>
+              Final date{" "}
+              <small className="font-light">
+                {findDeadlineByFaculty(closures, data?.faculty?.id)}
+              </small>
             </h4>
           </div>
         </div>
@@ -245,7 +258,11 @@ export default function HomeTemplate(props) {
                   Choose Academic year
                 </option>
                 {academicYears?.map((academicYear, index) => {
-                  return <option key={index} value={academicYear.id}>{academicYear.year}</option>
+                  return (
+                    <option key={index} value={academicYear.id}>
+                      {academicYear.year}
+                    </option>
+                  );
                 })}
               </select>
             </div>
