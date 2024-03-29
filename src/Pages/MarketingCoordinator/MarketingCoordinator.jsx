@@ -5,6 +5,7 @@ import { useNavigate } from "react-router";
 import { ROLE } from "../../Utils/constanst/localConstanst";
 import {
   getArticles,
+  getArticlesByFacultyId,
   setArticleDetail,
   setCurrentPage,
 } from "../../Redux/reducers/articleReducer";
@@ -47,7 +48,7 @@ export default function MarketingCordinator(props) {
 
   const { data } = useSelector((state) => state.userReducer.userLogin);
 
-  const { articleList, loading } = useSelector((state) => state.articleReducer);
+  const { articleListByFaculty, loading } = useSelector((state) => state.articleReducer);
 
   const { page, limit, totalPages } = useSelector(
     (state) => state.articleReducer.pagination
@@ -63,7 +64,7 @@ export default function MarketingCordinator(props) {
       alert("You dont have permission to access this page");
       navigate("/login");
     }
-    dispatch(getArticles({ page, limit }));
+    dispatch(getArticlesByFacultyId({ page, limit, facultyId: data.faculty?.id }));
   }, []);
 
   return (
@@ -179,7 +180,7 @@ export default function MarketingCordinator(props) {
             <Table
               rowKey={(record) => record.id}
               columns={columns}
-              dataSource={filterByStatus(articleList, "accepted")}
+              dataSource={filterByStatus(articleListByFaculty, "accepted")}
               loading={loading}
               pagination={{
                 current: page + 1,
@@ -188,7 +189,7 @@ export default function MarketingCordinator(props) {
                   // when user click on pagination
                   // we will dispatch getArticles action
                   console.log(page);
-                  dispatch(getArticles({ page: page - 1, limit }));
+                  dispatch(getArticlesByFacultyId({ page: page - 1, limit, facultyId: data.faculty?.id }));
                   dispatch(setCurrentPage(page - 1));
                 },
               }}
@@ -213,7 +214,7 @@ export default function MarketingCordinator(props) {
             <Table
               rowKey={(record) => record.id}
               columns={columns}
-              dataSource={filterByStatus(articleList, "pending")}
+              dataSource={filterByStatus(articleListByFaculty, "pending")}
               loading={loading}
               pagination={{
                 current: page + 1,
@@ -222,7 +223,7 @@ export default function MarketingCordinator(props) {
                   // when user click on pagination
                   // we will dispatch getArticles action
                   console.log(page);
-                  dispatch(getArticles({ page: page - 1, limit }));
+                  dispatch(getArticles({ page: page - 1, limit, facultyId: data.faculty?.id }));
                   dispatch(setCurrentPage(page - 1));
                 },
               }}
@@ -247,7 +248,7 @@ export default function MarketingCordinator(props) {
             <Table
               rowKey={(record) => record.id}
               columns={columns}
-              dataSource={filterByStatus(articleList, "rejected")}
+              dataSource={filterByStatus(articleListByFaculty, "rejected")}
               loading={loading}
               pagination={{
                 current: page + 1,
@@ -256,7 +257,7 @@ export default function MarketingCordinator(props) {
                   // when user click on pagination
                   // we will dispatch getArticles action
                   console.log(page);
-                  dispatch(getArticles({ page: page - 1, limit }));
+                  dispatch(getArticles({ page: page - 1, limit, facultyId: data.faculty?.id }));
                   dispatch(setCurrentPage(page - 1));
                 },
               }}

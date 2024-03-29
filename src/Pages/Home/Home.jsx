@@ -6,7 +6,7 @@ import WriteModal from "../../Components/WriteModal/WriteModal";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import { downloadFile, getArticles } from "../../Redux/reducers/articleReducer";
+import { downloadFile, getArticles, getArticlesByUserId } from "../../Redux/reducers/articleReducer";
 import useInfiniteScroll from "../../hooks/useInfiniteScroll";
 import ReachEnd from "../../Components/ReachEnd/ReachEnd";
 import { API, DOMAIN } from "../../Utils/constanst/localConstanst";
@@ -33,11 +33,14 @@ export default function Home(props) {
     (state) => state.articleReducer.pagination
   );
 
+  const { data } = useSelector((state) => state.userReducer.userLogin)
+
   const articleList = useInfiniteScroll();
   // console.log(articleList);
 
   useEffect(() => {
     dispatch(getArticles({ page: 0, limit: 10 }));
+    dispatch(getArticlesByUserId({ page: 0, limit: 10, userId: data.id }))
   }, []);
 
   return (
@@ -165,137 +168,6 @@ export default function Home(props) {
         );
       })}
       {page === totalPages - 1 && <ReachEnd />}
-      {/* <div className="mt-2">
-        <div
-          style={{
-            backgroundColor: "#fff",
-          }}
-        >
-          <div className="p-10">
-            <div className="article-header flex justify-between">
-              <div className="avatar-zone flex justify-between items-stretch">
-                <img
-                  src="https://i.pravatar.cc/300"
-                  alt=""
-                  className="w-12 h-12 rounded-full"
-                />
-                <div className="ml-3">
-                  <h5 className="m-0 font-bold">John Doe</h5>
-                  <p className="m-0">1 hour ago</p>
-                </div>
-              </div>
-              <div className="flex items-center">
-                <button className="btn btn-warning">
-                  <i className="fa fa-download" aria-hidden="true" /> Download
-                </button>
-              </div>
-            </div>
-            <div className="article-body mt-5">
-              <h3 className="font-bold">Article Title</h3>
-              <p className="mt-2">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
-                nec purus nec sapien fermentum tincidunt. Integer ut lacus
-                fermentum, ultricies nunc nec, ultricies nunc nec, ultricies
-                nunc nec, ultricies nunc nec, ultricies nunc nec, ultricies nunc
-                nec,
-              </p>
-            </div>
-            <div className="article-img mt-5 slider-container">
-              <Slider {...settings}>
-                <div>
-                  <img
-                    src="https://via.placeholder.com/300"
-                    className="w-9/12 mx-auto"
-                    alt=""
-                  />
-                </div>
-                <div>
-                  <img
-                    src="https://via.placeholder.com/300"
-                    className="w-9/12 mx-auto"
-                    alt=""
-                  />
-                </div>
-                <div>
-                  <img
-                    src="https://via.placeholder.com/300"
-                    className="w-9/12 mx-auto"
-                    alt=""
-                  />
-                </div>
-                <div>
-                  <img
-                    src="https://via.placeholder.com/300"
-                    className="w-9/12 mx-auto"
-                    alt=""
-                  />
-                </div>
-                <div>
-                  <img
-                    src="https://via.placeholder.com/300"
-                    className="w-9/12 mx-auto"
-                    alt=""
-                  />
-                </div>
-                <div>
-                  <img
-                    src="https://via.placeholder.com/300"
-                    className="w-9/12 mx-auto"
-                    alt=""
-                  />
-                </div>
-                <div>
-                  <img
-                    src="https://via.placeholder.com/300"
-                    className="w-9/12 mx-auto"
-                    alt=""
-                  />
-                </div>
-                <div>
-                  <img
-                    src="https://via.placeholder.com/300"
-                    className="w-9/12 mx-auto"
-                    alt=""
-                  />
-                </div>
-                <div>
-                  <img
-                    src="https://via.placeholder.com/300"
-                    className="w-9/12 mx-auto"
-                    alt=""
-                  />
-                </div>
-                <div>
-                  <img
-                    src="https://via.placeholder.com/300"
-                    className="w-9/12 mx-auto"
-                    alt=""
-                  />
-                </div>
-              </Slider>
-            </div>
-          </div>
-          <div className="article-comment p-10 mt-5 border-t-2 border-black">
-            <div className="comment-header flex justify-start">
-              <img
-                src="https://i.pravatar.cc/300"
-                alt=""
-                className="w-12 h-12 rounded-full mr-2"
-              />
-              <div className="comment-content">
-                <h5 className="font-bold">
-                  John Doe <span>15 March 2023</span>
-                </h5>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam nec purus nec sapien fermentum tincidunt. Integer ut
-                  lacus fermentum
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> */}
       <WriteModal />
     </div>
   );

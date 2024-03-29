@@ -25,6 +25,20 @@ class ArticleService extends BaseService {
     return this.get(`${API.GET_ARTICLE}?page=${page}&limit=${limit}`);
   };
 
+  getArticlesByUserId = (data) => {
+    const { page, limit, userId } = data;
+    return this.get(
+      `${API.GET_ARTICLE}?page=${page}&limit=${limit}&uer_id=${userId}`
+    );
+  }
+
+  getArticlesByFacultyId = (data) => {
+    const { page, limit, facultyId } = data;
+    return this.get(
+      `${API.GET_ARTICLE}?page=${page}&limit=${limit}&faculty_id=${facultyId}`
+    );
+  }
+
   downloadFile = (fileName) => {
     // axios.get(`/your-endpoint/${fileName}`, { responseType: 'blob' });
     return axios.get(`${API.DOWNLOAD_FILE}/${fileName}`, {

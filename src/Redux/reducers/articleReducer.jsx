@@ -13,6 +13,10 @@ const initialState = {
     limit: 10,
     totalPages: 1,
   },
+  articleListById: [],
+  articleListByFaculty: [],
+  articleListByStatus: [],
+  articleListBySearch: [],
 };
 
 const articleReducer = createSlice({
@@ -40,6 +44,9 @@ const articleReducer = createSlice({
     setTotalPages: (state, action) => {
       state.pagination.totalPages = action.payload;
     },
+    setArticleListByFaculty: (state, action) => {
+      state.articleListByFaculty = action.payload;
+    }
   },
 });
 
@@ -51,6 +58,7 @@ export const {
   setPagination,
   setCurrentPage,
   setTotalPages,
+  setArticleListByFaculty
 } = articleReducer.actions;
 
 export default articleReducer.reducer;
@@ -163,3 +171,29 @@ export const downloadFile = (fileName) => {
     }
   };
 };
+
+
+export const getArticlesByUserId = (data) => {
+  return async (dispatch) => {
+    try {
+
+    } catch (error) {
+
+    }
+  }
+}
+
+export const getArticlesByFacultyId = (data) => {
+  return async (dispatch) => {
+    try {
+      const res = await articleService.getArticlesByFacultyId(data);
+      if (res.status === STATUS_CODE.SUCCESS) {
+        console.log(res.data.articles);
+        dispatch(setArticleListByFaculty(res.data.articles));
+        dispatch(setTotalPages(res.data.totalPages));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+}

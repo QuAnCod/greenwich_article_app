@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { API } from "../../Utils/constanst/localConstanst";
 import { useNavigate } from "react-router";
@@ -7,6 +7,11 @@ export default function ArticleDetail(props) {
   const navigate = useNavigate();
 
   const { articleDetail } = useSelector((state) => state.articleReducer);
+
+  const [comment, setComment] = useState("");
+  const [status, setStatus] = useState("pendding");
+
+
 
   return (
     <div>
@@ -95,6 +100,9 @@ export default function ArticleDetail(props) {
                 name="comment"
                 id="comment"
                 rows="3"
+                onChange={(e) => {
+                  setComment(e.target.value);
+                }}
               ></textarea>
             </div>
             <div className="form-group mb-3">
@@ -106,6 +114,9 @@ export default function ArticleDetail(props) {
                 id="status"
                 className="form-select"
                 defaultValue={"pendding"}
+                onChange={(e) => {
+                  setStatus(e.target.value);
+                }}
               >
                 <option value="pendding" disabled>
                   Pendding
@@ -117,7 +128,9 @@ export default function ArticleDetail(props) {
           </div>
           <div className="flex justify-end">
             <button className="btn btn-success">SAVE</button>
-            <button className="btn btn-danger ml-2">CANCLE</button>
+            <button onClick={() => {
+              navigate(-1);
+            }} className="btn btn-danger ml-2">CANCLE</button>
           </div>
         </div>
       </div>
