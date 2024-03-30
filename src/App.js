@@ -11,6 +11,7 @@ import MarketingCoordinator from "./Pages/MarketingCoordinator/MarketingCoordina
 import MarketingManager from "./Pages/MarketingManager/MarketingManager";
 import ForgotPassword from "./Pages/ForgotPassword/ForgotPassword";
 import AcceptArticle from "./Components/AcceptArticle/AcceptArticle";
+import ChangePassword from "./Pages/ChangePassword/ChangePassword";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="accept-article" element={<MarketingCoordinator />}></Route>
         <Route path="accept-article/:id" element={<AcceptArticle />}></Route>
+        <Route path="change-password" element={<ChangePassword />}></Route>
       </Routes>
     </BrowserRouter>
   );

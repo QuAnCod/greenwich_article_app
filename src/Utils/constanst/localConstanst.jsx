@@ -9,6 +9,8 @@ export const API = {
   GET_ALL_USER: DOMAIN + "users/all",
   GET_USER: DOMAIN + "users/details",
   UPDATE_USER: DOMAIN + "users/update",
+  CHANGE_PASSWORD: DOMAIN + "users/changePassword",
+  FORGOT_PASSWORD: DOMAIN + "users/sendMailChangePassword",
   // DELETE_USER: DOMAIN + "user",
 
   // // --------------- ARTICLE ---------------
@@ -18,6 +20,7 @@ export const API = {
   GET_ARTICLE_IMAGE: DOMAIN + "articles/images",
   DOWNLOAD_FILE: DOMAIN + "articles/downloads",
   READ_FILE: DOMAIN + "articles/views",
+  GET_ARTICLE_BY_ID: DOMAIN + "articles",
 
   // ----------------- CLOSURES -----------------
   GET_ALL_CLOSURES: DOMAIN + "closures",

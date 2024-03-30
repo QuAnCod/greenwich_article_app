@@ -6,15 +6,21 @@ import WriteModal from "../../Components/WriteModal/WriteModal";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import { downloadFile, getArticles, getArticlesByUserId } from "../../Redux/reducers/articleReducer";
+import {
+  downloadFile,
+  getArticles,
+  getArticlesByUserId,
+} from "../../Redux/reducers/articleReducer";
 import useInfiniteScroll from "../../hooks/useInfiniteScroll";
 import ReachEnd from "../../Components/ReachEnd/ReachEnd";
 import { API, DOMAIN } from "../../Utils/constanst/localConstanst";
 import { type } from "@testing-library/user-event/dist/type";
 import { Popconfirm } from "antd";
+import { useNavigate } from "react-router";
 
 export default function Home(props) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const settings = {
     dots: true,
@@ -33,14 +39,19 @@ export default function Home(props) {
     (state) => state.articleReducer.pagination
   );
 
-  const { data } = useSelector((state) => state.userReducer.userLogin)
+  const { data } = useSelector((state) => state.userReducer.userLogin);
 
   const articleList = useInfiniteScroll();
   // console.log(articleList);
 
+  const { articleListByUserId } = useSelector((state) => state.articleReducer);
+
   useEffect(() => {
+    if (data?.userActive === false) {
+      alert("YOU MUST CHANGE YOUR PASSWORD FIRST!");
+      navigate("/change-password");
+    }
     dispatch(getArticles({ page: 0, limit: 10 }));
-    dispatch(getArticlesByUserId({ page: 0, limit: 10, userId: data.id }))
   }, []);
 
   return (

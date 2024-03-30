@@ -1,16 +1,21 @@
-import React from 'react'
+import React from "react";
+import { useDispatch } from "react-redux";
+import { forgotPasswordAction } from "../../Redux/reducers/userReducer";
 
 function ForgotPassword(props) {
+  const dispatch = useDispatch();
   return (
-    <div style={{
-      backgroundImage: `url(${require("../../assets/img/Background_1.jpg")})`,
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      height: "100vh",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-    }}>
+    <div
+      style={{
+        backgroundImage: `url(${require("../../assets/img/Background_1.jpg")})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        height: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       <div
         style={{
           position: "absolute",
@@ -22,7 +27,8 @@ function ForgotPassword(props) {
           zIndex: -1,
         }}
       ></div>
-      <div className="container"
+      <div
+        className="container"
         style={{
           maxWidth: "30%",
           minHeight: "70%",
@@ -33,33 +39,34 @@ function ForgotPassword(props) {
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-        }}>
-        <form>
-          <div className='form-group mb-10'>
-            <label htmlFor='email' className='form-label font-bold text-2xl'>Email</label>
+        }}
+      >
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            dispatch(
+              forgotPasswordAction({ username: e.target.username.value })
+            );
+          }}
+        >
+          <div className="form-group mb-10">
+            <label htmlFor="username" className="form-label font-bold text-2xl">
+              Username
+            </label>
             <input
-              className='form-control'
-              type='text'
-              id='email'
-              placeholder='Enter your email'
+              className="form-control"
+              type="text"
+              id="username"
+              placeholder="Enter your Username"
             />
           </div>
-          <div className='form-group mb-10'>
-            <label htmlFor='username' className='form-label font-bold text-2xl'>Username</label>
-            <input
-              className='form-control'
-              type='text'
-              id='username'
-              placeholder='Enter your Username'
-            />
-          </div>
-          <div className='flex justify-end'>
-            <button className='btn btn-primary'>Send Email</button>
+          <div className="flex justify-end">
+            <button className="btn btn-primary">Send Email</button>
           </div>
         </form>
       </div>
     </div>
-  )
+  );
 }
 
-export default ForgotPassword
+export default ForgotPassword;

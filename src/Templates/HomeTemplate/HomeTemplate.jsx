@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router";
 import { LOCAL_STORAGE, ROLE } from "../../Utils/constanst/localConstanst";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,6 +6,12 @@ import SignOutBtn from "../../Components/Buttons/SignOutBtn/SignOutBtn";
 import WriteModal from "../../Components/WriteModal/WriteModal";
 import { getAllClosures } from "../../Redux/reducers/closuresReducer";
 import { getAllAcademicYears } from "../../Redux/reducers/academicYearsReducer";
+import {
+  getArticlesByFacultyIdAndAcademicYearId,
+  getArticlesByUserId,
+  setArticleList,
+} from "../../Redux/reducers/articleReducer";
+import { changePasswordAction } from "../../Redux/reducers/userReducer";
 
 const findDeadlineByFaculty = (closures, faculty_id) => {
   const closuresFound = closures.find(
@@ -32,6 +38,8 @@ export default function HomeTemplate(props) {
   const { closures } = useSelector((state) => state.closuresReducer);
   const { academicYears } = useSelector((state) => state.academicYearsReducer);
 
+  const { articleListByUserId } = useSelector((state) => state.articleReducer);
+
   useEffect(() => {
     if (!localStorage.getItem(LOCAL_STORAGE.TOKEN)) {
       navigate("/login");
@@ -41,7 +49,21 @@ export default function HomeTemplate(props) {
     }
     dispatch(getAllClosures());
     dispatch(getAllAcademicYears());
+    dispatch(getArticlesByUserId(data?.id));
   }, []);
+
+  // console.log(articleListByUserId);
+  const [changePassword, setChangePassword] = useState({
+    password: "",
+    retype_password: "",
+  });
+
+  const [filterOptions, setFilterOptions] = useState({
+    page: 0,
+    limit: 10,
+    faculty_id: "",
+    academic_year_id: "",
+  });
 
   return (
     <div className="">
@@ -89,40 +111,55 @@ export default function HomeTemplate(props) {
           <div className="text-center text-2xl font-bold mb-3">
             Change Password
           </div>
-          <form className="container">
+          <form
+            className="container"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const userData = {
+                id: data?.id,
+                password: changePassword.password,
+                retype_password: changePassword.retype_password,
+              };
+              dispatch(changePasswordAction(userData));
+              setChangePassword({
+                password: "",
+                retype_password: "",
+              });
+            }}
+          >
             <div className="form-group mb-3">
-              <label htmlFor="currentPassword" className="font-bold">
-                Current Password
-              </label>
-              <input
-                type="password"
-                className="form-control"
-                id="currentPassword"
-                name="current_password"
-                placeholder="Current Password"
-              />
-            </div>
-            <div className="form-group mb-3">
-              <label htmlFor="newPassword" className="font-bold">
+              <label htmlFor="password" className="font-bold">
                 New Password
               </label>
               <input
+                onChange={(e) => {
+                  setChangePassword({
+                    ...changePassword,
+                    password: e.target.value,
+                  });
+                }}
                 type="password"
                 className="form-control"
-                id="newPassword"
-                name="new_password"
+                id="password"
+                name="password"
                 placeholder="New Password"
               />
             </div>
             <div className="form-group mb-3">
-              <label htmlFor="confirmPassword" className="font-bold">
+              <label htmlFor="retype_password" className="font-bold">
                 Confirm Password
               </label>
               <input
+                onChange={(e) => {
+                  setChangePassword({
+                    ...changePassword,
+                    retype_password: e.target.value,
+                  });
+                }}
                 type="password"
                 className="form-control"
-                id="confirmPassword"
-                name="confirm_password"
+                id="retype_password"
+                name="retype_password"
                 placeholder="Confirm Password"
               />
             </div>
@@ -135,9 +172,6 @@ export default function HomeTemplate(props) {
                   lineHeight: "2rem",
                   backgroundColor: "#235895",
                 }}
-                onClick={(e) =>
-                  e.preventDefault(alert("Change password successfully"))
-                }
               >
                 Submit
               </button>
@@ -190,17 +224,46 @@ export default function HomeTemplate(props) {
         >
           <div className="flex justify-between mb-3">
             <h4>Pending</h4>
-            <h4 className="font-normal">100</h4>
+            <h4 className="font-normal">
+              {
+                articleListByUserId.filter(
+                  (article) => article.status === "pending"
+                )?.length
+              }
+            </h4>
           </div>
           <div className="flex justify-between mb-3">
             <h4>Accepted</h4>
-            <h4 className="font-normal">200</h4>
+            <h4 className="font-normal">
+              {
+                articleListByUserId.filter(
+                  (article) => article.status === "accepted"
+                )?.length
+              }
+            </h4>
           </div>
           <div className="flex justify-between mb-3">
             <h4>Rejected</h4>
-            <h4 className="font-normal">100</h4>
+            <h4 className="font-normal">
+              {
+                articleListByUserId.filter(
+                  (article) => article.status === "rejected"
+                )?.length
+              }
+            </h4>
           </div>
-          <form className="form">
+          <form
+            className="form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              console.log(e.target[0].value);
+              const filterStatus = e.target[0].value;
+              const list = articleListByUserId.filter(
+                (article) => article.status === filterStatus
+              );
+              dispatch(setArticleList(list));
+            }}
+          >
             <div className="form-group mb-3">
               <select
                 style={{
@@ -212,13 +275,15 @@ export default function HomeTemplate(props) {
                 <option disabled selected>
                   Choose Status
                 </option>
-                <option>Pending</option>
-                <option>Accepted</option>
-                <option>Rejected</option>
+                <option value={"pending"}>Pending</option>
+                <option value={"accepted"}>Accepted</option>
+                <option value={"rejected"}>Rejected</option>
               </select>
             </div>
             <div className="form-group text-center">
-              <button className="btn btn-danger">Search</button>
+              <button type="submit" className="btn btn-danger">
+                Search
+              </button>
             </div>
           </form>
         </div>
@@ -228,7 +293,13 @@ export default function HomeTemplate(props) {
             border: "5px solid #235895",
           }}
         >
-          <form className="form">
+          <form
+            className="form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              dispatch(getArticlesByFacultyIdAndAcademicYearId(filterOptions));
+            }}
+          >
             <div className="form-group mb-3">
               <select
                 style={{
@@ -236,13 +307,19 @@ export default function HomeTemplate(props) {
                   fontSize: "1.5rem",
                 }}
                 className="form-select"
+                onChange={(e) => {
+                  setFilterOptions({
+                    ...filterOptions,
+                    faculty_id: e.target.value,
+                  });
+                }}
               >
                 <option disabled selected>
                   Choose Faculty
                 </option>
-                <option>IT</option>
-                <option>Bussiness</option>
-                <option>Design</option>
+                <option value={1}>IT</option>
+                <option value={2}>Bussiness</option>
+                <option value={3}>Design</option>
               </select>
             </div>
             <div className="form-group mb-3">
@@ -251,7 +328,12 @@ export default function HomeTemplate(props) {
                   lineHeight: "2rem",
                   fontSize: "1.5rem",
                 }}
-                onChange={(e) => console.log(e.target.value)}
+                onChange={(e) => {
+                  setFilterOptions({
+                    ...filterOptions,
+                    academic_year_id: e.target.value,
+                  });
+                }}
                 className="form-select"
               >
                 <option disabled selected>

@@ -48,7 +48,9 @@ export default function MarketingCordinator(props) {
 
   const { data } = useSelector((state) => state.userReducer.userLogin);
 
-  const { articleListByFaculty, loading } = useSelector((state) => state.articleReducer);
+  const { articleListByFaculty, loading } = useSelector(
+    (state) => state.articleReducer
+  );
 
   const { page, limit, totalPages } = useSelector(
     (state) => state.articleReducer.pagination
@@ -64,7 +66,13 @@ export default function MarketingCordinator(props) {
       alert("You dont have permission to access this page");
       navigate("/login");
     }
-    dispatch(getArticlesByFacultyId({ page, limit, facultyId: data.faculty?.id }));
+    if (data?.userActive === false) {
+      alert("YOU MUST CHANGE YOUR PASSWORD FIRST!");
+      navigate("/change-password");
+    }
+    dispatch(
+      getArticlesByFacultyId({ page, limit, faculty_id: data.faculty?.id })
+    );
   }, []);
 
   return (
@@ -189,7 +197,13 @@ export default function MarketingCordinator(props) {
                   // when user click on pagination
                   // we will dispatch getArticles action
                   console.log(page);
-                  dispatch(getArticlesByFacultyId({ page: page - 1, limit, facultyId: data.faculty?.id }));
+                  dispatch(
+                    getArticlesByFacultyId({
+                      page: page - 1,
+                      limit,
+                      facultyId: data.faculty?.id,
+                    })
+                  );
                   dispatch(setCurrentPage(page - 1));
                 },
               }}
@@ -223,7 +237,13 @@ export default function MarketingCordinator(props) {
                   // when user click on pagination
                   // we will dispatch getArticles action
                   console.log(page);
-                  dispatch(getArticles({ page: page - 1, limit, facultyId: data.faculty?.id }));
+                  dispatch(
+                    getArticles({
+                      page: page - 1,
+                      limit,
+                      facultyId: data.faculty?.id,
+                    })
+                  );
                   dispatch(setCurrentPage(page - 1));
                 },
               }}
@@ -257,7 +277,13 @@ export default function MarketingCordinator(props) {
                   // when user click on pagination
                   // we will dispatch getArticles action
                   console.log(page);
-                  dispatch(getArticles({ page: page - 1, limit, facultyId: data.faculty?.id }));
+                  dispatch(
+                    getArticles({
+                      page: page - 1,
+                      limit,
+                      facultyId: data.faculty?.id,
+                    })
+                  );
                   dispatch(setCurrentPage(page - 1));
                 },
               }}

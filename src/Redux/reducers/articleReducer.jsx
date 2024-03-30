@@ -15,7 +15,7 @@ const initialState = {
   },
   articleListById: [],
   articleListByFaculty: [],
-  articleListByStatus: [],
+  articleListByUserId: [],
   articleListBySearch: [],
 };
 
@@ -46,7 +46,10 @@ const articleReducer = createSlice({
     },
     setArticleListByFaculty: (state, action) => {
       state.articleListByFaculty = action.payload;
-    }
+    },
+    setArticleByUserId: (state, action) => {
+      state.articleListByUserId = action.payload;
+    },
   },
 });
 
@@ -58,7 +61,8 @@ export const {
   setPagination,
   setCurrentPage,
   setTotalPages,
-  setArticleListByFaculty
+  setArticleListByFaculty,
+  setArticleByUserId,
 } = articleReducer.actions;
 
 export default articleReducer.reducer;
@@ -172,28 +176,47 @@ export const downloadFile = (fileName) => {
   };
 };
 
-
 export const getArticlesByUserId = (data) => {
   return async (dispatch) => {
     try {
-
+      const res = await articleService.getArticlesByUserId(data);
+      if (res.status === STATUS_CODE.SUCCESS) {
+        dispatch(setArticleByUserId(res.data));
+      }
     } catch (error) {
-
+      console.log(error);
     }
-  }
-}
+  };
+};
 
 export const getArticlesByFacultyId = (data) => {
   return async (dispatch) => {
     try {
       const res = await articleService.getArticlesByFacultyId(data);
       if (res.status === STATUS_CODE.SUCCESS) {
-        console.log(res.data.articles);
         dispatch(setArticleListByFaculty(res.data.articles));
         dispatch(setTotalPages(res.data.totalPages));
       }
     } catch (error) {
       console.log(error);
     }
-  }
-}
+  };
+};
+
+export const getArticlesByFacultyIdAndAcademicYearId = (data) => {
+  return async (dispatch) => {
+    try {
+      const res = await articleService.getArticlesByFacultyIdAndAcademicYearId(
+        data
+      );
+      if (res.status === STATUS_CODE.SUCCESS) {
+        console.log(res.data.articles);
+        // console.log(res.data.articles);
+        dispatch(setArticleList(res.data.articles));
+        dispatch(setTotalPages(res.data.totalPages));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
