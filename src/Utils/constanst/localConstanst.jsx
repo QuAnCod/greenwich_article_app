@@ -26,6 +26,7 @@ export const API = {
   DOWNLOAD_ZIP_FOLDER: DOMAIN + "users/downloads/all",
 
   // ----------------- CLOSURES -----------------
+  POST_CLOSURE: DOMAIN + "closures",
   GET_ALL_CLOSURES: DOMAIN + "closures",
   GET_CLOSURES_BY_ACADEMIC_YEAR: DOMAIN + "closures/academic",
 

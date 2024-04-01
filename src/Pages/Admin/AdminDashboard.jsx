@@ -16,10 +16,17 @@ import {
   setModalOpen,
 } from "../../Redux/reducers/modalReducer";
 import EditUserModal from "../../Components/EditUserModal/EditUserModal";
-import { deleteAcademicYear, getAllAcademicYears, setDetailAcademicYear, setDisplayDetailAcademicYear, updateAcademicYear } from "../../Redux/reducers/academicYearsReducer";
+import {
+  deleteAcademicYear,
+  getAllAcademicYears,
+  setDetailAcademicYear,
+  setDisplayDetailAcademicYear,
+  updateAcademicYear,
+} from "../../Redux/reducers/academicYearsReducer";
 import CreateNewAcademicYear from "../../Components/NewAcademicYear/CreateNewAcademicYear";
 import { getClosuresByAcademicYear } from "../../Redux/reducers/closuresReducer";
 import AcademicYearDetail from "../../Components/AcademicYearDetail/AcademicYearDetail";
+import AddClosure from "../../Components/AddClosure/AddClosure";
 
 export default function AdminDashboard(props) {
   const dispatch = useDispatch();
@@ -30,12 +37,11 @@ export default function AdminDashboard(props) {
   const { userList, loadingList } = useSelector((state) => state.userReducer);
   const { academicYears } = useSelector((state) => state.academicYearsReducer);
 
-  const { displayDetailAcademicYear, detailAcademicYear } = useSelector((state) => state.academicYearsReducer);
+  const { displayDetailAcademicYear, detailAcademicYear } = useSelector(
+    (state) => state.academicYearsReducer
+  );
 
-
-  useEffect(() => {
-
-  }, [displayDetailAcademicYear, detailAcademicYear])
+  useEffect(() => {}, [displayDetailAcademicYear, detailAcademicYear]);
 
   const columns = [
     {
@@ -81,22 +87,29 @@ export default function AdminDashboard(props) {
       key: "year",
       width: "50%",
       render: (_, record) => {
-        return <div className="cursor-pointer" onClick={() => {
-          dispatch(setDetailAcademicYear(record));
-          dispatch(getClosuresByAcademicYear(record.id));
-          dispatch(setDisplayDetailAcademicYear(true));
-        }
-        }>{record.year}</div>
-      }
+        console.log(record);
+        return (
+          <div
+            className="cursor-pointer"
+            onClick={() => {
+              dispatch(setDetailAcademicYear(record));
+              dispatch(getClosuresByAcademicYear(record.id));
+              dispatch(setDisplayDetailAcademicYear(true));
+            }}
+          >
+            {record.year}
+          </div>
+        );
+      },
     },
     {
-      title: 'Current Academic Year',
-      dataIndex: 'current',
-      key: 'current',
+      title: "Current Academic Year",
+      dataIndex: "current",
+      key: "current",
       // width: "50%",
       render: (_, record) => {
         return record.current ? "Current" : "Not Current";
-      }
+      },
     },
     {
       title: "Action",
@@ -135,8 +148,8 @@ export default function AdminDashboard(props) {
           </div>
         );
       },
-    }
-  ]
+    },
+  ];
 
   useEffect(() => {
     if (!localStorage.getItem("token")) {
@@ -156,6 +169,7 @@ export default function AdminDashboard(props) {
       <EditUserModal />
       <CreateNewAcademicYear />
       <AcademicYearDetail />
+      <AddClosure />
       <div className="bg-[#FF751F] p-10 px-20 flex justify-between">
         <div className="flex justify-start items-center">
           <img
@@ -279,8 +293,6 @@ export default function AdminDashboard(props) {
                 <button
                   className="btn btn-primary"
                   onClick={() => {
-                    // navigate("/register");
-                    // dispatch(setModalOpen(true));
                     dispatch(setModalCreateAcademicYearOpen(true));
                   }}
                 >
