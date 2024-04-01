@@ -30,16 +30,15 @@ class ArticleService extends BaseService {
   };
 
   getArticlesByFacultyId = (data) => {
-    const { page, limit, faculty_id } = data;
     return this.get(
-      `${API.GET_ARTICLE}?page=${page}&limit=${limit}&faculty_id=${faculty_id}`
+      `${API.NO_PAGING}?faculty_id=${data}`
     );
   };
 
   getArticlesByFacultyIdAndAcademicYearId = (data) => {
-    const { page, limit, faculty_id, academic_year_id } = data;
+    const { faculty_id, academic_year_id } = data;
     return this.get(
-      `${API.GET_ARTICLE}?page=${page}&limit=${limit}&faculty_id=${faculty_id}&academic_year_id=${academic_year_id}`
+      `${API.NO_PAGING}?faculty_id=${faculty_id}&academic_year_id=${academic_year_id}`
     );
   };
 
@@ -47,6 +46,19 @@ class ArticleService extends BaseService {
     // axios.get(`/your-endpoint/${fileName}`, { responseType: 'blob' });
     return axios.get(`${API.DOWNLOAD_FILE}/${fileName}`, {
       responseType: "blob",
+    });
+  };
+
+  changeArticleStatus = (data) => {
+    return this.put(`${API.CHANGE_ARTICLE_STATUS}/${data.id}`, data);
+  };
+
+  downloadZipFolder = () => {
+    return axios.get(`${API.DOWNLOAD_ZIP_FOLDER}`, {
+      responseType: "blob",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      }
     });
   };
 }

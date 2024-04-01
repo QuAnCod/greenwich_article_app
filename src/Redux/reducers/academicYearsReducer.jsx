@@ -6,7 +6,7 @@ import { setModalCreateAcademicYearOpen } from './modalReducer';
 const initialState = {
     academicYears: [],
     displayDetailAcademicYear: false,
-    detailAcademicYear: {}
+    detailAcademicYear: []
 }
 
 const academicYearsReducer = createSlice({

@@ -1,24 +1,26 @@
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { ROLE } from "../../Utils/constanst/localConstanst";
 import { Table } from "antd";
+import { downloadZipFolder, getArticlesByFacultyId } from "../../Redux/reducers/articleReducer";
 
 const columns = [
   {
     title: "Date",
-    dataIndex: "date",
-    key: "date",
+    dataIndex: "created_at",
+    key: "created_at",
+    render: (text) => <span>{new Date(text).toDateString()}</span>,
   },
   {
     title: "Title",
-    dataIndex: "title",
-    key: "title",
+    dataIndex: "name",
+    key: "name",
   },
   {
     title: "Author",
-    dataIndex: "author",
-    key: "author",
+    dataIndex: "user_name",
+    key: "user_name",
   },
   {
     title: "Description",
@@ -28,11 +30,14 @@ const columns = [
 ]
 
 export default function MarketingManager(props) {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { data } = useSelector((state) => state.userReducer.userLogin);
 
-  const { articles } = useSelector((state) => state.articleReducer);
+  const { articleListByFaculty, loading } = useSelector((state) => state.articleReducer);
+
+  const [facultyId, setFacultyId] = React.useState(0);
 
   useEffect(() => {
     if (!localStorage.getItem("token")) {
@@ -42,6 +47,11 @@ export default function MarketingManager(props) {
       alert("You dont have permission to access this page");
       navigate("/login");
     }
+    if (data?.userActive === false) {
+      alert("You has to change password first");
+      navigate("/change-password");
+    }
+    dispatch(getArticlesByFacultyId(facultyId));
   }, []);
 
   return (
@@ -62,8 +72,19 @@ export default function MarketingManager(props) {
             <h6 className="text-white text-2xl font-bold">{data?.username}</h6>
             <h6 className="text-white text-lg">
               <span>Role: </span>
-              <span>{data?.roleName}</span>
+              <span>{data?.role.name}</span>
             </h6>
+          </div>
+          <div className="ml-auto">
+            <button
+              className="btn btn-danger"
+              onClick={() => {
+                localStorage.removeItem("token");
+                navigate("/login");
+              }}
+            >
+              Sign out
+            </button>
           </div>
         </div>
       </div>
@@ -73,20 +94,27 @@ export default function MarketingManager(props) {
             <select
               className="w-1/4 rounded-xl"
               aria-label="Default select example"
+              onChange={(e) => {
+                setFacultyId(e.target.value)
+                dispatch(getArticlesByFacultyId(e.target.value));
+              }}
             >
-              <option selected>Choose Faculty</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
+              <option selected value={0}>Choose Faculty</option>
+              <option value={1}>Computing</option>
+              <option value={2}>Business</option>
+              <option value={3}>Design</option>
             </select>
-            <button className="btn btn-warning">
-              <i class="fa fa-download" aria-hidden="true"></i> Download ZIP
+            <button className="btn btn-warning" type="button" onClick={() => {
+              // download all article zip
+              dispatch(downloadZipFolder());
+            }}>
+              <i class="fa fa-download" aria-hidden="true"></i> Download all article ZIP
             </button>
           </form>
         </div>
       </div>
       <div className="p-10">
-        <Table columns={columns} dataSource={articles} />
+        <Table loading={loading} columns={columns} dataSource={articleListByFaculty} />
       </div>
     </div>
   );

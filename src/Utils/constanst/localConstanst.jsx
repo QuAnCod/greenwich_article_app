@@ -17,13 +17,17 @@ export const API = {
   POST_ARTICLE: DOMAIN + "articles",
   SEND_NOTIFICATION: DOMAIN + "articles/sendMail",
   GET_ARTICLE: DOMAIN + "articles/all",
+  NO_PAGING: DOMAIN + "articles/noPaging",
   GET_ARTICLE_IMAGE: DOMAIN + "articles/images",
   DOWNLOAD_FILE: DOMAIN + "articles/downloads",
   READ_FILE: DOMAIN + "articles/views",
   GET_ARTICLE_BY_ID: DOMAIN + "articles",
+  CHANGE_ARTICLE_STATUS: DOMAIN + "articles",
+  DOWNLOAD_ZIP_FOLDER: DOMAIN + "users/downloads/all",
 
   // ----------------- CLOSURES -----------------
   GET_ALL_CLOSURES: DOMAIN + "closures",
+  GET_CLOSURES_BY_ACADEMIC_YEAR: DOMAIN + "closures/academic",
 
   // ----------------- ACADEMIC YEAR -----------------
   GET_ALL_ACADEMIC_YEARS: DOMAIN + "academic_years",
@@ -31,13 +35,9 @@ export const API = {
   UPDATE_ACADEMIC_YEAR: DOMAIN + "academic_years",
 
   // // --------------- COMMENT ---------------
-  // GET_COMMENT: DOMAIN + "comment",
-  // CREATE_COMMENT: DOMAIN + "comment",
-  // UPDATE_COMMENT: DOMAIN + "comment",
-  // GET_COMMENT_BY_ID: DOMAIN + "comment",
-  // GET_COMMENT_BY_USER: DOMAIN + "comment",
-  // GET_COMMENT_BY_ARTICLE: DOMAIN + "comment",
-  // GET_COMMENT_BY_DATE: DOMAIN + "comment",
+  POST_COMMENT: DOMAIN + "comments",
+  GET_COMMENT: DOMAIN + "comments",
+  DELETE_COMMENT: DOMAIN + "comments",
 
   // --------------- LIKE ---------------
 

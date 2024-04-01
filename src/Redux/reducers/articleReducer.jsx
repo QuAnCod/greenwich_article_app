@@ -13,7 +13,6 @@ const initialState = {
     limit: 10,
     totalPages: 1,
   },
-  articleListById: [],
   articleListByFaculty: [],
   articleListByUserId: [],
   articleListBySearch: [],
@@ -140,7 +139,7 @@ export const getArticles = (data) => {
   return async (dispatch) => {
     try {
       const res = await articleService.getArticles(data);
-      // console.log(res);
+      console.log(res.data);
       if (res.status === STATUS_CODE.SUCCESS) {
         dispatch(setArticleList(res.data.articles));
         dispatch(setTotalPages(res.data.totalPages));
@@ -191,11 +190,12 @@ export const getArticlesByUserId = (data) => {
 
 export const getArticlesByFacultyId = (data) => {
   return async (dispatch) => {
+    dispatch(setLoading(true));
     try {
       const res = await articleService.getArticlesByFacultyId(data);
       if (res.status === STATUS_CODE.SUCCESS) {
         dispatch(setArticleListByFaculty(res.data.articles));
-        dispatch(setTotalPages(res.data.totalPages));
+        dispatch(setLoading(false));
       }
     } catch (error) {
       console.log(error);
@@ -210,7 +210,7 @@ export const getArticlesByFacultyIdAndAcademicYearId = (data) => {
         data
       );
       if (res.status === STATUS_CODE.SUCCESS) {
-        console.log(res.data.articles);
+        // console.log(res.data.articles);
         // console.log(res.data.articles);
         dispatch(setArticleList(res.data.articles));
         dispatch(setTotalPages(res.data.totalPages));
@@ -220,3 +220,24 @@ export const getArticlesByFacultyIdAndAcademicYearId = (data) => {
     }
   };
 };
+
+export const downloadZipFolder = () => {
+  return async (dispatch) => {
+    try {
+      const res = await articleService.downloadZipFolder();
+      if (res.status === STATUS_CODE.SUCCESS) {
+        const url = window.URL.createObjectURL(new Blob([res.data], { type: "application/octet-stream" }));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "all_files.zip");
+        document.body.appendChild(link);
+        link.click();
+        // remove the previous url
+        window.URL.revokeObjectURL(url);
+        link.remove();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+}

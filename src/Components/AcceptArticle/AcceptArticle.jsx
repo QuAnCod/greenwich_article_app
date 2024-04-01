@@ -40,11 +40,11 @@ export default function AcceptArticle(props) {
             <h6 className="text-white text-2xl font-bold">{data?.username}</h6>
             <h6 className="text-white text-lg">
               <span>Role: </span>
-              <span className="uppercase">{data?.roleName}</span>
+              <span className="uppercase">{data?.role.name}</span>
             </h6>
             <h6 className="text-white text-lg">
               <span>Faculty: </span>
-              <span className="uppercase">{data?.facultyName}</span>
+              <span className="uppercase">{data?.faculty.name}</span>
             </h6>
           </div>
         </div>

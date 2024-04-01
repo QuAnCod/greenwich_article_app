@@ -42,7 +42,7 @@ const columns = [
   },
 ];
 
-export default function MarketingCordinator(props) {
+export default function MarketingCoordinator(props) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -50,10 +50,6 @@ export default function MarketingCordinator(props) {
 
   const { articleListByFaculty, loading } = useSelector(
     (state) => state.articleReducer
-  );
-
-  const { page, limit, totalPages } = useSelector(
-    (state) => state.articleReducer.pagination
   );
 
   // console.log(articleList);
@@ -71,7 +67,7 @@ export default function MarketingCordinator(props) {
       navigate("/change-password");
     }
     dispatch(
-      getArticlesByFacultyId({ page, limit, faculty_id: data.faculty?.id })
+      getArticlesByFacultyId(data.faculty.id)
     );
   }, []);
 
@@ -93,11 +89,11 @@ export default function MarketingCordinator(props) {
             <h6 className="text-white text-2xl font-bold">{data?.username}</h6>
             <h6 className="text-white text-lg">
               <span>Role: </span>
-              <span className="uppercase">{data?.roleName}</span>
+              <span className="uppercase">{data?.role.name}</span>
             </h6>
             <h6 className="text-white text-lg">
               <span>Faculty: </span>
-              <span className="uppercase">{data?.facultyName}</span>
+              <span className="uppercase">{data?.faculty.name}</span>
             </h6>
           </div>
         </div>
@@ -190,23 +186,6 @@ export default function MarketingCordinator(props) {
               columns={columns}
               dataSource={filterByStatus(articleListByFaculty, "accepted")}
               loading={loading}
-              pagination={{
-                current: page + 1,
-                total: totalPages * limit,
-                onChange: (page, pageSize) => {
-                  // when user click on pagination
-                  // we will dispatch getArticles action
-                  console.log(page);
-                  dispatch(
-                    getArticlesByFacultyId({
-                      page: page - 1,
-                      limit,
-                      facultyId: data.faculty?.id,
-                    })
-                  );
-                  dispatch(setCurrentPage(page - 1));
-                },
-              }}
               onRow={(record, index) => {
                 return {
                   onClick: () => {
@@ -230,23 +209,6 @@ export default function MarketingCordinator(props) {
               columns={columns}
               dataSource={filterByStatus(articleListByFaculty, "pending")}
               loading={loading}
-              pagination={{
-                current: page + 1,
-                total: totalPages * limit,
-                onChange: (page, pageSize) => {
-                  // when user click on pagination
-                  // we will dispatch getArticles action
-                  console.log(page);
-                  dispatch(
-                    getArticles({
-                      page: page - 1,
-                      limit,
-                      facultyId: data.faculty?.id,
-                    })
-                  );
-                  dispatch(setCurrentPage(page - 1));
-                },
-              }}
               onRow={(record, index) => {
                 return {
                   onClick: () => {
@@ -270,23 +232,6 @@ export default function MarketingCordinator(props) {
               columns={columns}
               dataSource={filterByStatus(articleListByFaculty, "rejected")}
               loading={loading}
-              pagination={{
-                current: page + 1,
-                total: totalPages * limit,
-                onChange: (page, pageSize) => {
-                  // when user click on pagination
-                  // we will dispatch getArticles action
-                  console.log(page);
-                  dispatch(
-                    getArticles({
-                      page: page - 1,
-                      limit,
-                      facultyId: data.faculty?.id,
-                    })
-                  );
-                  dispatch(setCurrentPage(page - 1));
-                },
-              }}
               onRow={(record, index) => {
                 return {
                   onClick: () => {

@@ -23,8 +23,8 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route element={<HomeTemplate />}>
           <Route path="/students/:id" element={<Home />}></Route>
-          <Route path="/guest" element={<Guest />}></Route>
         </Route>
+        <Route path="/guest" element={<Guest />}></Route>
         <Route path="admin" element={<AdminDashboard />}></Route>
         <Route path="coordinator" element={<MarketingCoordinator />} />
         <Route path="manager" element={<MarketingManager />} />

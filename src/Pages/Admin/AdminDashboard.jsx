@@ -18,6 +18,8 @@ import {
 import EditUserModal from "../../Components/EditUserModal/EditUserModal";
 import { deleteAcademicYear, getAllAcademicYears, setDetailAcademicYear, setDisplayDetailAcademicYear, updateAcademicYear } from "../../Redux/reducers/academicYearsReducer";
 import CreateNewAcademicYear from "../../Components/NewAcademicYear/CreateNewAcademicYear";
+import { getClosuresByAcademicYear } from "../../Redux/reducers/closuresReducer";
+import AcademicYearDetail from "../../Components/AcademicYearDetail/AcademicYearDetail";
 
 export default function AdminDashboard(props) {
   const dispatch = useDispatch();
@@ -28,7 +30,12 @@ export default function AdminDashboard(props) {
   const { userList, loadingList } = useSelector((state) => state.userReducer);
   const { academicYears } = useSelector((state) => state.academicYearsReducer);
 
-  const { displayDetailAcademicYear } = useSelector((state) => state.academicYearsReducer);
+  const { displayDetailAcademicYear, detailAcademicYear } = useSelector((state) => state.academicYearsReducer);
+
+
+  useEffect(() => {
+
+  }, [displayDetailAcademicYear, detailAcademicYear])
 
   const columns = [
     {
@@ -73,6 +80,14 @@ export default function AdminDashboard(props) {
       dataIndex: "year",
       key: "year",
       width: "50%",
+      render: (_, record) => {
+        return <div className="cursor-pointer" onClick={() => {
+          dispatch(setDetailAcademicYear(record));
+          dispatch(getClosuresByAcademicYear(record.id));
+          dispatch(setDisplayDetailAcademicYear(true));
+        }
+        }>{record.year}</div>
+      }
     },
     {
       title: 'Current Academic Year',
@@ -140,6 +155,7 @@ export default function AdminDashboard(props) {
       <CreateUser />
       <EditUserModal />
       <CreateNewAcademicYear />
+      <AcademicYearDetail />
       <div className="bg-[#FF751F] p-10 px-20 flex justify-between">
         <div className="flex justify-start items-center">
           <img
@@ -242,7 +258,7 @@ export default function AdminDashboard(props) {
               onRow={(record, rowIndex) => {
                 return {
                   onClick: (event) => {
-                    console.log(record);
+                    // console.log(record);
                     dispatch(setModalEditOpen(true));
                     dispatch(setUserEdit(record));
                   },
@@ -257,7 +273,7 @@ export default function AdminDashboard(props) {
             role="tabpanel"
             aria-labelledby="date-tab"
           >
-            {displayDetailAcademicYear ? (<div>
+            <div>
               <div className="flex justify-between items-center mb-3">
                 <h3 className="text-2xl font-bold">Academic Years</h3>
                 <button
@@ -277,53 +293,8 @@ export default function AdminDashboard(props) {
                 dataSource={academicYears}
                 columns={columnsOfYears}
                 bordered
-                onRow={(record, rowIndex) => {
-                  return {
-                    onClick: (event) => {
-                      console.log(record);
-                      // dispatch(setModalEditOpen(true));
-                      // dispatch(setUserEdit(record));
-                      dispatch(setDisplayDetailAcademicYear(true));
-                      dispatch(setDetailAcademicYear(record));
-                    },
-                  };
-                }}
               />
-            </div>) : (
-              <div>
-                <div className="flex justify-between items-center mb-3">
-                  <h3 className="text-2xl font-bold">Academic Years</h3>
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => {
-                      // navigate("/register");
-                      // dispatch(setModalOpen(true));
-                      dispatch(setModalCreateAcademicYearOpen(true));
-                    }}
-                  >
-                    New Academic Year
-                  </button>
-                </div>
-                <Table
-                  rowKey={(record) => record.id}
-                  loading={loadingList}
-                  dataSource={academicYears}
-                  columns={columnsOfYears}
-                  bordered
-                  onRow={(record, rowIndex) => {
-                    return {
-                      onClick: (event) => {
-                        console.log(record);
-                        // dispatch(setModalEditOpen(true));
-                        // dispatch(setUserEdit(record));
-                        dispatch(setDisplayDetailAcademicYear(true));
-                        dispatch(setDetailAcademicYear(record));
-                      },
-                    };
-                  }}
-                />
-              </div>
-            )}
+            </div>
           </div>
         </div>
       </div>

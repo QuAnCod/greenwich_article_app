@@ -1,17 +1,24 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { API } from "../../Utils/constanst/localConstanst";
 import { useNavigate } from "react-router";
+import { postComment } from "../../Redux/reducers/commentReducer";
 
 export default function ArticleDetail(props) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const { articleDetail } = useSelector((state) => state.articleReducer);
 
-  const [comment, setComment] = useState("");
-  const [status, setStatus] = useState("pendding");
+  const { closures } = useSelector((state) => state.articleReducer);
 
+  const { data } = useSelector((state) => state.userReducer.userLogin);
 
+  const [comment, setComment] = useState(articleDetail.article_comment[0]?.content);
+  const [status, setStatus] = useState(articleDetail.status);
+
+  const currentDate = new Date();
+  const createDate = new Date(articleDetail.created_at);
 
   return (
     <div>
@@ -89,7 +96,17 @@ export default function ArticleDetail(props) {
           width="60%"
           height="500px"
         ></iframe> */}
-        <div className="accept-area w-2/5 px-5">
+        <form className="accept-area w-2/5 px-5" onSubmit={(e) => {
+          e.preventDefault();
+          const sendData = {
+            content: comment,
+            article_id: articleDetail.id,
+            user_id: data.id,
+            status,
+            fileName: articleDetail.fileName,
+          }
+          dispatch(postComment(sendData));
+        }}>
           <div className="comment-status">
             <div className="form-group mb-3">
               <label htmlFor="comment" className="text-lg form-label">
@@ -103,36 +120,50 @@ export default function ArticleDetail(props) {
                 onChange={(e) => {
                   setComment(e.target.value);
                 }}
+                value={comment}
+                disabled={status === "accepted" || status === "rejected"}
               ></textarea>
             </div>
-            <div className="form-group mb-3">
-              <label htmlFor="status" className="text-lg form-label">
-                Choose Status
-              </label>
-              <select
-                name="status"
-                id="status"
-                className="form-select"
-                defaultValue={"pendding"}
-                onChange={(e) => {
-                  setStatus(e.target.value);
-                }}
-              >
-                <option value="pendding" disabled>
-                  Pendding
-                </option>
-                <option value="accepted">Accepted</option>
-                <option value="rejected">Rejected</option>
-              </select>
-            </div>
+            {(() => {
+              if (currentDate.getTime() - createDate.getTime() > 7 * 24 * 60 * 60 * 1000) {
+                return (
+                  <div>The deadline to accept has passed </div>
+                )
+              }
+              else {
+                return (
+                  <div className="form-group mb-3">
+                    <label htmlFor="status" className="text-lg form-label">
+                      Choose Status
+                    </label>
+                    <select
+                      name="status"
+                      id="status"
+                      className="form-select"
+                      value={status}
+                      onChange={(e) => {
+                        setStatus(e.target.value);
+                      }}
+                      disabled={status === "accepted" || status === "rejected"}
+                    >
+                      <option value="pendding">
+                        Pendding
+                      </option>
+                      <option value="accepted">Accepted</option>
+                      <option value="rejected">Rejected</option>
+                    </select>
+                  </div>
+                )
+              }
+            })()}
           </div>
           <div className="flex justify-end">
-            <button className="btn btn-success">SAVE</button>
+            <button type="submit" className="btn btn-success">SAVE</button>
             <button onClick={() => {
               navigate(-1);
             }} className="btn btn-danger ml-2">CANCLE</button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

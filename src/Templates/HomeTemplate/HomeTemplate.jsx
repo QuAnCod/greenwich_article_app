@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router";
+import { Outlet, useNavigate, useParams } from "react-router";
 import { LOCAL_STORAGE, ROLE } from "../../Utils/constanst/localConstanst";
 import { useDispatch, useSelector } from "react-redux";
 import SignOutBtn from "../../Components/Buttons/SignOutBtn/SignOutBtn";
@@ -10,24 +10,11 @@ import {
   getArticlesByFacultyIdAndAcademicYearId,
   getArticlesByUserId,
   setArticleList,
+  setCurrentPage,
 } from "../../Redux/reducers/articleReducer";
 import { changePasswordAction } from "../../Redux/reducers/userReducer";
-
-const findDeadlineByFaculty = (closures, faculty_id) => {
-  const closuresFound = closures.find(
-    (closure) => closure.faculty.id === faculty_id
-  );
-  const date = new Date(closuresFound?.finalDeadline).toDateString();
-  return date;
-};
-
-const findClosureByFaculty = (closures, faculty_id) => {
-  const closuresFound = closures.find(
-    (closure) => closure.faculty.id === faculty_id
-  );
-  const date = new Date(closuresFound?.deadline).toDateString();
-  return date;
-};
+import { useSearchParams } from "react-router-dom";
+import { findDeadline, findFinalDeadline } from "../../Utils/function/helperFunc";
 
 export default function HomeTemplate(props) {
   const navigate = useNavigate();
@@ -59,11 +46,20 @@ export default function HomeTemplate(props) {
   });
 
   const [filterOptions, setFilterOptions] = useState({
-    page: 0,
-    limit: 10,
     faculty_id: "",
     academic_year_id: "",
   });
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setSearchParams({
+      faculty_id: filterOptions.faculty_id,
+      academic_year_id: filterOptions.academic_year_id,
+    });
+    dispatch(getArticlesByFacultyIdAndAcademicYearId(filterOptions));
+  }
 
   return (
     <div className="">
@@ -96,7 +92,7 @@ export default function HomeTemplate(props) {
             {data?.role?.id === ROLE.STUDENT ? (
               <h6 className="text-black text-xl">
                 <span>Faculty: </span>
-                <span>{data?.falcuty?.name}</span>
+                <span>{data?.faculty?.name}</span>
               </h6>
             ) : null}
             <SignOutBtn />
@@ -205,13 +201,13 @@ export default function HomeTemplate(props) {
             <h4 className="mb-3 flex justify-between">
               Closure date
               <small className="font-light">
-                {findClosureByFaculty(closures, data?.faculty?.id)}
+                {findDeadline(closures, data?.faculty?.id).toDateString()}
               </small>
             </h4>
             <h4 className="flex justify-between">
               Final date{" "}
               <small className="font-light">
-                {findDeadlineByFaculty(closures, data?.faculty?.id)}
+                {findFinalDeadline(closures, data?.faculty?.id).toDateString()}
               </small>
             </h4>
           </div>
@@ -295,10 +291,12 @@ export default function HomeTemplate(props) {
         >
           <form
             className="form"
-            onSubmit={(e) => {
-              e.preventDefault();
-              dispatch(getArticlesByFacultyIdAndAcademicYearId(filterOptions));
-            }}
+            // onSubmit={(e) => {
+            //   e.preventDefault();
+            //   dispatch(getArticlesByFacultyIdAndAcademicYearId(filterOptions));
+            //   dispatch(setCurrentPage(1));
+            // }}
+            onSubmit={handleSubmit}
           >
             <div className="form-group mb-3">
               <select
@@ -314,7 +312,7 @@ export default function HomeTemplate(props) {
                   });
                 }}
               >
-                <option disabled selected>
+                <option value={0} selected>
                   Choose Faculty
                 </option>
                 <option value={1}>IT</option>
@@ -336,7 +334,7 @@ export default function HomeTemplate(props) {
                 }}
                 className="form-select"
               >
-                <option disabled selected>
+                <option value={0} selected>
                   Choose Academic year
                 </option>
                 {academicYears?.map((academicYear, index) => {

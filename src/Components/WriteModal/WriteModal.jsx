@@ -3,12 +3,38 @@ import { setModalOpen } from "../../Redux/reducers/modalReducer";
 import { useSelector, useDispatch } from "react-redux";
 import { set } from "lodash";
 import { postArticle } from "../../Redux/reducers/articleReducer";
+import { findFinalDeadline } from "../../Utils/function/helperFunc";
+
+const checkValidSubmit = (newArticle, file, pictures) => {
+  if (
+    newArticle.name === "" ||
+    newArticle.description === "" ||
+    file === null ||
+    pictures.length === 0
+  ) {
+    return false;
+  }
+  return true;
+};
+
+const checkDateValidToSubmit = (closures, currentDate, faculty_id) => {
+  const finalDeadline = findFinalDeadline(closures, faculty_id);
+  if (currentDate > finalDeadline) {
+    return false;
+  }
+  return true;
+};
 
 export default function WriteModal(props) {
+
   const { modalOpen } = useSelector((state) => state.modalReducer);
 
   // get user data from redux store
   const { data } = useSelector((state) => state.userReducer.userLogin);
+
+  const { closures } = useSelector((state) => state.closuresReducer);
+
+  const currentDate = new Date();
 
   const dispatch = useDispatch();
 
@@ -38,6 +64,26 @@ export default function WriteModal(props) {
   // handle submit form
   const handleOnSubmitArticle = (e) => {
     e.preventDefault();
+    // check if the form is valid
+    if (!checkValidSubmit(newArticle, file, pictures)) {
+      alert("Please fill all the fields");
+      return;
+    }
+    // check if the date is valid to submit
+    if (!checkDateValidToSubmit(closures, currentDate, newArticle.faculty_id)) {
+      alert("The final deadline has passed");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("newArticle", JSON.stringify(newArticle));
+    // formData.append("newArticle", newArticle);
+    // formData.append("pictures", pictures);
+    for (let index = 0; index < pictures.length; index++) {
+      formData.append("pictures", pictures[index]);
+    }
+    // write code to dispatch the action
+    dispatch(postArticle(formData));
   };
 
   return modalOpen ? (
@@ -80,20 +126,7 @@ export default function WriteModal(props) {
           </button>
         </div>
         <form
-          onSubmit={(e) => {
-            // write code to submit the form
-            e.preventDefault();
-            const formData = new FormData();
-            formData.append("file", file);
-            formData.append("newArticle", JSON.stringify(newArticle));
-            // formData.append("newArticle", newArticle);
-            // formData.append("pictures", pictures);
-            for (let index = 0; index < pictures.length; index++) {
-              formData.append("pictures", pictures[index]);
-            }
-            // write code to dispatch the action
-            dispatch(postArticle(formData));
-          }}
+          onSubmit={handleOnSubmitArticle}
         >
           <div className="form-group mb-4">
             <label htmlFor="name" className="font-bold text-2xl">
@@ -217,6 +250,7 @@ export default function WriteModal(props) {
               <button
                 type="submit"
                 className="bg-[#235895] text-white px-10 py-3 rounded-lg font-bold"
+                disabled={checkDateValidToSubmit(closures, currentDate, newArticle.faculty_id) ? false : true}
               >
                 Submit
               </button>

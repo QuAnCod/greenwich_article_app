@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { closuresService } from '../services/ClosuresService';
 import { STATUS_CODE } from '../../Utils/constanst/localConstanst';
+import { setDetailAcademicYear } from './academicYearsReducer';
 
 const initialState = {
     closures: []
@@ -37,4 +38,17 @@ export const getAllClosures = () => {
 
 export const postClosure = (data) => {
 
+}
+
+export const getClosuresByAcademicYear = (academicYearId) => {
+    return async (dispatch) => {
+        try {
+            const res = await closuresService.getClosuresByAcademicYear(academicYearId)
+            if (res.status === STATUS_CODE.SUCCESS) {
+                dispatch(setClosures(res.data))
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
 }

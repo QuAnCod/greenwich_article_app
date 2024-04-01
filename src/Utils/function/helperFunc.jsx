@@ -11,3 +11,20 @@ export const validateConfirmPassword = (password, confirmPassword) => {
     return password === confirmPassword;
 }
 
+export const findFinalDeadline = (closures, faculty_id) => {
+    const closuresCurrent = closures.filter((closure) => closure.academicYear.current === 1);
+    // console.log(closuresCurrent);
+    const closuresFound = closuresCurrent.find((closure) => closure.faculty.id === faculty_id);
+    // console.log(closuresFound);
+    const date = new Date(closuresFound?.finalDeadline);
+    // console.log(date.toDateString());
+    return date;
+}
+
+export const findDeadline = (closures, faculty_id) => {
+    const closuresCurrent = closures.filter((closure) => closure.academicYear.current === 1);
+    const closuresFound = closuresCurrent.find((closure) => closure.faculty.id === faculty_id);
+    const date = new Date(closuresFound?.deadline);
+    return date;
+}
+
