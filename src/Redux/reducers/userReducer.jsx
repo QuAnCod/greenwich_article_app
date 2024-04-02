@@ -48,6 +48,7 @@ const userReducer = createSlice({
         error: null,
         data: null,
       };
+      localStorage.removeItem(LOCAL_STORAGE.TOKEN);
     },
     setUserList: (state, action) => {
       state.userList = action.payload;

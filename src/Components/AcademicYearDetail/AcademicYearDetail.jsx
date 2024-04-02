@@ -5,8 +5,11 @@ import {
   setDisplayDetailAcademicYear,
 } from "../../Redux/reducers/academicYearsReducer";
 import {
+  deleteClosure,
   setClosures,
+  setDetailClosure,
   setDisplayAddClosure,
+  setDisplayEditClosure,
 } from "../../Redux/reducers/closuresReducer";
 
 export default function AcademicYearDetail(props) {
@@ -64,7 +67,7 @@ export default function AcademicYearDetail(props) {
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  alignItems: "center",
+                  alignItems: "flex-end",
                   gap: "10px",
                 }}
               >
@@ -88,7 +91,7 @@ export default function AcademicYearDetail(props) {
                     type="text"
                     name="closure"
                     value={(() => {
-                      const date = new Date(closure.deadline).toDateString();
+                      const date = closure.deadline.split("T").join(" ");
                       return date;
                     })()}
                     className="form-control"
@@ -103,12 +106,38 @@ export default function AcademicYearDetail(props) {
                     type="text"
                     name="finalDeadline"
                     value={(() => {
-                      const date = new Date(closure.deadline).toDateString();
+                      const date = closure.finalDeadline.split("T").join(" ");
                       return date;
                     })()}
                     className="form-control"
                     disabled
                   />
+                </div>
+                <div className="flex justify-between">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={() => {
+                      dispatch(setDetailClosure(closure));
+                      dispatch(setDisplayEditClosure(true));
+                    }}
+                  >
+                    <i className="fas fa-edit" />
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-danger ml-2"
+                    onClick={() => {
+                      // deleteClosure(closure.id);
+                      const data = {
+                        id: closure.id,
+                        academicYearId: closure.academicYear.id,
+                      };
+                      dispatch(deleteClosure(data));
+                    }}
+                  >
+                    <i className="fas fa-times" />
+                  </button>
                 </div>
               </div>
             );

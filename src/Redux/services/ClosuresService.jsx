@@ -14,6 +14,14 @@ class ClosuresService extends BaseService {
   getClosuresByAcademicYear = (academicYearId) => {
     return this.get(`${API.GET_CLOSURES_BY_ACADEMIC_YEAR}/${academicYearId}`);
   };
+
+  deleteClosure = (closureId) => {
+    return this.delete(`${API.DELETE_CLOSURE}/${closureId}`);
+  };
+
+  updateClosure = (data) => {
+    return this.put(`${API.UPDATE_CLOSURE}/${data.id}`, data);
+  };
 }
 
 export const closuresService = new ClosuresService();

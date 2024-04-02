@@ -3,7 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { ROLE } from "../../Utils/constanst/localConstanst";
 import { Table } from "antd";
-import { downloadZipFolder, getArticlesByFacultyId } from "../../Redux/reducers/articleReducer";
+import {
+  downloadZipFolder,
+  getArticlesByFacultyId,
+} from "../../Redux/reducers/articleReducer";
+import { logOut } from "../../Redux/reducers/userReducer";
 
 const columns = [
   {
@@ -26,8 +30,8 @@ const columns = [
     title: "Description",
     dataIndex: "description",
     key: "description",
-  }
-]
+  },
+];
 
 export default function MarketingManager(props) {
   const dispatch = useDispatch();
@@ -35,7 +39,9 @@ export default function MarketingManager(props) {
 
   const { data } = useSelector((state) => state.userReducer.userLogin);
 
-  const { articleListByFaculty, loading } = useSelector((state) => state.articleReducer);
+  const { articleListByFaculty, loading } = useSelector(
+    (state) => state.articleReducer
+  );
 
   const [facultyId, setFacultyId] = React.useState(0);
 
@@ -50,6 +56,11 @@ export default function MarketingManager(props) {
     if (data?.userActive === false) {
       alert("You has to change password first");
       navigate("/change-password");
+    }
+    if (data?.active === false) {
+      alert("YOU HAVE BEEN BAN BY ADMIN! CONTACT YOUR ADMIN TO UNBAN!");
+      dispatch(logOut());
+      navigate("/login");
     }
     dispatch(getArticlesByFacultyId(facultyId));
   }, []);
@@ -95,26 +106,37 @@ export default function MarketingManager(props) {
               className="w-1/4 rounded-xl"
               aria-label="Default select example"
               onChange={(e) => {
-                setFacultyId(e.target.value)
+                setFacultyId(e.target.value);
                 dispatch(getArticlesByFacultyId(e.target.value));
               }}
             >
-              <option selected value={0}>Choose Faculty</option>
+              <option selected value={0}>
+                Choose Faculty
+              </option>
               <option value={1}>Computing</option>
               <option value={2}>Business</option>
               <option value={3}>Design</option>
             </select>
-            <button className="btn btn-warning" type="button" onClick={() => {
-              // download all article zip
-              dispatch(downloadZipFolder());
-            }}>
-              <i class="fa fa-download" aria-hidden="true"></i> Download all article ZIP
+            <button
+              className="btn btn-warning"
+              type="button"
+              onClick={() => {
+                // download all article zip
+                dispatch(downloadZipFolder());
+              }}
+            >
+              <i class="fa fa-download" aria-hidden="true"></i> Download all
+              article ZIP
             </button>
           </form>
         </div>
       </div>
       <div className="p-10">
-        <Table loading={loading} columns={columns} dataSource={articleListByFaculty} />
+        <Table
+          loading={loading}
+          columns={columns}
+          dataSource={articleListByFaculty}
+        />
       </div>
     </div>
   );

@@ -29,6 +29,8 @@ export const API = {
   POST_CLOSURE: DOMAIN + "closures",
   GET_ALL_CLOSURES: DOMAIN + "closures",
   GET_CLOSURES_BY_ACADEMIC_YEAR: DOMAIN + "closures/academic",
+  DELETE_CLOSURE: DOMAIN + "closures",
+  UPDATE_CLOSURE: DOMAIN + "closures",
 
   // ----------------- ACADEMIC YEAR -----------------
   GET_ALL_ACADEMIC_YEARS: DOMAIN + "academic_years",

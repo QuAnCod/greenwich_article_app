@@ -19,6 +19,7 @@ import { type } from "@testing-library/user-event/dist/type";
 import { Pagination, Popconfirm } from "antd";
 import { useNavigate } from "react-router";
 import ArticleCard from "../../Components/ArticleCard/ArticleCard";
+import { logOut } from "../../Redux/reducers/userReducer";
 
 export default function Home(props) {
   const dispatch = useDispatch();
@@ -50,6 +51,11 @@ export default function Home(props) {
   const { articleList } = useSelector((state) => state.articleReducer);
 
   useEffect(() => {
+    if (data?.active === false) {
+      alert("YOU HAVE BEEN BAN BY ADMIN! CONTACT YOUR ADMIN TO UNBAN!");
+      dispatch(logOut());
+      navigate("/login");
+    }
     if (data?.userActive === false) {
       alert("YOU MUST CHANGE YOUR PASSWORD FIRST!");
       navigate("/change-password");
@@ -83,14 +89,23 @@ export default function Home(props) {
       </div>
       {articleList?.map((article, index) => {
         return (
-          <ArticleCard article={article} index={index} articleList={articleList} />
+          <ArticleCard
+            article={article}
+            index={index}
+            articleList={articleList}
+          />
         );
       })}
-      <Pagination hideOnSinglePage={true} defaultCurrent={1} total={totalPages * limit} onChange={(page, pageSize) => {
-        console.log(page, pageSize);
-        dispatch(getArticles({ page: page - 1, limit: 10 }));
-        dispatch(setCurrentPage(page - 1));
-      }} />
+      <Pagination
+        hideOnSinglePage={true}
+        defaultCurrent={1}
+        total={totalPages * limit}
+        onChange={(page, pageSize) => {
+          console.log(page, pageSize);
+          dispatch(getArticles({ page: page - 1, limit: 10 }));
+          dispatch(setCurrentPage(page - 1));
+        }}
+      />
       <WriteModal />
     </div>
   );

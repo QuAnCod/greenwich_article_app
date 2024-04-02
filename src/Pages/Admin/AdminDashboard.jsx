@@ -27,6 +27,7 @@ import CreateNewAcademicYear from "../../Components/NewAcademicYear/CreateNewAca
 import { getClosuresByAcademicYear } from "../../Redux/reducers/closuresReducer";
 import AcademicYearDetail from "../../Components/AcademicYearDetail/AcademicYearDetail";
 import AddClosure from "../../Components/AddClosure/AddClosure";
+import EditClosure from "../../Components/EditClosure/EditClosure";
 
 export default function AdminDashboard(props) {
   const dispatch = useDispatch();
@@ -170,6 +171,7 @@ export default function AdminDashboard(props) {
       <CreateNewAcademicYear />
       <AcademicYearDetail />
       <AddClosure />
+      <EditClosure />
       <div className="bg-[#FF751F] p-10 px-20 flex justify-between">
         <div className="flex justify-start items-center">
           <img

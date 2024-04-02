@@ -9,6 +9,8 @@ import {
 const initialState = {
   closures: [],
   displayAddClosure: false,
+  displayEditClosure: false,
+  detailClosure: {},
 };
 
 const closuresReducer = createSlice({
@@ -21,10 +23,22 @@ const closuresReducer = createSlice({
     setDisplayAddClosure: (state, action) => {
       state.displayAddClosure = action.payload;
     },
+    setDetailClosure: (state, action) => {
+      console.log(action.payload);
+      state.detailClosure = action.payload;
+    },
+    setDisplayEditClosure: (state, action) => {
+      state.displayEditClosure = action.payload;
+    },
   },
 });
 
-export const { setClosures, setDisplayAddClosure } = closuresReducer.actions;
+export const {
+  setClosures,
+  setDisplayAddClosure,
+  setDetailClosure,
+  setDisplayEditClosure,
+} = closuresReducer.actions;
 
 export default closuresReducer.reducer;
 
@@ -81,6 +95,36 @@ export const getClosuresByAcademicYear = (academicYearId) => {
       }
     } catch (error) {
       console.log(error.response.data);
+    }
+  };
+};
+
+export const deleteClosure = (data) => {
+  return async (dispatch) => {
+    try {
+      const res = await closuresService.deleteClosure(data.id);
+      if (res.status === STATUS_CODE.NO_CONTENT) {
+        alert("Delete closure successfully!");
+        dispatch(getClosuresByAcademicYear(data.academicYearId));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
+export const updateClosure = (data) => {
+  return async (dispatch) => {
+    try {
+      const res = await closuresService.updateClosure(data);
+      if (res.status === STATUS_CODE.SUCCESS) {
+        alert("Update closure successfully!");
+        dispatch(getClosuresByAcademicYear(res.data?.academicYear.id));
+        dispatch(setDisplayEditClosure(false));
+        dispatch(setDisplayDetailAcademicYear(true));
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 };

@@ -12,15 +12,15 @@ export default function AddClosure(props) {
 
   const { displayAddClosure } = useSelector((state) => state.closuresReducer);
 
-  const academic_year_id = useSelector(
-    (state) => state.academicYearsReducer.detailAcademicYear.id
+  const { detailAcademicYear } = useSelector(
+    (state) => state.academicYearsReducer
   );
 
   const [newClosure, setNewClosure] = useState({
     faculty_id: 0,
     deadline: "",
     final_deadline: "",
-    academic_year_id: academic_year_id,
+    academic_year_id: 0,
   });
 
   const handleChanges = (e) => {
@@ -41,6 +41,12 @@ export default function AddClosure(props) {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(newClosure);
+    // set academic year id
+    const academic_year_id = detailAcademicYear.id;
+    setNewClosure({
+      ...newClosure,
+      academic_year_id: academic_year_id,
+    });
     // check if the user has selected a faculty
     if (newClosure.faculty_id === 0) {
       alert("Please select a faculty");
@@ -153,7 +159,7 @@ export default function AddClosure(props) {
                   faculty_id: 0,
                   deadline: "",
                   final_deadline: "",
-                  academic_year_id: academic_year_id,
+                  academic_year_id: 0,
                 });
                 dispatch(setDisplayAddClosure(false));
                 dispatch(setDisplayDetailAcademicYear(true));

@@ -10,6 +10,7 @@ import {
   setCurrentPage,
 } from "../../Redux/reducers/articleReducer";
 import { Table } from "antd";
+import { logOut } from "../../Redux/reducers/userReducer";
 
 const filterByStatus = (articles, status) => {
   return articles.filter((article) => article.status === status);
@@ -66,9 +67,12 @@ export default function MarketingCoordinator(props) {
       alert("YOU MUST CHANGE YOUR PASSWORD FIRST!");
       navigate("/change-password");
     }
-    dispatch(
-      getArticlesByFacultyId(data.faculty.id)
-    );
+    if (data?.active === false) {
+      alert("YOU HAVE BEEN BAN BY ADMIN! CONTACT YOUR ADMIN TO UNBAN!");
+      dispatch(logOut());
+      navigate("/login");
+    }
+    dispatch(getArticlesByFacultyId(data.faculty.id));
   }, []);
 
   return (
