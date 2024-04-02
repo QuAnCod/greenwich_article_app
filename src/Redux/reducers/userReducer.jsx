@@ -141,7 +141,7 @@ export const registerAction = (data) => {
       dispatch(
         setUserRegister({
           loading: false,
-          error: error,
+          error: error.response.message,
           data: null,
         })
       );
