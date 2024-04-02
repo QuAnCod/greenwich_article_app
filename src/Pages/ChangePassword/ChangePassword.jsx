@@ -33,7 +33,7 @@ export default function ChangePassword(props) {
             retype_password: changePassword.retype_password,
           };
           dispatch(changePasswordAction(dataChangePassword));
-          navigate("/");
+          navigate("/login");
         }}
       >
         <h5 className="text-4xl font-bold text-white">Change Password</h5>
