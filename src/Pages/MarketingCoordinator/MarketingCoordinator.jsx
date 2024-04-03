@@ -11,10 +11,7 @@ import {
 } from "../../Redux/reducers/articleReducer";
 import { Table } from "antd";
 import { logOut } from "../../Redux/reducers/userReducer";
-
-const filterByStatus = (articles, status) => {
-  return articles.filter((article) => article.status === status);
-};
+import { filterArticleByStatus } from "../../Utils/function/helperFunc";
 
 const columns = [
   {
@@ -107,7 +104,6 @@ export default function MarketingCoordinator(props) {
       </div>
       <div className="">
         <div className="bg-[#235895]">
-          {/* Nav tabs */}
           <ul className="nav nav-tabs h-[50px]" id="myTab" role="tablist">
             <li
               style={{
@@ -188,7 +184,7 @@ export default function MarketingCoordinator(props) {
             <Table
               rowKey={(record) => record.id}
               columns={columns}
-              dataSource={filterByStatus(articleListByFaculty, "accepted")}
+              dataSource={filterArticleByStatus(articleListByFaculty, "accepted")}
               loading={loading}
               onRow={(record, index) => {
                 return {
@@ -211,7 +207,7 @@ export default function MarketingCoordinator(props) {
             <Table
               rowKey={(record) => record.id}
               columns={columns}
-              dataSource={filterByStatus(articleListByFaculty, "pending")}
+              dataSource={filterArticleByStatus(articleListByFaculty, "pending")}
               loading={loading}
               onRow={(record, index) => {
                 return {
@@ -234,7 +230,7 @@ export default function MarketingCoordinator(props) {
             <Table
               rowKey={(record) => record.id}
               columns={columns}
-              dataSource={filterByStatus(articleListByFaculty, "rejected")}
+              dataSource={filterArticleByStatus(articleListByFaculty, "rejected")}
               loading={loading}
               onRow={(record, index) => {
                 return {

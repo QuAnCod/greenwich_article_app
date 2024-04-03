@@ -12,6 +12,7 @@ import MarketingManager from "./Pages/MarketingManager/MarketingManager";
 import ForgotPassword from "./Pages/ForgotPassword/ForgotPassword";
 import AcceptArticle from "./Components/AcceptArticle/AcceptArticle";
 import ChangePassword from "./Pages/ChangePassword/ChangePassword";
+import YourArticle from "./Pages/YourArticle/YourArticle";
 
 function App() {
   return (
@@ -24,6 +25,10 @@ function App() {
         <Route element={<HomeTemplate />}>
           <Route path="/students/:id" element={<Home />}></Route>
         </Route>
+        <Route
+          path="/students/:id/your-article"
+          element={<YourArticle />}
+        ></Route>
         <Route path="/guest" element={<Guest />}></Route>
         <Route path="admin" element={<AdminDashboard />}></Route>
         <Route path="coordinator" element={<MarketingCoordinator />} />

@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { set } from "lodash";
 import { postArticle } from "../../Redux/reducers/articleReducer";
 import { findFinalDeadline } from "../../Utils/function/helperFunc";
+import { Tooltip } from "antd";
 
 const checkValidSubmit = (newArticle, file, pictures) => {
   if (
@@ -17,8 +18,13 @@ const checkValidSubmit = (newArticle, file, pictures) => {
   return true;
 };
 
-const checkDateValidToSubmit = (closures, currentDate, faculty_id) => {
+const checkDateValidToSubmit = (closures, currentDate, faculty_id) => { // closures: array of closure, currentDate: current date, faculty_id: faculty id 
+  // return false if the final deadline has passed or there is no closure of the faculty
   const finalDeadline = findFinalDeadline(closures, faculty_id);
+  // If final deadline is null, return false
+  if (finalDeadline === null || finalDeadline === undefined || finalDeadline == "Invalid Date") {
+    return false;
+  }
   if (currentDate > finalDeadline) {
     return false;
   }
@@ -87,28 +93,10 @@ export default function WriteModal(props) {
   };
 
   return modalOpen ? (
-    <div
-      style={{
-        display: "block",
-        position: "fixed",
-        top: "0",
-        left: "0",
-        width: "100%",
-        height: "100%",
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-      }}
-    >
-      <div
-        className="bg-[#FF751F] p-10 px-20"
-        style={{
-          width: "50%",
-          margin: "auto",
-          marginTop: "10%",
-          borderRadius: "10px",
-        }}
-      >
+    <div className="modalLayout">
+      <div className="bg-[#FF751F] p-10 px-20 modalContainer">
         <div className="flex justify-between items-center">
-          <h5 className="text-4xl font-bold text-white">Write Article</h5>
+          <h5 className="modalTitle">Write Article</h5>
           <button
             className="text-white"
             onClick={() => {
@@ -180,15 +168,14 @@ export default function WriteModal(props) {
               role="group"
               aria-label="Vertical button group"
             >
-              <div className="">
+              <div className="mb-[5px]">
                 <button
-                  style={{
-                    width: "100px",
-                    marginBottom: "5px",
-                    marginRight: "5px",
-                  }}
+                  // style={{
+                  //   width: "100px",
+                  //   marginRight: "5px",
+                  // }}
                   type="button"
-                  className="bg-[#235895] text-white px-10 py-3 rounded-lg font-bold"
+                  className="blueBtn"
                   onClick={() => {
                     // write code to open file dialog
                     const handleFileOpen = () => {
@@ -212,9 +199,9 @@ export default function WriteModal(props) {
               </div>
               <div>
                 <button
-                  style={{ width: "100px", marginRight: "5px" }}
+                  // style={{ width: "100px", marginRight: "5px" }}
                   type="button"
-                  className="bg-[#235895] text-white px-10 py-3 rounded-lg font-bold"
+                  className="blueBtn"
                   onClick={() => {
                     // write code to open file dialog for multiple files
                     const handleFileOpen = () => {
@@ -226,7 +213,7 @@ export default function WriteModal(props) {
                       input.onchange = (event) => {
                         const files = event.target.files;
                         // do something with the selected files
-                        // console.log(files);
+                        // console.log(files[0]);
                         const filesArray = Array.from(files);
                         setPictures(filesArray);
                       };
@@ -247,13 +234,15 @@ export default function WriteModal(props) {
               </div>
             </div>
             <div className="">
-              <button
-                type="submit"
-                className="bg-[#235895] text-white px-10 py-3 rounded-lg font-bold"
-                disabled={checkDateValidToSubmit(closures, currentDate, newArticle.faculty_id) ? false : true}
-              >
-                Submit
-              </button>
+              <Tooltip title={checkDateValidToSubmit(closures, currentDate, newArticle.faculty_id) ? "Submit the article" : "You cannot submit the article now"}>
+                <button style={{ margin: "0" }}
+                  type="submit"
+                  className="blueBtn"
+                  disabled={checkDateValidToSubmit(closures, currentDate, newArticle.faculty_id) ? false : true}
+                >
+                  Submit
+                </button>
+              </Tooltip>
             </div>
           </div>
         </form>

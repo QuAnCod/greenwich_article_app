@@ -59,6 +59,7 @@ export default function HomeTemplate(props) {
       academic_year_id: filterOptions.academic_year_id,
     });
     dispatch(getArticlesByFacultyIdAndAcademicYearId(filterOptions));
+    navigate(`/students/${data?.id}`);
   }
 
   return (
@@ -201,13 +202,23 @@ export default function HomeTemplate(props) {
             <h4 className="mb-3 flex justify-between">
               Closure date
               <small className="font-light">
-                {findDeadline(closures, data?.faculty?.id).toDateString()}
+                {(() => {
+                  const deadline = findDeadline(closures, data?.faculty?.id)
+                  // Check Invalid Date
+                  if (deadline == "Invalid Date") return "No deadline"
+                  else return deadline.toDateString()
+                })()}
               </small>
             </h4>
             <h4 className="flex justify-between">
               Final date{" "}
               <small className="font-light">
-                {findFinalDeadline(closures, data?.faculty?.id).toDateString()}
+                {(() => {
+                  const finalDeadline = findFinalDeadline(closures, data?.faculty?.id)
+                  // Check Invalid Date
+                  if (finalDeadline == "Invalid Date") return "No deadline"
+                  else return finalDeadline.toDateString()
+                })()}
               </small>
             </h4>
           </div>
@@ -218,6 +229,9 @@ export default function HomeTemplate(props) {
             border: "5px solid #235895",
           }}
         >
+          <div className="text-center text-2xl font-normal mb-3">
+            Your Articles
+          </div>
           <div className="flex justify-between mb-3">
             <h4>Pending</h4>
             <h4 className="font-normal">
@@ -252,33 +266,12 @@ export default function HomeTemplate(props) {
             className="form"
             onSubmit={(e) => {
               e.preventDefault();
-              console.log(e.target[0].value);
-              const filterStatus = e.target[0].value;
-              const list = articleListByUserId.filter(
-                (article) => article.status === filterStatus
-              );
-              dispatch(setArticleList(list));
+              navigate(`/students/${data?.id}/your-article`);
             }}
           >
-            <div className="form-group mb-3">
-              <select
-                style={{
-                  lineHeight: "2rem",
-                  fontSize: "1.5rem",
-                }}
-                className="form-select"
-              >
-                <option disabled selected>
-                  Choose Status
-                </option>
-                <option value={"pending"}>Pending</option>
-                <option value={"accepted"}>Accepted</option>
-                <option value={"rejected"}>Rejected</option>
-              </select>
-            </div>
             <div className="form-group text-center">
               <button type="submit" className="btn btn-danger">
-                Search
+                View my articles
               </button>
             </div>
           </form>
@@ -291,11 +284,6 @@ export default function HomeTemplate(props) {
         >
           <form
             className="form"
-            // onSubmit={(e) => {
-            //   e.preventDefault();
-            //   dispatch(getArticlesByFacultyIdAndAcademicYearId(filterOptions));
-            //   dispatch(setCurrentPage(1));
-            // }}
             onSubmit={handleSubmit}
           >
             <div className="form-group mb-3">

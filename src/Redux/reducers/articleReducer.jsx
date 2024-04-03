@@ -16,6 +16,19 @@ const initialState = {
   articleListByFaculty: [],
   articleListByUserId: [],
   articleListBySearch: [],
+  editArticle: {
+    id: null,
+    name: "",
+    description: "",
+    status: "pending",
+    view: 0,
+    academic_id: 1,
+    user_id: null,
+    faculty_id: null,
+    fileName: "",
+    articleImage: [],
+    product_images: [],
+  },
 };
 
 const articleReducer = createSlice({
@@ -49,6 +62,9 @@ const articleReducer = createSlice({
     setArticleByUserId: (state, action) => {
       state.articleListByUserId = action.payload;
     },
+    setEditArticle: (state, action) => {
+      state.editArticle = action.payload;
+    },
   },
 });
 
@@ -62,6 +78,8 @@ export const {
   setTotalPages,
   setArticleListByFaculty,
   setArticleByUserId,
+  setEditArticle,
+
 } = articleReducer.actions;
 
 export default articleReducer.reducer;
@@ -79,7 +97,7 @@ export const postArticle = (data) => {
       const newArticle = JSON.parse(data.get("newArticle"));
       const file = data.get("file");
       const pictures = data.getAll("pictures");
-      console.log(pictures);
+      // console.log(pictures[0]);
       // define form data to send file and pictures
       const formDataFile = new FormData();
       formDataFile.append("file", file);
@@ -104,27 +122,12 @@ export const postArticle = (data) => {
           resPostArticle.status === STATUS_CODE.SUCCESS
         ) {
           // console.log("Write article success", resPostArticle.data);
-          const resPostFile = await articleService.postFile(
-            resPostArticle.data?.id,
-            formDataFile
-          );
-          if (
-            resPostFile.status === STATUS_CODE.SUCCESS ||
-            resPostFile.status === STATUS_CODE.CREATED
-          ) {
-            // console.log("Write article with file success", resPostFile.data);
-            const resPostImage = await articleService.postImage(
-              resPostArticle.data?.id,
-              formDataPictures
-            );
-            if (
-              resPostImage.status === STATUS_CODE.SUCCESS ||
-              resPostImage.status === STATUS_CODE.CREATED
-            ) {
-              // console.log("Write article with file and picture success", resPostImage.data);
-              alert("Write article success");
-              // dispatch(getArticles());
-            }
+          // call api to upload file
+          const resPostFile = dispatch(postFile({ article_id: resPostArticle.data?.id, file }));
+          const resPostImage = dispatch(postImage({ article_id: resPostArticle.data?.id, pictures }));
+          const res = await Promise.all([resPostFile, resPostImage]);
+          if (res[0].status === STATUS_CODE.SUCCESS && res[1].status === STATUS_CODE.SUCCESS) {
+            alert("Upload article success");
           }
         }
       }
@@ -134,6 +137,51 @@ export const postArticle = (data) => {
     }
   };
 };
+
+export const postImage = (data) => {
+  const { article_id, pictures } = data;
+  // console.log(pictures);
+  return async (dispatch) => {
+    try {
+      const formDataPictures = new FormData();
+      for (let index = 0; index < pictures.length; index++) {
+        formDataPictures.append("files", pictures[index]);
+      }
+      const res = await articleService.postImage(article_id, formDataPictures);
+      if (res.status === STATUS_CODE.SUCCESS) {
+        // alert("Upload image success");
+        // console.log(res.data);
+        return {
+          status: STATUS_CODE.SUCCESS,
+          data: res.data,
+        };
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
+export const postFile = (data) => {
+  const { article_id, file } = data
+  const formDataFile = new FormData();
+  formDataFile.append("file", file);
+  return async (dispatch) => {
+    try {
+      const res = await articleService.postFile(article_id, formDataFile);
+      if (res.status === STATUS_CODE.SUCCESS) {
+        // alert("Upload file success");
+        return {
+          status: STATUS_CODE.SUCCESS,
+          data: res.data,
+        };
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+}
 
 export const getArticles = (data) => {
   return async (dispatch) => {
@@ -241,3 +289,4 @@ export const downloadZipFolder = () => {
     }
   }
 }
+

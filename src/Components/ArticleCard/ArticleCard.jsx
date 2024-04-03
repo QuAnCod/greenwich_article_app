@@ -10,10 +10,13 @@ export default function ArticleCard(props) {
   const { article, index, articleList } = props;
 
   return (
-    <div className={index < articleList.length - 1 ? "my-2" : "mt-2"}>
+    <div className={index < articleList.length - 1 ? "my-5" : "mt-5"}>
       <div
         style={{
           backgroundColor: "#fff",
+          borderRadius: "10px",
+          boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+          border: "1px solid #000",
         }}
       >
         <div className="p-10">
@@ -65,16 +68,13 @@ export default function ArticleCard(props) {
               }
             </p>
           </div>
-          <div className="article-img mt-5 grid grid-cols-3 gap-3">
+          <div className="article-img mt-5 grid grid-cols-6 gap-3">
             {article.product_images?.map((image, index) => {
               return (
                 <div key={index} className="col-span-1">
-                  {/* // use the API.GET_ARTICLE_IMAGE to get the image
-                        // use the image.imageUrl to get the image name
-                        // if the image is not available, use the placeholder image */}
                   <img
                     src={`${API.GET_ARTICLE_IMAGE}/${image?.imageUrl}`}
-                    className="w-full h-full mx-auto"
+                    className="img-fluid w-full h-full object-cover rounded-md"
                     alt=""
                   />
                 </div>

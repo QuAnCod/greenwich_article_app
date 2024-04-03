@@ -12,9 +12,9 @@ export const validateConfirmPassword = (password, confirmPassword) => {
 }
 
 export const findFinalDeadline = (closures, faculty_id) => {
-    const closuresCurrent = closures.filter((closure) => closure.academicYear.current === 1);
+    const currentYear = closures.filter((closure) => closure.academicYear.current === 1);
     // console.log(closuresCurrent);
-    const closuresFound = closuresCurrent.find((closure) => closure.faculty.id === faculty_id);
+    const closuresFound = currentYear.find((closure) => closure.faculty.id === faculty_id);
     // console.log(closuresFound);
     const date = new Date(closuresFound?.finalDeadline);
     // console.log(date.toDateString());
@@ -22,9 +22,13 @@ export const findFinalDeadline = (closures, faculty_id) => {
 }
 
 export const findDeadline = (closures, faculty_id) => {
-    const closuresCurrent = closures.filter((closure) => closure.academicYear.current === 1);
-    const closuresFound = closuresCurrent.find((closure) => closure.faculty.id === faculty_id);
+    const currentYear = closures.filter((closure) => closure.academicYear.current === 1);
+    const closuresFound = currentYear.find((closure) => closure.faculty.id === faculty_id);
     const date = new Date(closuresFound?.deadline);
     return date;
+}
+
+export const filterArticleByStatus = (articles, status) => {
+    return articles.filter((article) => article.status === status);
 }
 

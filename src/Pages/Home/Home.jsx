@@ -90,6 +90,7 @@ export default function Home(props) {
       {articleList?.map((article, index) => {
         return (
           <ArticleCard
+            key={article.id}
             article={article}
             index={index}
             articleList={articleList}

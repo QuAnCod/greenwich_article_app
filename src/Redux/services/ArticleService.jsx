@@ -61,6 +61,13 @@ class ArticleService extends BaseService {
       }
     });
   };
+
+  getPicture = (imgUrl) => {
+    console.log("imgUrl", imgUrl);
+    return axios.get(`${API.GET_ARTICLE_IMAGE}/${imgUrl}`, {
+      responseType: "blob",
+    })
+  }
 }
 
 export const articleService = new ArticleService();
