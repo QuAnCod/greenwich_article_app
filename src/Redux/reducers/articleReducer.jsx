@@ -63,6 +63,7 @@ const articleReducer = createSlice({
       state.articleListByUserId = action.payload;
     },
     setEditArticle: (state, action) => {
+      console.log(action.payload);
       state.editArticle = action.payload;
     },
   },
@@ -283,6 +284,35 @@ export const downloadZipFolder = () => {
         // remove the previous url
         window.URL.revokeObjectURL(url);
         link.remove();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+}
+
+export const updateArticle = (data) => {
+  return async (dispatch) => {
+    try {
+      const res = await articleService.updateArticle(data);
+      if (res.status === STATUS_CODE.SUCCESS) {
+        alert("Update article success");
+        dispatch(setModalOpen(false));
+        // reset the edit article, picture and file
+        dispatch(setEditArticle({
+          id: null,
+          name: "",
+          description: "",
+          status: "pending",
+          view: 0,
+          academic_id: 1,
+          user_id: null,
+          faculty_id: null,
+          fileName: "",
+          articleImage: [],
+          product_images: [],
+        }));
+        dispatch(getArticlesByUserId(data.user_id));
       }
     } catch (error) {
       console.log(error);

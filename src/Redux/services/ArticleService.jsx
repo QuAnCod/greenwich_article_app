@@ -68,6 +68,10 @@ class ArticleService extends BaseService {
       responseType: "blob",
     })
   }
+
+  updateArticle = (data) => {
+    return this.put(`${API.UPDATE_ARTICLE}/${data.id}`, data);
+  };
 }
 
 export const articleService = new ArticleService();

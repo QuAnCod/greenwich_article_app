@@ -1,12 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { setModalOpen } from '../../Redux/reducers/modalReducer';
-import { Image, Tooltip, Upload } from 'antd';
-import { getArticlesByUserId, postImage, setEditArticle } from '../../Redux/reducers/articleReducer';
+import { Image, Popconfirm, Skeleton, Tooltip, Upload } from 'antd';
+import { getArticlesByUserId, postFile, postImage, setEditArticle, setLoading, updateArticle } from '../../Redux/reducers/articleReducer';
 import { API, STATUS_CODE } from '../../Utils/constanst/localConstanst';
 import { PlusOutlined } from '@ant-design/icons';
 import { articleService } from '../../Redux/services/ArticleService';
 import { set } from 'lodash';
+import { findFinalDeadline } from '../../Utils/function/helperFunc';
+
+const checkDateValidToSubmit = (closures, currentDate, faculty_id) => {
+    const finalDeadline = findFinalDeadline(closures, faculty_id);
+    if (finalDeadline === null || finalDeadline === undefined || finalDeadline == "Invalid Date") {
+        return false;
+    }
+    if (currentDate > finalDeadline) {
+        return false;
+    }
+    return true;
+};
 
 export default function EditArticleModal(props) {
 
@@ -20,7 +32,7 @@ export default function EditArticleModal(props) {
 
     const currentDate = new Date();
 
-    const { editArticle } = useSelector((state) => state.articleReducer);
+    const { editArticle, loading } = useSelector((state) => state.articleReducer);
 
     //file upload
     // const [file, setFile] = useState(null);
@@ -32,8 +44,8 @@ export default function EditArticleModal(props) {
     const [previewImage, setPreviewImage] = useState(null);
     const [previewOpen, setPreviewOpen] = useState(false);
 
-    // how to rerender each time the editArticle changes
-
+    // state to control render input or text
+    const [isEdit, setIsEdit] = useState(false);
 
     useEffect(() => {
         // dispatch()
@@ -50,17 +62,24 @@ export default function EditArticleModal(props) {
                 },
             ])
         );
-    }, [editArticle])
+    }, [editArticle.product_images, editArticle.fileName])
 
     const handleOnSubmitArticle = (e) => {
         e.preventDefault();
+        // check if the article is valid to submit
+        if (!checkDateValidToSubmit(closures, currentDate, data.faculty.id)) {
+            alert("You can't submit article after the deadline");
+            return;
+        }
+        // call api to update article
+        dispatch(updateArticle(editArticle));
     }
 
     const handleChangeArticle = (e) => {
-        setEditArticle({
+        dispatch(setEditArticle({
             ...editArticle,
             [e.target.name]: e.target.value
-        })
+        }))
     }
 
     // function to handle preview image
@@ -131,11 +150,15 @@ export default function EditArticleModal(props) {
                 </div>
                 <div>
                     <form onSubmit={handleOnSubmitArticle}>
-                        <div className='form-group mb-3'>
-                            <h3 className='text-3xl font-bold text-center text-white'>{editArticle.name}</h3>
+                        <div className='form-group mb-3 flex'>
+                            {/* When user click in text it become input, and when user click Done it become text */}
+                            {isEdit ? <input type='text' className='form-control' name='name' value={editArticle.name} onChange={handleChangeArticle} /> : <h2 onClick={() => setIsEdit(true)} className='text-3xl font-bold text-center text-white'>{editArticle.name}</h2>}
                         </div>
                         <div className='form-group mb-3'>
-                            <p>{editArticle.description}</p>
+                            {isEdit ? <textarea type='text' className='form-control' name='description' value={editArticle.description} onChange={handleChangeArticle} /> : <p onClick={() => setIsEdit(true)} className='text-white'>{editArticle.description}</p>}
+                        </div>
+                        <div className='form-group mb-3'>
+                            {isEdit ? (<button onClick={() => setIsEdit(false)} className='btn btn-success'>Done</button>) : null}
                         </div>
                         <div className='form-group mb-3'>
                             <div className='article-image'>
@@ -150,20 +173,17 @@ export default function EditArticleModal(props) {
                                         // call api to upload image
                                         const res = await Promise.resolve(dispatch(postImage({ article_id: editArticle.id, pictures: [file] })));
                                         if (res.status === STATUS_CODE.SUCCESS) {
-                                            console.log(res)
-                                            if (res.status === STATUS_CODE.SUCCESS) {
-                                                setPictures((prev) => [
-                                                    ...prev,
-                                                    {
-                                                        uid: res.data[0].imageUrl,
-                                                        name: res.data[0].imageUrl,
-                                                        status: 'done',
-                                                        url: `${API.GET_ARTICLE_IMAGE}/${res.data[0].imageUrl}`,
-                                                    },
-                                                ]);
-                                                // get all article by user id to update the article list
-                                                dispatch(getArticlesByUserId(data.id));
-                                            }
+                                            setPictures((prev) => [
+                                                ...prev,
+                                                {
+                                                    uid: res.data[0].imageUrl,
+                                                    name: res.data[0].imageUrl,
+                                                    status: 'done',
+                                                    url: `${API.GET_ARTICLE_IMAGE}/${res.data[0].imageUrl}`,
+                                                },
+                                            ]);
+                                            // get all article by user id to update the article list
+                                            dispatch(getArticlesByUserId(data.id));
                                             onSuccess('ok');
                                         }
                                     }}
@@ -203,13 +223,49 @@ export default function EditArticleModal(props) {
                             </object>
                             <div className='text-end'>
                                 <button onClick={() => {
-
+                                    const input = document.createElement("input");
+                                    input.type = "file";
+                                    input.accept = ".doc,.docx"; // specify the file types you want to allow
+                                    input.onchange = async (event) => {
+                                        const file = event.target.files[0];
+                                        // call api to upload file and update the article
+                                        const res = await Promise.resolve(dispatch(postFile({ article_id: editArticle.id, file })));
+                                        if (res.status === STATUS_CODE.SUCCESS) {
+                                            console.log(res)
+                                            if (res.status === STATUS_CODE.SUCCESS) {
+                                                // get all article by user id to update the article list
+                                                dispatch(getArticlesByUserId(data.id));
+                                                // reset the picture state
+                                                setPictures([]);
+                                                // reset the edit article and close the modal
+                                                dispatch(setEditArticle({
+                                                    id: null,
+                                                    name: "",
+                                                    description: "",
+                                                    status: "pending",
+                                                    view: 0,
+                                                    academic_id: 1,
+                                                    user_id: null,
+                                                    faculty_id: null,
+                                                    fileName: "",
+                                                    articleImage: [],
+                                                    product_images: [],
+                                                }));
+                                            }
+                                        }
+                                    };
+                                    input.click();
                                 }} className='btn btn-link'>Change File</button>
                             </div>
                         </div>
+                        <div className='form-group mb-3 text-end'>
+                            <Popconfirm title="Are you sure to resubmit this article?" onConfirm={handleOnSubmitArticle} okText="Yes" cancelText="No">
+                                <button type='submit' className='btn btn-warning'>Resubmit Article</button>
+                            </Popconfirm>
+                        </div>
                     </form>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     ) : null
 }

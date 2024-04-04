@@ -1,7 +1,7 @@
 import { Popconfirm } from "antd";
 import React from "react";
 import { useDispatch } from "react-redux";
-import { downloadFile, setEditArticle } from "../../Redux/reducers/articleReducer";
+import { downloadFile, setEditArticle, setLoading } from "../../Redux/reducers/articleReducer";
 import { API } from "../../Utils/constanst/localConstanst";
 import { set } from "lodash";
 import { setModalOpen } from "../../Redux/reducers/modalReducer";
@@ -38,6 +38,7 @@ export default function ArticleCardWithEdit(props) {
                             <Popconfirm
                                 title="Want to edit this article?"
                                 onConfirm={() => {
+                                    dispatch(setLoading(true))
                                     dispatch(setEditArticle(article))
                                     dispatch(setModalOpen(true))
                                     // dispatch(downloadFile(article.fileName));
