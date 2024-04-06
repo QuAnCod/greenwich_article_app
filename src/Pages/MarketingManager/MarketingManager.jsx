@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import { ROLE } from "../../Utils/constanst/localConstanst";
+import { LOCAL_STORAGE, ROLE } from "../../Utils/constanst/localConstanst";
 import { Table } from "antd";
 import {
   downloadZipFolder,
@@ -50,19 +50,31 @@ export default function MarketingManager(props) {
   useEffect(() => {
     if (!localStorage.getItem("token")) {
       navigate("/login");
-    }
-    if (data?.role?.id !== ROLE.MARKETING_MANAGER) {
-      alert("You dont have permission to access this page");
-      navigate("/login");
-    }
-    if (data?.userActive === false) {
-      alert("You has to change password first");
-      navigate("/change-password");
-    }
-    if (data?.active === false) {
-      alert("YOU HAVE BEEN BAN BY ADMIN! CONTACT YOUR ADMIN TO UNBAN!");
-      dispatch(logOut());
-      navigate("/login");
+    } else {
+      if (
+        data?.role?.id !== ROLE.MARKETING_MANAGER &&
+        JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER)).role_id !==
+          ROLE.MARKETING_MANAGER
+      ) {
+        alert("You dont have permission to access this page");
+        navigate("/login");
+      }
+      if (
+        data?.userActive === false &&
+        JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER)).userActive ===
+          false
+      ) {
+        alert("You has to change password first");
+        navigate("/change-password");
+      }
+      if (
+        data?.active === false &&
+        JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER)).active === false
+      ) {
+        alert("YOU HAVE BEEN BAN BY ADMIN! CONTACT YOUR ADMIN TO UNBAN!");
+        dispatch(logOut());
+        navigate("/login");
+      }
     }
     dispatch(getArticlesByFacultyId(facultyId));
   }, []);

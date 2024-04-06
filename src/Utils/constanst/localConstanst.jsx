@@ -53,12 +53,7 @@ export const API = {
 
 export const LOCAL_STORAGE = {
   TOKEN: "token",
-  USER: {
-    ID: "userId",
-    EMAIL: "email",
-    AVATAR: "avatar",
-    ROLE: "role",
-  },
+  USER: "user_remember",
 };
 
 export const ROLE = {

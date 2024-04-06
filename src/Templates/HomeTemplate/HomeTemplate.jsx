@@ -14,7 +14,10 @@ import {
 } from "../../Redux/reducers/articleReducer";
 import { changePasswordAction } from "../../Redux/reducers/userReducer";
 import { useSearchParams } from "react-router-dom";
-import { findDeadline, findFinalDeadline } from "../../Utils/function/helperFunc";
+import {
+  findDeadline,
+  findFinalDeadline,
+} from "../../Utils/function/helperFunc";
 
 export default function HomeTemplate(props) {
   const navigate = useNavigate();
@@ -29,9 +32,6 @@ export default function HomeTemplate(props) {
 
   useEffect(() => {
     if (!localStorage.getItem(LOCAL_STORAGE.TOKEN)) {
-      navigate("/login");
-    }
-    if (data?.role.id !== ROLE.STUDENT && data?.role.id !== ROLE.GUEST) {
       navigate("/login");
     }
     dispatch(getAllClosures());
@@ -60,7 +60,7 @@ export default function HomeTemplate(props) {
     });
     dispatch(getArticlesByFacultyIdAndAcademicYearId(filterOptions));
     navigate(`/students/${data?.id}`);
-  }
+  };
 
   return (
     <div className="">
@@ -203,10 +203,10 @@ export default function HomeTemplate(props) {
               Closure date
               <small className="font-light">
                 {(() => {
-                  const deadline = findDeadline(closures, data?.faculty?.id)
+                  const deadline = findDeadline(closures, data?.faculty?.id);
                   // Check Invalid Date
-                  if (deadline == "Invalid Date") return "No deadline"
-                  else return deadline.toDateString()
+                  if (deadline == "Invalid Date") return "No deadline";
+                  else return deadline.toDateString();
                 })()}
               </small>
             </h4>
@@ -214,10 +214,13 @@ export default function HomeTemplate(props) {
               Final date{" "}
               <small className="font-light">
                 {(() => {
-                  const finalDeadline = findFinalDeadline(closures, data?.faculty?.id)
+                  const finalDeadline = findFinalDeadline(
+                    closures,
+                    data?.faculty?.id
+                  );
                   // Check Invalid Date
-                  if (finalDeadline == "Invalid Date") return "No deadline"
-                  else return finalDeadline.toDateString()
+                  if (finalDeadline == "Invalid Date") return "No deadline";
+                  else return finalDeadline.toDateString();
                 })()}
               </small>
             </h4>
@@ -282,10 +285,7 @@ export default function HomeTemplate(props) {
             border: "5px solid #235895",
           }}
         >
-          <form
-            className="form"
-            onSubmit={handleSubmit}
-          >
+          <form className="form" onSubmit={handleSubmit}>
             <div className="form-group mb-3">
               <select
                 style={{

@@ -1,9 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { forgotPasswordAction } from "../../Redux/reducers/userReducer";
+import { LOCAL_STORAGE } from "../../Utils/constanst/localConstanst";
+import { useNavigate } from "react-router";
 
 function ForgotPassword(props) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = "Forgot Password";
+    if (!localStorage.getItem(LOCAL_STORAGE.TOKEN)) {
+      navigate("/login");
+    }
+  }, []);
+
   return (
     <div
       style={{

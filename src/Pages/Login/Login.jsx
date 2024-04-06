@@ -14,7 +14,9 @@ import { LOCAL_STORAGE, ROLE } from "../../Utils/constanst/localConstanst";
 import style from "./Login.module.css";
 
 function Login(props) {
-  const { error, data, loading } = useSelector((state) => state.userReducer.userLogin);
+  const { error, data, loading } = useSelector(
+    (state) => state.userReducer.userLogin
+  );
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -22,6 +24,7 @@ function Login(props) {
   const [formLogin, setFormLogin] = React.useState({
     username: "",
     password: "",
+    remember: false,
   });
 
   const handleOnChange = (e) => {
@@ -34,10 +37,7 @@ function Login(props) {
   const handleOnSubmit = (e) => {
     e.preventDefault();
     // console.log(formLogin)
-    if (
-      formLogin.username.length < 3 ||
-      !validatePassword(formLogin.password)
-    )
+    if (formLogin.username.length < 3 || !validatePassword(formLogin.password))
       return;
     else {
       dispatch(loginAction(formLogin));
@@ -46,7 +46,26 @@ function Login(props) {
 
   useEffect(() => {
     if (data && localStorage.getItem(LOCAL_STORAGE.TOKEN)) {
-      switch (data.role.id) {
+      switch (JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER))?.role_id) {
+        case ROLE.ADMIN:
+          navigate("/admin");
+          break;
+        case ROLE.STUDENT:
+          navigate(`/students/${data.id}`);
+          break;
+        case ROLE.MARKETING_CORDINATOR:
+          navigate("/coordinator");
+          break;
+        case ROLE.MARKETING_MANAGER:
+          navigate("/manager");
+          break;
+        case ROLE.GUEST:
+          navigate("/guest");
+          break;
+        default:
+          break;
+      }
+      switch (data.role?.id) {
         case ROLE.ADMIN:
           navigate("/admin");
           break;
@@ -67,7 +86,6 @@ function Login(props) {
       }
     }
   }, [data]);
-
 
   return (
     <div
@@ -120,7 +138,9 @@ function Login(props) {
               onChange={handleOnChange}
             />
             <small className="text-red-500">
-              {formLogin.username && formLogin.username.length < 3 ? "Username must be at least 6 characters" : ""}
+              {formLogin.username && formLogin.username.length < 3
+                ? "Username must be at least 6 characters"
+                : ""}
             </small>
           </div>
           <div className="form-group mb-2">
@@ -140,7 +160,21 @@ function Login(props) {
                 : ""}
             </small>
           </div>
-          <div className="form-group flex justify-end mb-16">
+          <div className="form-group flex justify-between mb-16">
+            <label htmlFor="remember" className="text-xl flex align-middle">
+              <input
+                type="checkbox"
+                id="remember"
+                onChange={(e) => {
+                  console.log(e.target.checked);
+                  setFormLogin({
+                    ...formLogin,
+                    remember: e.target.checked,
+                  });
+                }}
+              />
+              Remember me
+            </label>
             <NavLink
               className="hover:text-[#5E5BFF] text-[#333] no-underline"
               to="/forgot-password"

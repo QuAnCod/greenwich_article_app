@@ -45,14 +45,30 @@ export default function Guest(props) {
   useEffect(() => {
     if (!localStorage.getItem(LOCAL_STORAGE.TOKEN)) {
       navigate("/login");
-    }
-    if (data?.role.id !== ROLE.STUDENT && data?.role.id !== ROLE.GUEST) {
-      navigate("/login");
-    }
-    if (data?.active === false) {
-      alert("YOU HAVE BEEN BAN BY ADMIN! CONTACT YOUR ADMIN TO UNBAN!");
-      dispatch(logOut());
-      navigate("/login");
+    } else {
+      if (
+        data?.role.id !== ROLE.GUEST &&
+        JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER))?.role_id !==
+          ROLE.GUEST
+      ) {
+        navigate("/login");
+      }
+      if (
+        data?.active === false &&
+        JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER))?.active === false
+      ) {
+        alert("YOU HAVE BEEN BAN BY ADMIN! CONTACT YOUR ADMIN TO UNBAN!");
+        dispatch(logOut());
+        navigate("/login");
+      }
+      if (
+        data?.userActive === false &&
+        JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER))?.userActive ===
+          false
+      ) {
+        alert("YOU HAVE TO CHANGE YOUR PASSWORD FIRST!");
+        navigate("/change-password");
+      }
     }
     dispatch(getAllAcademicYears());
     dispatch(getArticlesByFacultyIdAndAcademicYearId(filterOptions));

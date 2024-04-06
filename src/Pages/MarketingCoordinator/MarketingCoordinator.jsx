@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import SignOutBtn from "../../Components/Buttons/SignOutBtn/SignOutBtn";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import { ROLE } from "../../Utils/constanst/localConstanst";
+import { LOCAL_STORAGE, ROLE } from "../../Utils/constanst/localConstanst";
 import {
   getArticles,
   getArticlesByFacultyId,
@@ -55,19 +55,31 @@ export default function MarketingCoordinator(props) {
   useEffect(() => {
     if (!localStorage.getItem("token")) {
       navigate("/login");
-    }
-    if (data?.role?.id !== ROLE.MARKETING_CORDINATOR) {
-      alert("You dont have permission to access this page");
-      navigate("/login");
-    }
-    if (data?.userActive === false) {
-      alert("YOU MUST CHANGE YOUR PASSWORD FIRST!");
-      navigate("/change-password");
-    }
-    if (data?.active === false) {
-      alert("YOU HAVE BEEN BAN BY ADMIN! CONTACT YOUR ADMIN TO UNBAN!");
-      dispatch(logOut());
-      navigate("/login");
+    } else {
+      if (
+        data?.role?.id !== ROLE.MARKETING_CORDINATOR &&
+        JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER)).role.id !==
+          ROLE.MARKETING_CORDINATOR
+      ) {
+        alert("You dont have permission to access this page");
+        navigate("/login");
+      }
+      if (
+        data?.userActive === false &&
+        JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER)).userActive ===
+          false
+      ) {
+        alert("YOU MUST CHANGE YOUR PASSWORD FIRST!");
+        navigate("/change-password");
+      }
+      if (
+        data?.active === false &&
+        JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER)).active === false
+      ) {
+        alert("YOU HAVE BEEN BAN BY ADMIN! CONTACT YOUR ADMIN TO UNBAN!");
+        dispatch(logOut());
+        navigate("/login");
+      }
     }
     dispatch(getArticlesByFacultyId(data.faculty.id));
   }, []);
@@ -184,7 +196,10 @@ export default function MarketingCoordinator(props) {
             <Table
               rowKey={(record) => record.id}
               columns={columns}
-              dataSource={filterArticleByStatus(articleListByFaculty, "accepted")}
+              dataSource={filterArticleByStatus(
+                articleListByFaculty,
+                "accepted"
+              )}
               loading={loading}
               onRow={(record, index) => {
                 return {
@@ -207,7 +222,10 @@ export default function MarketingCoordinator(props) {
             <Table
               rowKey={(record) => record.id}
               columns={columns}
-              dataSource={filterArticleByStatus(articleListByFaculty, "pending")}
+              dataSource={filterArticleByStatus(
+                articleListByFaculty,
+                "pending"
+              )}
               loading={loading}
               onRow={(record, index) => {
                 return {
@@ -230,7 +248,10 @@ export default function MarketingCoordinator(props) {
             <Table
               rowKey={(record) => record.id}
               columns={columns}
-              dataSource={filterArticleByStatus(articleListByFaculty, "rejected")}
+              dataSource={filterArticleByStatus(
+                articleListByFaculty,
+                "rejected"
+              )}
               loading={loading}
               onRow={(record, index) => {
                 return {

@@ -14,7 +14,12 @@ import {
 } from "../../Redux/reducers/articleReducer";
 import useInfiniteScroll from "../../hooks/useInfiniteScroll";
 import ReachEnd from "../../Components/ReachEnd/ReachEnd";
-import { API, DOMAIN } from "../../Utils/constanst/localConstanst";
+import {
+  API,
+  DOMAIN,
+  LOCAL_STORAGE,
+  ROLE,
+} from "../../Utils/constanst/localConstanst";
 import { type } from "@testing-library/user-event/dist/type";
 import { Pagination, Popconfirm } from "antd";
 import { useNavigate } from "react-router";
@@ -51,12 +56,27 @@ export default function Home(props) {
   const { articleList } = useSelector((state) => state.articleReducer);
 
   useEffect(() => {
-    if (data?.active === false) {
+    if (
+      JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER))?.role_id !==
+        ROLE.STUDENT &&
+      data?.role.id !== ROLE.STUDENT
+    ) {
+      alert("YOU ARE NOT ALLOWED TO ACCESS THIS PAGE! CONTACT YOUR ADMIN!");
+      navigate("/login");
+    }
+    if (
+      JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER))?.active === false &&
+      data?.active === false
+    ) {
       alert("YOU HAVE BEEN BAN BY ADMIN! CONTACT YOUR ADMIN TO UNBAN!");
       dispatch(logOut());
       navigate("/login");
     }
-    if (data?.userActive === false) {
+    if (
+      JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER))?.userActive ===
+        false &&
+      data?.userActive === false
+    ) {
       alert("YOU MUST CHANGE YOUR PASSWORD FIRST!");
       navigate("/change-password");
     }

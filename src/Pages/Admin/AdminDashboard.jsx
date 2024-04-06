@@ -8,7 +8,7 @@ import {
 } from "../../Redux/reducers/userReducer";
 import { useNavigate } from "react-router";
 import SignOutBtn from "../../Components/Buttons/SignOutBtn/SignOutBtn";
-import { ROLE } from "../../Utils/constanst/localConstanst";
+import { LOCAL_STORAGE, ROLE } from "../../Utils/constanst/localConstanst";
 import CreateUser from "../../Components/CreateUserModal/CreateUser";
 import {
   setModalCreateAcademicYearOpen,
@@ -155,10 +155,18 @@ export default function AdminDashboard(props) {
   useEffect(() => {
     if (!localStorage.getItem("token")) {
       navigate("/login");
-    }
-    if (data?.role?.id !== ROLE.ADMIN) {
-      alert("You dont have permission to access this page");
-      navigate("/login");
+    } else {
+      // user is not admin (remember or not remember login)
+      // if remember then check the local storage
+      // if not remember then check the data from login
+      if (
+        JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER))?.role_id !==
+          ROLE.ADMIN &&
+        data?.role?.id !== ROLE.ADMIN
+      ) {
+        alert("You dont have permission to access this page");
+        navigate("/login");
+      }
     }
     dispatch(getUserListAction());
     dispatch(getAllAcademicYears());

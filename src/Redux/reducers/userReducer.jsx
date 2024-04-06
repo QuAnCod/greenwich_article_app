@@ -49,6 +49,7 @@ const userReducer = createSlice({
         data: null,
       };
       localStorage.removeItem(LOCAL_STORAGE.TOKEN);
+      localStorage.removeItem(LOCAL_STORAGE.USER);
     },
     setUserList: (state, action) => {
       state.userList = action.payload;
@@ -99,6 +100,22 @@ export const loginAction = (data) => {
               data: userRes.data,
             })
           );
+          if (data.remember) {
+            const user_remember = {
+              id: userRes.data.id,
+              email: userRes.data.email,
+              username: userRes.data.username,
+              avatar: userRes.data.avatar,
+              role_id: userRes.data.role.id,
+              active: userRes.data.active,
+              userActive: userRes.data.userActive,
+              faculty_id: userRes.data.faculty?.id,
+            };
+            localStorage.setItem(
+              LOCAL_STORAGE.USER,
+              JSON.stringify(user_remember)
+            );
+          }
         }
       }
     } catch (error) {
