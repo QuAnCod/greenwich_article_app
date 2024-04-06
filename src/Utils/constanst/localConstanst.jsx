@@ -19,6 +19,7 @@ export const API = {
   GET_ARTICLE: DOMAIN + "articles/all",
   NO_PAGING: DOMAIN + "articles/noPaging",
   GET_ARTICLE_IMAGE: DOMAIN + "articles/images",
+  DELETE_IMAGE: DOMAIN + "articles/image",
   DOWNLOAD_FILE: DOMAIN + "articles/downloads",
   READ_FILE: DOMAIN + "articles/views",
   GET_ARTICLE_BY_ID: DOMAIN + "articles",

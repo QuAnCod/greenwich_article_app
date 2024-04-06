@@ -16,6 +16,10 @@ class ArticleService extends BaseService {
     return this.post(`${API.POST_ARTICLE}/uploads/${article_id}`, data);
   };
 
+  deleteImage = (data) => {
+    return this.delete(`${API.DELETE_IMAGE}/${data}`);
+  };
+
   sendNotification = (data) => {
     return this.post(API.SEND_NOTIFICATION, data);
   };
@@ -30,9 +34,7 @@ class ArticleService extends BaseService {
   };
 
   getArticlesByFacultyId = (data) => {
-    return this.get(
-      `${API.NO_PAGING}?faculty_id=${data}`
-    );
+    return this.get(`${API.NO_PAGING}?faculty_id=${data}`);
   };
 
   getArticlesByFacultyIdAndAcademicYearId = (data) => {
@@ -58,7 +60,7 @@ class ArticleService extends BaseService {
       responseType: "blob",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
-      }
+      },
     });
   };
 
@@ -66,8 +68,8 @@ class ArticleService extends BaseService {
     console.log("imgUrl", imgUrl);
     return axios.get(`${API.GET_ARTICLE_IMAGE}/${imgUrl}`, {
       responseType: "blob",
-    })
-  }
+    });
+  };
 
   updateArticle = (data) => {
     return this.put(`${API.UPDATE_ARTICLE}/${data.id}`, data);

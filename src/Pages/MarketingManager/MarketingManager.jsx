@@ -8,6 +8,8 @@ import {
   getArticlesByFacultyId,
 } from "../../Redux/reducers/articleReducer";
 import { logOut } from "../../Redux/reducers/userReducer";
+import LineChart from "../../Components/LineChart/LineChart";
+import PieChart from "../../Components/PieChart/PieChart";
 
 const columns = [
   {
@@ -99,6 +101,26 @@ export default function MarketingManager(props) {
           </div>
         </div>
       </div>
+      <div className="container my-5">
+        <h3 className="text-center">Dashboard</h3>
+        <div>
+          <LineChart />
+        </div>
+      </div>
+      <div className="container flex justify-around my-5">
+        <div className="w-1/2">
+          <h3 className="text-center">Number of articles by status</h3>
+          <div>
+            <PieChart />
+          </div>
+        </div>
+        <div className="w-1/2">
+          <h3 className="text-center">Number of articles by faculty</h3>
+          <div>
+            <PieChart />
+          </div>
+        </div>
+      </div>
       <div className="bg-[#235895] h-[50px] flex items-center">
         <div className="w-full">
           <form className="flex justify-around">
@@ -125,7 +147,7 @@ export default function MarketingManager(props) {
                 dispatch(downloadZipFolder());
               }}
             >
-              <i class="fa fa-download" aria-hidden="true"></i> Download all
+              <i className="fa fa-download" aria-hidden="true"></i> Download all
               article ZIP
             </button>
           </form>

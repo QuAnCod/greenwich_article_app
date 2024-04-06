@@ -80,7 +80,6 @@ export const {
   setArticleListByFaculty,
   setArticleByUserId,
   setEditArticle,
-
 } = articleReducer.actions;
 
 export default articleReducer.reducer;
@@ -124,10 +123,17 @@ export const postArticle = (data) => {
         ) {
           // console.log("Write article success", resPostArticle.data);
           // call api to upload file
-          const resPostFile = dispatch(postFile({ article_id: resPostArticle.data?.id, file }));
-          const resPostImage = dispatch(postImage({ article_id: resPostArticle.data?.id, pictures }));
+          const resPostFile = dispatch(
+            postFile({ article_id: resPostArticle.data?.id, file })
+          );
+          const resPostImage = dispatch(
+            postImage({ article_id: resPostArticle.data?.id, pictures })
+          );
           const res = await Promise.all([resPostFile, resPostImage]);
-          if (res[0].status === STATUS_CODE.SUCCESS && res[1].status === STATUS_CODE.SUCCESS) {
+          if (
+            res[0].status === STATUS_CODE.SUCCESS &&
+            res[1].status === STATUS_CODE.SUCCESS
+          ) {
             alert("Upload article success");
           }
         }
@@ -161,10 +167,26 @@ export const postImage = (data) => {
       console.log(error);
     }
   };
-}
+};
+
+export const deleteImage = (data) => {
+  return async (dispatch) => {
+    try {
+      const res = await articleService.deleteImage(data);
+      if (res.status === STATUS_CODE.SUCCESS) {
+        return {
+          status: STATUS_CODE.SUCCESS,
+          data: res.data,
+        };
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
 
 export const postFile = (data) => {
-  const { article_id, file } = data
+  const { article_id, file } = data;
   const formDataFile = new FormData();
   formDataFile.append("file", file);
   return async (dispatch) => {
@@ -181,8 +203,7 @@ export const postFile = (data) => {
       console.log(error);
     }
   };
-
-}
+};
 
 export const getArticles = (data) => {
   return async (dispatch) => {
@@ -275,7 +296,9 @@ export const downloadZipFolder = () => {
     try {
       const res = await articleService.downloadZipFolder();
       if (res.status === STATUS_CODE.SUCCESS) {
-        const url = window.URL.createObjectURL(new Blob([res.data], { type: "application/octet-stream" }));
+        const url = window.URL.createObjectURL(
+          new Blob([res.data], { type: "application/octet-stream" })
+        );
         const link = document.createElement("a");
         link.href = url;
         link.setAttribute("download", "all_files.zip");
@@ -288,8 +311,8 @@ export const downloadZipFolder = () => {
     } catch (error) {
       console.log(error);
     }
-  }
-}
+  };
+};
 
 export const updateArticle = (data) => {
   return async (dispatch) => {
@@ -299,24 +322,25 @@ export const updateArticle = (data) => {
         alert("Update article success");
         dispatch(setModalOpen(false));
         // reset the edit article, picture and file
-        dispatch(setEditArticle({
-          id: null,
-          name: "",
-          description: "",
-          status: "pending",
-          view: 0,
-          academic_id: 1,
-          user_id: null,
-          faculty_id: null,
-          fileName: "",
-          articleImage: [],
-          product_images: [],
-        }));
+        dispatch(
+          setEditArticle({
+            id: null,
+            name: "",
+            description: "",
+            status: "pending",
+            view: 0,
+            academic_id: 1,
+            user_id: null,
+            faculty_id: null,
+            fileName: "",
+            articleImage: [],
+            product_images: [],
+          })
+        );
         dispatch(getArticlesByUserId(data.user_id));
       }
     } catch (error) {
       console.log(error);
     }
-  }
-}
-
+  };
+};
