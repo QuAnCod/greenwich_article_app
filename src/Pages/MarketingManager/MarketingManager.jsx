@@ -67,23 +67,23 @@ export default function MarketingManager(props) {
     } else {
       if (
         data?.role?.id !== ROLE.MARKETING_MANAGER &&
-        JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER)).role_id !==
-          ROLE.MARKETING_MANAGER
+        JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER))?.role_id !==
+        ROLE.MARKETING_MANAGER
       ) {
         alert("You dont have permission to access this page");
         navigate("/login");
       }
       if (
         data?.userActive === false &&
-        JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER)).userActive ===
-          false
+        JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER))?.userActive ===
+        false
       ) {
         alert("You has to change password first");
         navigate("/change-password");
       }
       if (
         data?.active === false &&
-        JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER)).active === false
+        JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER))?.active === false
       ) {
         alert("YOU HAVE BEEN BAN BY ADMIN! CONTACT YOUR ADMIN TO UNBAN!");
         dispatch(logOut());
@@ -108,10 +108,19 @@ export default function MarketingManager(props) {
             alt=""
           />
           <div className="text-start">
-            <h6 className="text-white text-2xl font-bold">{data?.username}</h6>
+            <h6 className="text-white text-2xl font-bold">
+              {
+                data?.username ? data?.username :
+                  JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER))?.username
+              }
+            </h6>
             <h6 className="text-white text-lg">
               <span>Role: </span>
-              <span>{data?.role.name}</span>
+              <span>
+                {
+                  data?.role ? data?.role.name : "MARKETING_MANAGER"
+                }
+              </span>
             </h6>
           </div>
           <div className="ml-auto">
@@ -126,38 +135,6 @@ export default function MarketingManager(props) {
             </button>
           </div>
         </div>
-      </div>
-      <div className="container my-5">
-        <h3 className="text-center">Number of articles by year</h3>
-        <div>
-          <LineChart dataForLineChart={dataForLineChart} />
-        </div>
-      </div>
-      <div className="container flex justify-around my-5">
-        <div className="w-1/2">
-          <h3 className="text-center">Number of articles by status</h3>
-          <div>
-            <PieChart
-              key="articlesByStatus"
-              dataForPieChart={articlesByStatus}
-              title={"Number of articles by status"}
-            />
-          </div>
-        </div>
-        <div className="w-1/2">
-          <h3 className="text-center">Number of articles by faculty</h3>
-          <div>
-            <PieChart
-              key="articlesByFaculty"
-              dataForPieChart={articlesByFaculty}
-              title={"Number of articles by faculty"}
-            />
-          </div>
-        </div>
-      </div>
-      <div className="container my-5">
-        <h3 className="text-center">5 Student with the most articles</h3>
-        <MostValueStudents />
       </div>
       <div className="bg-[#235895] h-[50px] flex items-center">
         <div className="w-full">
@@ -198,6 +175,35 @@ export default function MarketingManager(props) {
           columns={columns}
           dataSource={articleListByFaculty}
         />
+      </div>
+      <div className="container-fluid my-5">
+        <div>
+          <LineChart dataForLineChart={dataForLineChart} />
+        </div>
+      </div>
+      <div className="container-fluid flex justify-around my-5">
+        <div className="w-1/2">
+          <div>
+            <PieChart
+              key="articlesByStatus"
+              dataForPieChart={articlesByStatus}
+              title={"Number of articles by status"}
+            />
+          </div>
+        </div>
+        <div className="w-1/2">
+          <div>
+            <PieChart
+              key="articlesByFaculty"
+              dataForPieChart={articlesByFaculty}
+              title={"Number of articles by faculty"}
+            />
+          </div>
+        </div>
+      </div>
+      <div className="container-fluid my-5">
+        <h3 className="text-center">Students with the most articles</h3>
+        <MostValueStudents />
       </div>
     </div>
   );

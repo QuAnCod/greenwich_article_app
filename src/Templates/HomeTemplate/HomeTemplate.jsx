@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, useNavigate, useParams } from "react-router";
-import { LOCAL_STORAGE, ROLE } from "../../Utils/constanst/localConstanst";
+import { API, LOCAL_STORAGE, ROLE } from "../../Utils/constanst/localConstanst";
 import { useDispatch, useSelector } from "react-redux";
 import SignOutBtn from "../../Components/Buttons/SignOutBtn/SignOutBtn";
 import WriteModal from "../../Components/WriteModal/WriteModal";
@@ -12,7 +12,7 @@ import {
   setArticleList,
   setCurrentPage,
 } from "../../Redux/reducers/articleReducer";
-import { changePasswordAction } from "../../Redux/reducers/userReducer";
+import { changeAvatarAction, changePasswordAction } from "../../Redux/reducers/userReducer";
 import { useSearchParams } from "react-router-dom";
 import {
   findDeadline,
@@ -72,15 +72,37 @@ export default function HomeTemplate(props) {
           }}
         >
           <div className="flex justify-center items-center">
-            <img
-              style={{
-                width: "100px",
-                height: "100px",
-                borderRadius: "50%",
-              }}
-              src={require("../../assets/img/ava_icon.jpg")}
-              alt=""
-            />
+            <div className="cursor-pointer" onClick={() => {
+              const input = document.createElement("input");
+              input.type = "file";
+              input.accept = "image/*";
+              input.onchange = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                  const formData = new FormData();
+                  formData.append("file", file);
+                  console.log(data?.id, formData)
+                  const userData = {
+                    id: data?.id,
+                    avatar: formData,
+                  }
+                  dispatch(changeAvatarAction(userData));
+                };
+              }
+              input.click();
+            }}>
+              <img
+                style={{
+                  width: "100px",
+                  height: "100px",
+                  borderRadius: "50%",
+                }}
+                src={`${API.GET_AVATAR}/${data?.avatar}`}
+                alt=""
+              />
+            </div>
           </div>
           <div className="text-center">
             <h6 className="text-black text-2xl font-bold text-uppercase">

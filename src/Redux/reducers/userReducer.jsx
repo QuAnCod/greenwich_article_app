@@ -130,6 +130,26 @@ export const loginAction = (data) => {
   };
 };
 
+export const getUserDetailAction = () => {
+  return async (dispatch) => {
+    try {
+      const res = await userService.getUserDetail();
+      if (res.status === STATUS_CODE.SUCCESS) {
+        dispatch(
+          setUserLogin({
+            loading: false,
+            error: null,
+            data: res.data,
+          })
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      console.log(error.response?.data);
+    }
+  }
+}
+
 export const registerAction = (data) => {
   return async (dispatch) => {
     console.log(data);
@@ -231,3 +251,20 @@ export const forgotPasswordAction = (data) => {
     }
   };
 };
+
+export const changeAvatarAction = (data) => {
+  return async (dispatch) => {
+    try {
+      const res = await userService.changeAvatar(data);
+      if (res.status === STATUS_CODE.SUCCESS) {
+        alert("Change avatar success");
+        // get user detail
+        dispatch(getUserDetailAction());
+        // navigator.reload();
+      }
+    } catch (error) {
+      console.log(error);
+      console.log(error.response?.data);
+    }
+  }
+}

@@ -29,6 +29,10 @@ class UserService extends BaseService {
   changePassword = (data) => {
     return this.put(`${API.CHANGE_PASSWORD}/${data.id}`, data);
   };
+
+  changeAvatar = (data) => {
+    return this.post(`${API.CHANGE_AVATAR}/${data.id}`, data.avatar);
+  };
 }
 
 export const userService = new UserService();

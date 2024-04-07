@@ -11,7 +11,9 @@ export const API = {
   UPDATE_USER: DOMAIN + "users/update",
   CHANGE_PASSWORD: DOMAIN + "users/changePassword",
   FORGOT_PASSWORD: DOMAIN + "users/sendMailChangePassword",
-  // DELETE_USER: DOMAIN + "user",
+  CHANGE_AVATAR: DOMAIN + "users/avatar",
+  GET_AVATAR: DOMAIN + "users/avatar",
+  // DELETE_USER: DOMAIN + "user"
 
   // // --------------- ARTICLE ---------------
   POST_ARTICLE: DOMAIN + "articles",

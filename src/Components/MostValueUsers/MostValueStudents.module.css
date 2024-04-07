@@ -1,0 +1,37 @@
+.student {
+  @apply flex flex-col items-center justify-center relative rounded-full hover:scale-110 hover:shadow-2xl transition-all duration-500 ease-in-out;
+}
+
+.student:hover .studentAvatar {
+  @apply opacity-30;
+}
+
+.studentAvatar {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+}
+
+.studentInfo {  
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  text-align: center;
+  transition: all 0.5s ease-in-out;
+  border-radius: 50%;
+}
+
+.student:hover .studentInfo {
+  @apply opacity-100;
+}
+
+.studentText {
+  @apply text-2xl text-white;
+}

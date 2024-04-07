@@ -1,5 +1,4 @@
-import { CategoryScale } from "chart.js";
-import Chart from "chart.js/auto";
+import { Chart as ChartJS, ArcElement, PointElement, LineElement, Tooltip, Legend, CategoryScale, LinearScale, Title } from "chart.js";
 import React from "react";
 import { Line } from "react-chartjs-2";
 
@@ -18,18 +17,42 @@ import { Line } from "react-chartjs-2";
 // };
 
 const options = {
-  title: {
-    display: true,
-    text: "Number of students and articles through years",
-  },
-  legend: {
-    display: true,
-    position: "bottom",
+  plugins: {
+    title: {
+      display: true,
+      text: "Number of articles through years",
+      font: {
+        size: 20,
+      }
+    },
+    legend: {
+      display: true,
+      position: "top",
+    },
   },
   maintainAspectRatio: false,
+  scales: {
+    x: {
+      title: {
+        display: true,
+        text: "Year",
+      },
+    },
+    y: {
+      title: {
+        display: true,
+        text: "Number of articles",
+      },
+    },
+  },
+  elements: {
+    point: {
+      pointStyle: "circle",
+    },
+  }
 };
 
-Chart.register(CategoryScale);
+ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, Title);
 
 export default function LineChart(props) {
   const { labels, data } = props.dataForLineChart;

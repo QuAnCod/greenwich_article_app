@@ -1,6 +1,6 @@
-import { CategoryScale } from "chart.js";
-import Chart from "chart.js/auto";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from "chart.js";
 import React from "react";
+import { alignPropType } from "react-bootstrap/esm/types";
 import { Pie } from "react-chartjs-2";
 
 // const labels = ["Pending", "Accepted", "Rejected"];
@@ -16,7 +16,7 @@ import { Pie } from "react-chartjs-2";
 //   ],
 // };
 
-Chart.register(CategoryScale);
+ChartJS.register(ArcElement, Tooltip, Legend, Title);
 
 export default function PieChart(props) {
   const { labels, data } = props.dataForPieChart;
@@ -34,16 +34,23 @@ export default function PieChart(props) {
   };
 
   const options = {
-    title: {
-      display: true,
-      text: title,
-    },
-    legend: {
-      display: true,
-      position: "bottom",
+    plugins: {
+      title: {
+        display: true,
+        text: title,
+        font: {
+          size: 20,
+        },
+      },
+      legend: {
+        display: true,
+        position: "right",
+      },
+      alignPropType: "left",
     },
     maintainAspectRatio: false,
+    responsive: true,
   };
 
-  return <Pie data={chartData} options={options} />;
+  return <Pie width={600} height={600} data={chartData} options={options} />;
 }
