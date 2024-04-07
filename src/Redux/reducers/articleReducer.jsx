@@ -29,6 +29,7 @@ const initialState = {
     articleImage: [],
     product_images: [],
   },
+  allArticles: [],
 };
 
 const articleReducer = createSlice({
@@ -66,6 +67,9 @@ const articleReducer = createSlice({
       console.log(action.payload);
       state.editArticle = action.payload;
     },
+    setAllArticles: (state, action) => {
+      state.allArticles = action.payload;
+    },
   },
 });
 
@@ -80,6 +84,7 @@ export const {
   setArticleListByFaculty,
   setArticleByUserId,
   setEditArticle,
+  setAllArticles,
 } = articleReducer.actions;
 
 export default articleReducer.reducer;
@@ -338,6 +343,19 @@ export const updateArticle = (data) => {
           })
         );
         dispatch(getArticlesByUserId(data.user_id));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
+export const getAllArticles = () => {
+  return async (dispatch) => {
+    try {
+      const res = await articleService.getAllArticles();
+      if (res.status === STATUS_CODE.SUCCESS) {
+        dispatch(setAllArticles(res.data.articles));
       }
     } catch (error) {
       console.log(error);

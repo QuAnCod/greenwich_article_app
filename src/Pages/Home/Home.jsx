@@ -12,8 +12,6 @@ import {
   getArticlesByUserId,
   setCurrentPage,
 } from "../../Redux/reducers/articleReducer";
-import useInfiniteScroll from "../../hooks/useInfiniteScroll";
-import ReachEnd from "../../Components/ReachEnd/ReachEnd";
 import {
   API,
   DOMAIN,

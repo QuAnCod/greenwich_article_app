@@ -75,6 +75,14 @@ export default function EditArticleModal(props) {
     );
   }, [editArticle.product_images, editArticle.fileName]);
 
+  const handleSetIsEdit = () => {
+    if (!checkDateValidToSubmit(closures, currentDate, data.faculty.id)) {
+      alert("You can't edit article after the deadline");
+      return;
+    }
+    setIsEdit(true);
+  };
+
   const handleOnSubmitArticle = (e) => {
     e.preventDefault();
     // check if the article is valid to submit
@@ -180,8 +188,8 @@ export default function EditArticleModal(props) {
                 />
               ) : (
                 <h2
-                  onClick={() => setIsEdit(true)}
-                  className="text-3xl font-bold text-center text-white"
+                  onClick={handleSetIsEdit}
+                  className="text-3xl font-bold text-center text-white cursor-pointer"
                 >
                   {editArticle.name}
                 </h2>
@@ -197,7 +205,10 @@ export default function EditArticleModal(props) {
                   onChange={handleChangeArticle}
                 />
               ) : (
-                <p onClick={() => setIsEdit(true)} className="text-white">
+                <p
+                  onClick={handleSetIsEdit}
+                  className="text-white cursor-pointer"
+                >
                   {editArticle.description}
                 </p>
               )}
@@ -220,7 +231,17 @@ export default function EditArticleModal(props) {
                   fileList={pictures}
                   onPreview={handlePreview}
                   customRequest={async ({ file, onSuccess }) => {
-                    // console.log(file)
+                    // if the validate is not valid, return
+                    if (
+                      !checkDateValidToSubmit(
+                        closures,
+                        currentDate,
+                        data.faculty.id
+                      )
+                    ) {
+                      alert("You can't submit article after the deadline");
+                      return;
+                    }
 
                     // call api to upload image
                     const res = await Promise.resolve(
@@ -248,6 +269,17 @@ export default function EditArticleModal(props) {
                   }}
                   accept="image/*"
                   onRemove={async (file) => {
+                    // if the validate is not valid, return
+                    if (
+                      !checkDateValidToSubmit(
+                        closures,
+                        currentDate,
+                        data.faculty.id
+                      )
+                    ) {
+                      alert("You can't submit article after the deadline");
+                      return;
+                    }
                     console.log(file);
                     const res = await Promise.resolve(
                       dispatch(deleteImage(file.uid))
@@ -281,19 +313,29 @@ export default function EditArticleModal(props) {
               <object
                 data={`${API.READ_FILE}/${editArticle.fileName}`}
                 width="100%"
-                height="600px"
+                height="450px"
                 type="application/pdf"
               >
                 <embed
                   src={`${API.READ_FILE}/${editArticle.fileName}`}
                   type="application/pdf"
                   width="100%"
-                  height="600px"
+                  height="450px"
                 />
               </object>
               <div className="text-end">
                 <button
                   onClick={() => {
+                    if (
+                      !checkDateValidToSubmit(
+                        closures,
+                        currentDate,
+                        data.faculty.id
+                      )
+                    ) {
+                      alert("You can't submit article after the deadline");
+                      return;
+                    }
                     const input = document.createElement("input");
                     input.type = "file";
                     input.accept = ".doc,.docx"; // specify the file types you want to allow
@@ -343,8 +385,10 @@ export default function EditArticleModal(props) {
                 onConfirm={handleOnSubmitArticle}
                 okText="Yes"
                 cancelText="No"
+                okButtonProps={{ type: "text" }}
+                cancelButtonProps={{ type: "text" }}
               >
-                <button type="submit" className="btn btn-warning">
+                <button type="button" className="btn btn-warning">
                   Resubmit Article
                 </button>
               </Popconfirm>

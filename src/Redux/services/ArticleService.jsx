@@ -44,6 +44,10 @@ class ArticleService extends BaseService {
     );
   };
 
+  getAllArticles = () => {
+    return this.get(API.NO_PAGING);
+  };
+
   downloadFile = (fileName) => {
     // axios.get(`/your-endpoint/${fileName}`, { responseType: 'blob' });
     return axios.get(`${API.DOWNLOAD_FILE}/${fileName}`, {

@@ -3,7 +3,10 @@ import { setModalOpen } from "../../Redux/reducers/modalReducer";
 import { useSelector, useDispatch } from "react-redux";
 import { set } from "lodash";
 import { postArticle } from "../../Redux/reducers/articleReducer";
-import { findFinalDeadline } from "../../Utils/function/helperFunc";
+import {
+  findDeadline,
+  findFinalDeadline,
+} from "../../Utils/function/helperFunc";
 import { Tooltip } from "antd";
 
 const checkValidSubmit = (newArticle, file, pictures) => {
@@ -18,21 +21,25 @@ const checkValidSubmit = (newArticle, file, pictures) => {
   return true;
 };
 
-const checkDateValidToSubmit = (closures, currentDate, faculty_id) => { // closures: array of closure, currentDate: current date, faculty_id: faculty id 
+const checkDateValidToSubmit = (closures, currentDate, faculty_id) => {
+  // closures: array of closure, currentDate: current date, faculty_id: faculty id
   // return false if the final deadline has passed or there is no closure of the faculty
-  const finalDeadline = findFinalDeadline(closures, faculty_id);
+  const deadline = findDeadline(closures, faculty_id);
   // If final deadline is null, return false
-  if (finalDeadline === null || finalDeadline === undefined || finalDeadline == "Invalid Date") {
+  if (
+    deadline === null ||
+    deadline === undefined ||
+    deadline == "Invalid Date"
+  ) {
     return false;
   }
-  if (currentDate > finalDeadline) {
+  if (currentDate > deadline) {
     return false;
   }
   return true;
 };
 
 export default function WriteModal(props) {
-
   const { modalOpen } = useSelector((state) => state.modalReducer);
 
   // get user data from redux store
@@ -113,9 +120,7 @@ export default function WriteModal(props) {
             <i className="fas fa-times text-2xl"></i>
           </button>
         </div>
-        <form
-          onSubmit={handleOnSubmitArticle}
-        >
+        <form onSubmit={handleOnSubmitArticle}>
           <div className="form-group mb-4">
             <label htmlFor="name" className="font-bold text-2xl">
               Name
@@ -227,18 +232,37 @@ export default function WriteModal(props) {
                 <span>
                   {pictures.length !== 0
                     ? pictures
-                      .map((picture, index) => `${picture.name}`)
-                      .join(", ")
+                        .map((picture, index) => `${picture.name}`)
+                        .join(", ")
                     : "No pictures choosen"}
                 </span>
               </div>
             </div>
             <div className="">
-              <Tooltip title={checkDateValidToSubmit(closures, currentDate, newArticle.faculty_id) ? "Submit the article" : "You cannot submit the article now"}>
-                <button style={{ margin: "0" }}
+              <Tooltip
+                title={
+                  checkDateValidToSubmit(
+                    closures,
+                    currentDate,
+                    newArticle.faculty_id
+                  )
+                    ? "Submit the article"
+                    : "You cannot submit the article now"
+                }
+              >
+                <button
+                  style={{ margin: "0" }}
                   type="submit"
                   className="blueBtn"
-                  disabled={checkDateValidToSubmit(closures, currentDate, newArticle.faculty_id) ? false : true}
+                  disabled={
+                    checkDateValidToSubmit(
+                      closures,
+                      currentDate,
+                      newArticle.faculty_id
+                    )
+                      ? false
+                      : true
+                  }
                 >
                   Submit
                 </button>

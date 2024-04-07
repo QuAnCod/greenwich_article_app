@@ -10,6 +10,10 @@ import {
 import { logOut } from "../../Redux/reducers/userReducer";
 import LineChart from "../../Components/LineChart/LineChart";
 import PieChart from "../../Components/PieChart/PieChart";
+import useDataForLineChart from "../../hooks/useDataForLineChart";
+import useArticlesByStatus from "../../hooks/useArticlesByStatus";
+import useArticlesByFaculty from "../../hooks/useArticlesByFaculty";
+import MostValueStudents from "../../Components/MostValueUsers/MostValueStudents";
 
 const columns = [
   {
@@ -35,6 +39,12 @@ const columns = [
   },
 ];
 
+// Line chart need labels (x-axis): 2023, 2024, 2025, ...
+//  and data (y-axis): array of number of student and array number of articles.
+// Pie chart 1 need labels (faculty name) and data (number of articles by faculty)
+// Pie chart 2 need labels (status name) and data (number of articles by status)
+// Find 5 users with the most articles
+
 export default function MarketingManager(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -46,6 +56,10 @@ export default function MarketingManager(props) {
   );
 
   const [facultyId, setFacultyId] = React.useState(0);
+
+  const dataForLineChart = useDataForLineChart();
+  const articlesByStatus = useArticlesByStatus();
+  const articlesByFaculty = useArticlesByFaculty();
 
   useEffect(() => {
     if (!localStorage.getItem("token")) {
@@ -114,24 +128,36 @@ export default function MarketingManager(props) {
         </div>
       </div>
       <div className="container my-5">
-        <h3 className="text-center">Dashboard</h3>
+        <h3 className="text-center">Number of articles by year</h3>
         <div>
-          <LineChart />
+          <LineChart dataForLineChart={dataForLineChart} />
         </div>
       </div>
       <div className="container flex justify-around my-5">
         <div className="w-1/2">
           <h3 className="text-center">Number of articles by status</h3>
           <div>
-            <PieChart />
+            <PieChart
+              key="articlesByStatus"
+              dataForPieChart={articlesByStatus}
+              title={"Number of articles by status"}
+            />
           </div>
         </div>
         <div className="w-1/2">
           <h3 className="text-center">Number of articles by faculty</h3>
           <div>
-            <PieChart />
+            <PieChart
+              key="articlesByFaculty"
+              dataForPieChart={articlesByFaculty}
+              title={"Number of articles by faculty"}
+            />
           </div>
         </div>
+      </div>
+      <div className="container my-5">
+        <h3 className="text-center">5 Student with the most articles</h3>
+        <MostValueStudents />
       </div>
       <div className="bg-[#235895] h-[50px] flex items-center">
         <div className="w-full">
@@ -167,6 +193,7 @@ export default function MarketingManager(props) {
       </div>
       <div className="p-10">
         <Table
+          rowKey={(record) => record.id}
           loading={loading}
           columns={columns}
           dataSource={articleListByFaculty}
