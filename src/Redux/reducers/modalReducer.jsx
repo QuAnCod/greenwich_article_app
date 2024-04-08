@@ -4,6 +4,7 @@ const initialState = {
   modalOpen: false,
   modalEditOpen: false,
   modalCreateAcademicYearOpen: false,
+  changeAvatarModalOpen: false,
 };
 
 const modalReducer = createSlice({
@@ -19,10 +20,13 @@ const modalReducer = createSlice({
     },
     setModalCreateAcademicYearOpen: (state, action) => {
       state.modalCreateAcademicYearOpen = action.payload;
-    }
-  },
+    },
+    setChangeAvatarModalOpen: (state, action) => {
+      state.changeAvatarModalOpen = action.payload;
+    },
+  }
 });
 
-export const { setModalOpen, setModalEditOpen, setModalCreateAcademicYearOpen } = modalReducer.actions;
+export const { setModalOpen, setModalEditOpen, setModalCreateAcademicYearOpen, setChangeAvatarModalOpen } = modalReducer.actions;
 
 export default modalReducer.reducer;

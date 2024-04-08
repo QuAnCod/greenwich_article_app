@@ -23,6 +23,7 @@ import { Pagination, Popconfirm } from "antd";
 import { useNavigate } from "react-router";
 import ArticleCard from "../../Components/ArticleCard/ArticleCard";
 import { logOut } from "../../Redux/reducers/userReducer";
+import ChangeAvatarModal from "../../Components/ChangeAvatarModal/ChangeAvatarModal";
 
 export default function Home(props) {
   const dispatch = useDispatch();
@@ -56,7 +57,7 @@ export default function Home(props) {
   useEffect(() => {
     if (
       JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER))?.role_id !==
-        ROLE.STUDENT &&
+      ROLE.STUDENT &&
       data?.role.id !== ROLE.STUDENT
     ) {
       alert("YOU ARE NOT ALLOWED TO ACCESS THIS PAGE! CONTACT YOUR ADMIN!");
@@ -72,7 +73,7 @@ export default function Home(props) {
     }
     if (
       JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER))?.userActive ===
-        false &&
+      false &&
       data?.userActive === false
     ) {
       alert("YOU MUST CHANGE YOUR PASSWORD FIRST!");
@@ -126,6 +127,7 @@ export default function Home(props) {
         }}
       />
       <WriteModal />
+      <ChangeAvatarModal />
     </div>
   );
 }

@@ -18,6 +18,27 @@ import {
   findDeadline,
   findFinalDeadline,
 } from "../../Utils/function/helperFunc";
+import { setChangeAvatarModalOpen } from "../../Redux/reducers/modalReducer";
+
+const getFaculty = (facultyId) => {
+  switch (facultyId) {
+    case 1:
+      return "COMPUTER";
+    case 2:
+      return "BUSINESS";
+    case 3:
+      return "DESIGN";
+    default:
+      return "UNKNOWN";
+  }
+}
+
+export const getAvatar = (avatar) => {
+  if (avatar) {
+    return `${API.GET_ARTICLE_IMAGE}/${avatar}`;
+  }
+  return require('../../assets/img/ava_icon.jpg');
+}
 
 export default function HomeTemplate(props) {
   const navigate = useNavigate();
@@ -62,6 +83,9 @@ export default function HomeTemplate(props) {
     navigate(`/students/${data?.id}`);
   };
 
+  console.log(JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER)));
+  console.log(data);
+
   return (
     <div className="">
       <div className="w-1/6 bg-[#235895] fixed h-screen">
@@ -73,25 +97,7 @@ export default function HomeTemplate(props) {
         >
           <div className="flex justify-center items-center">
             <div className="cursor-pointer" onClick={() => {
-              const input = document.createElement("input");
-              input.type = "file";
-              input.accept = "image/*";
-              input.onchange = (e) => {
-                const file = e.target.files[0];
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => {
-                  const formData = new FormData();
-                  formData.append("file", file);
-                  console.log(data?.id, formData)
-                  const userData = {
-                    id: data?.id,
-                    avatar: formData,
-                  }
-                  dispatch(changeAvatarAction(userData));
-                };
-              }
-              input.click();
+              dispatch(setChangeAvatarModalOpen(true));
             }}>
               <img
                 style={{
@@ -99,25 +105,23 @@ export default function HomeTemplate(props) {
                   height: "100px",
                   borderRadius: "50%",
                 }}
-                src={`${API.GET_AVATAR}/${data?.avatar}`}
+                src={getAvatar(data?.avatar || JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER))?.avatar)}
                 alt=""
               />
             </div>
           </div>
           <div className="text-center">
             <h6 className="text-black text-2xl font-bold text-uppercase">
-              {data?.username}
+              {data?.username || JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER))?.username}
             </h6>
             <h6 className="text-black text-xl">
               <span>Role: </span>
-              <span>{data?.role?.name}</span>
+              <span>{data?.role?.name || "STUDENT"}</span>
             </h6>
-            {data?.role?.id === ROLE.STUDENT ? (
-              <h6 className="text-black text-xl">
-                <span>Faculty: </span>
-                <span>{data?.faculty?.name}</span>
-              </h6>
-            ) : null}
+            <h6 className="text-black text-xl">
+              <span>Faculty: </span>
+              <span>{getFaculty(data?.faculty?.id || JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER))?.faculty_id)}</span>
+            </h6>
             <SignOutBtn />
           </div>
         </div>

@@ -12,7 +12,7 @@ export const API = {
   CHANGE_PASSWORD: DOMAIN + "users/changePassword",
   FORGOT_PASSWORD: DOMAIN + "users/sendMailChangePassword",
   CHANGE_AVATAR: DOMAIN + "users/avatar",
-  GET_AVATAR: DOMAIN + "users/avatar",
+  GET_AVATAR: DOMAIN + "users/images",
   // DELETE_USER: DOMAIN + "user"
 
   // // --------------- ARTICLE ---------------

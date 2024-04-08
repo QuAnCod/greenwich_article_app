@@ -3,6 +3,7 @@ import useMostValueUsers from "../../hooks/useMostValueStudents";
 
 // import module css
 import style from "./MostValueStudents.module.css"
+import { API } from "../../Utils/constanst/localConstanst";
 
 export default function MostValueStudents(props) {
   const mostValueStudents = useMostValueUsers();
@@ -17,7 +18,7 @@ export default function MostValueStudents(props) {
           className={style.student}
         >
           <img
-            src={user.avatar ? user.avatar : require("../../assets/img/ava_icon.jpg")}
+            src={user.avatar ? `${API.GET_AVATAR}/${user.avatar}` : require("../../assets/img/ava_icon.jpg")}
             alt=""
             className={style.studentAvatar}
           />
