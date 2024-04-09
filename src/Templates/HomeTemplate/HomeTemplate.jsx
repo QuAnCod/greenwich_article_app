@@ -20,7 +20,7 @@ import {
 } from "../../Utils/function/helperFunc";
 import { setChangeAvatarModalOpen } from "../../Redux/reducers/modalReducer";
 
-const getFaculty = (facultyId) => {
+export const getFaculty = (facultyId) => {
   switch (facultyId) {
     case 1:
       return "COMPUTER";

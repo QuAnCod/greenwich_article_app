@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { articleService } from "../services/ArticleService";
-import { STATUS_CODE } from "../../Utils/constanst/localConstanst";
+import { LOCAL_STORAGE, STATUS_CODE } from "../../Utils/constanst/localConstanst";
 import { setModalOpen } from "./modalReducer";
 
 const initialState = {
@@ -362,3 +362,17 @@ export const getAllArticles = () => {
     }
   };
 };
+
+export const deleteArticle = (data) => {
+  return async (dispatch) => {
+    try {
+      const res = await articleService.deleteArticle(data.id);
+      if (res.status === STATUS_CODE.SUCCESS) {
+        alert("Delete article success");
+        dispatch(getArticlesByFacultyId(data.faculty_id));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+}

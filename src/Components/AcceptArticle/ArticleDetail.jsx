@@ -1,8 +1,16 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { API } from "../../Utils/constanst/localConstanst";
+import { API, LOCAL_STORAGE } from "../../Utils/constanst/localConstanst";
 import { useNavigate } from "react-router";
 import { postComment } from "../../Redux/reducers/commentReducer";
+import { deleteArticle } from "../../Redux/reducers/articleReducer";
+
+const getLastComment = (comments) => {
+  if (comments?.length === 0) {
+    return "";
+  }
+  return comments[comments.length - 1].content;
+};
 
 export default function ArticleDetail(props) {
   const navigate = useNavigate();
@@ -14,11 +22,13 @@ export default function ArticleDetail(props) {
 
   const { data } = useSelector((state) => state.userReducer.userLogin);
 
-  const [comment, setComment] = useState(articleDetail.article_comment[0]?.content);
+  const [comment, setComment] = useState(getLastComment(articleDetail?.article_comment));
   const [status, setStatus] = useState(articleDetail.status);
 
   const currentDate = new Date();
   const createDate = new Date(articleDetail.created_at);
+
+  console.log(articleDetail);
 
   return (
     <div>
@@ -97,6 +107,10 @@ export default function ArticleDetail(props) {
           height="500px"
         ></iframe> */}
         <form className="accept-area w-2/5 px-5" onSubmit={(e) => {
+          if (articleDetail.status === "accepted" || articleDetail.status === "rejected"
+            || currentDate.getTime() - createDate.getTime() > 7 * 24 * 60 * 60 * 1000) {
+            return;
+          }
           e.preventDefault();
           const sendData = {
             content: comment,
@@ -121,13 +135,18 @@ export default function ArticleDetail(props) {
                   setComment(e.target.value);
                 }}
                 value={comment}
-                disabled={status === "accepted" || status === "rejected"}
+                disabled={status === "accepted" || status === "rejected" || currentDate.getTime() - createDate.getTime() > 7 * 24 * 60 * 60 * 1000}
               ></textarea>
             </div>
             {(() => {
+              if (status === "accepted" || status === "rejected") {
+                return (
+                  <div>You cannot choose status after accept or reject it</div>
+                )
+              }
               if (currentDate.getTime() - createDate.getTime() > 7 * 24 * 60 * 60 * 1000) {
                 return (
-                  <div>The deadline to accept has passed </div>
+                  <div>The deadline to accept has passed</div>
                 )
               }
               else {
@@ -158,13 +177,34 @@ export default function ArticleDetail(props) {
             })()}
           </div>
           <div className="flex justify-end">
-            <button type="submit" className="btn btn-success">SAVE</button>
+            {/* button delete if the deadline is passed or the status is rejected */}
+            {(currentDate.getTime() - createDate.getTime() > 7 * 24 * 60 * 60 * 1000 && status !== "accepted") || status === "rejected" ? (
+              <button
+                className="btn btn-danger"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const sendData = {
+                    // id of article to delete
+                    id: articleDetail.id,
+                    // faculty id of the user
+                    faculty_id: data?.faculty_id || JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER))?.faculty_id,
+                  }
+                  dispatch(deleteArticle(sendData));
+                  // back to the table of articles page
+                  navigate(-1);
+                }}
+              >
+                DELETE
+              </button>
+            ) : null
+            }
+            <button type="submit" className="btn btn-success ml-2" disabled={status === "accepted" || status === "rejected" || currentDate.getTime() - createDate.getTime() > 7 * 24 * 60 * 60 * 1000}>SAVE</button>
             <button onClick={() => {
               navigate(-1);
             }} className="btn btn-danger ml-2">CANCLE</button>
           </div>
         </form>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 }

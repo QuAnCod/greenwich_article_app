@@ -28,6 +28,7 @@ export const API = {
   CHANGE_ARTICLE_STATUS: DOMAIN + "articles",
   DOWNLOAD_ZIP_FOLDER: DOMAIN + "users/downloads/all",
   UPDATE_ARTICLE: DOMAIN + "articles",
+  DELETE_ARTICLE: DOMAIN + "articles",
 
   // ----------------- CLOSURES -----------------
   POST_CLOSURE: DOMAIN + "closures",

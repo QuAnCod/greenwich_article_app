@@ -18,8 +18,8 @@ export default function AcceptArticle(props) {
     } else {
       if (
         data?.role?.id !== ROLE.MARKETING_CORDINATOR &&
-        JSON.parse(localStorage.getItem("user")).role_id !==
-          ROLE.MARKETING_CORDINATOR
+        JSON.parse(localStorage.getItem("user"))?.role_id !==
+        ROLE.MARKETING_CORDINATOR
       ) {
         alert("You dont have permission to access this page");
         navigate("/login");

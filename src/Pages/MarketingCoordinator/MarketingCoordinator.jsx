@@ -12,6 +12,7 @@ import {
 import { Table } from "antd";
 import { logOut } from "../../Redux/reducers/userReducer";
 import { filterArticleByStatus } from "../../Utils/function/helperFunc";
+import { getFaculty } from "../../Templates/HomeTemplate/HomeTemplate";
 
 const columns = [
   {
@@ -58,30 +59,30 @@ export default function MarketingCoordinator(props) {
     } else {
       if (
         data?.role?.id !== ROLE.MARKETING_CORDINATOR &&
-        JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER)).role.id !==
-          ROLE.MARKETING_CORDINATOR
+        JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER))?.role_id !==
+        ROLE.MARKETING_CORDINATOR
       ) {
         alert("You dont have permission to access this page");
         navigate("/login");
       }
       if (
         data?.userActive === false &&
-        JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER)).userActive ===
-          false
+        JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER))?.userActive ===
+        false
       ) {
         alert("YOU MUST CHANGE YOUR PASSWORD FIRST!");
         navigate("/change-password");
       }
       if (
         data?.active === false &&
-        JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER)).active === false
+        JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER))?.active === false
       ) {
         alert("YOU HAVE BEEN BAN BY ADMIN! CONTACT YOUR ADMIN TO UNBAN!");
         dispatch(logOut());
         navigate("/login");
       }
     }
-    dispatch(getArticlesByFacultyId(data.faculty.id));
+    dispatch(getArticlesByFacultyId(data?.faculty?.id || JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER))?.faculty_id));
   }, []);
 
   return (
@@ -99,14 +100,14 @@ export default function MarketingCoordinator(props) {
             alt=""
           />
           <div className="text-start">
-            <h6 className="text-white text-2xl font-bold">{data?.username}</h6>
+            <h6 className="text-white text-2xl font-bold">{data?.username || JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER))?.username}</h6>
             <h6 className="text-white text-lg">
               <span>Role: </span>
-              <span className="uppercase">{data?.role.name}</span>
+              <span className="uppercase">{data?.role?.name || "MARKETING COORDINATOR"}</span>
             </h6>
             <h6 className="text-white text-lg">
               <span>Faculty: </span>
-              <span className="uppercase">{data?.faculty.name}</span>
+              <span className="uppercase">{getFaculty(data?.faculty?.id || JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER))?.faculty_id)}</span>
             </h6>
           </div>
         </div>

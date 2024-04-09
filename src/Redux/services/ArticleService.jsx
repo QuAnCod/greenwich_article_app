@@ -78,6 +78,10 @@ class ArticleService extends BaseService {
   updateArticle = (data) => {
     return this.put(`${API.UPDATE_ARTICLE}/${data.id}`, data);
   };
+
+  deleteArticle = (article_id) => {
+    return this.delete(`${API.DELETE_ARTICLE}/${article_id}`);
+  };
 }
 
 export const articleService = new ArticleService();
