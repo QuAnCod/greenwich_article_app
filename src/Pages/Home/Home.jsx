@@ -13,13 +13,11 @@ import {
   setCurrentPage,
 } from "../../Redux/reducers/articleReducer";
 import {
-  API,
-  DOMAIN,
   LOCAL_STORAGE,
   ROLE,
 } from "../../Utils/constanst/localConstanst";
-import { type } from "@testing-library/user-event/dist/type";
-import { Pagination, Popconfirm } from "antd";
+
+import { Pagination } from "antd";
 import { useNavigate } from "react-router";
 import ArticleCard from "../../Components/ArticleCard/ArticleCard";
 import { logOut } from "../../Redux/reducers/userReducer";
@@ -29,29 +27,12 @@ export default function Home(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const settings = {
-    dots: true,
-    lazyLoad: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    initialSlide: 4,
-    // autoplay: true,
-    center: true,
-    arrows: true,
-  };
-
   const { page, limit, totalPages } = useSelector(
     (state) => state.articleReducer.pagination
   );
 
   const { data } = useSelector((state) => state.userReducer.userLogin);
 
-  // const articleList = useInfiniteScroll();
-  // console.log(articleList);
-
-  // const { articleListByUserId } = useSelector((state) => state.articleReducer);
   const { articleList } = useSelector((state) => state.articleReducer);
 
   useEffect(() => {

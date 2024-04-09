@@ -36,20 +36,8 @@ function Register(props) {
 
   const handleOnSubmit = (e) => {
     e.preventDefault();
-    // console.log(formRegis)
-    // if (!validateEmail(formRegis.username) || !validatePassword(formRegis.password) || !validateConfirmPassword(formRegis.password, formRegis.confirmPassword)) return;
-    // else {
-    //     dispatch(registerAction(formRegis))
-    // }
     dispatch(registerAction(formRegis));
-    // alert("Register success");
   };
-
-  // useEffect(() => {
-  //     if (!data?.error) {
-  //         navigate('/login')
-  //     }
-  // }, [data])
 
   useEffect(() => {
     if (data) {

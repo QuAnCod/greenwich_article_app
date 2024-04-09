@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { API, LOCAL_STORAGE } from "../../Utils/constanst/localConstanst";
 import { useNavigate } from "react-router";
 import { postComment } from "../../Redux/reducers/commentReducer";
 import { deleteArticle } from "../../Redux/reducers/articleReducer";
 
-const getLastComment = (comments) => {
+export const getLastComment = (comments) => {
   if (comments?.length === 0) {
-    return "";
+    return "There is no comment yet";
   }
   return comments[comments.length - 1].content;
 };
@@ -16,19 +16,25 @@ export default function ArticleDetail(props) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const [isEdit, setIsEdit] = useState(false);
+
   const { articleDetail } = useSelector((state) => state.articleReducer);
 
   const { closures } = useSelector((state) => state.articleReducer);
 
   const { data } = useSelector((state) => state.userReducer.userLogin);
 
-  const [comment, setComment] = useState(getLastComment(articleDetail?.article_comment));
+  const [comment, setComment] = useState("");
   const [status, setStatus] = useState(articleDetail.status);
 
   const currentDate = new Date();
   const createDate = new Date(articleDetail.created_at);
 
   console.log(articleDetail);
+
+  useEffect(() => {
+    setComment(getLastComment(articleDetail?.article_comment));
+  }, [])
 
   return (
     <div>
@@ -126,20 +132,45 @@ export default function ArticleDetail(props) {
               <label htmlFor="comment" className="text-lg form-label">
                 Comment
               </label>
-              <textarea
-                className="form-control"
-                name="comment"
-                id="comment"
-                rows="3"
-                onChange={(e) => {
-                  setComment(e.target.value);
-                }}
-                value={comment}
-                disabled={status === "accepted" || status === "rejected" || currentDate.getTime() - createDate.getTime() > 7 * 24 * 60 * 60 * 1000}
-              ></textarea>
+              {/* show the last comment */}
+              {/* when click on p tags it switch to textarea */}
+              {isEdit ? (
+                <div className="text-end">
+                  <textarea
+                    className="form-control"
+                    name="comment"
+                    id="comment"
+                    rows="3"
+                    onChange={(e) => {
+                      setComment(e.target.value);
+                    }}
+                    value={comment}
+                    disabled={articleDetail.status === "accepted" || articleDetail.status === "rejected" || currentDate.getTime() - createDate.getTime() > 7 * 24 * 60 * 60 * 1000}
+                  ></textarea>
+                  <button className="btn btn-success mt-2" onClick={(e) => {
+                    e.preventDefault();
+                    const sendData = {
+                      content: comment,
+                      article_id: articleDetail.id,
+                      user_id: data.id,
+                      status,
+                      fileName: articleDetail.fileName,
+                    }
+                    dispatch(postComment(sendData));
+                    setIsEdit(false);
+                  }}>Comment</button>
+                </div>
+              ) : (
+                <p onClick={() => {
+                  if (articleDetail.status === "accepted" || articleDetail.status === "rejected" || currentDate.getTime() - createDate.getTime() > 7 * 24 * 60 * 60 * 1000) {
+                    return;
+                  }
+                  setIsEdit(true);
+                }}>{comment}</p>
+              )}
             </div>
             {(() => {
-              if (status === "accepted" || status === "rejected") {
+              if (articleDetail.status === "accepted" || articleDetail.status === "rejected") {
                 return (
                   <div>You cannot choose status after accept or reject it</div>
                 )
@@ -163,7 +194,7 @@ export default function ArticleDetail(props) {
                       onChange={(e) => {
                         setStatus(e.target.value);
                       }}
-                      disabled={status === "accepted" || status === "rejected"}
+                      disabled={articleDetail.status === "accepted" || articleDetail.status === "rejected"}
                     >
                       <option value="pendding">
                         Pendding
@@ -178,7 +209,7 @@ export default function ArticleDetail(props) {
           </div>
           <div className="flex justify-end">
             {/* button delete if the deadline is passed or the status is rejected */}
-            {(currentDate.getTime() - createDate.getTime() > 7 * 24 * 60 * 60 * 1000 && status !== "accepted") || status === "rejected" ? (
+            {(currentDate.getTime() - createDate.getTime() > 7 * 24 * 60 * 60 * 1000 && articleDetail.status !== "accepted") || articleDetail.status === "rejected" ? (
               <button
                 className="btn btn-danger"
                 onClick={(e) => {
@@ -198,7 +229,7 @@ export default function ArticleDetail(props) {
               </button>
             ) : null
             }
-            <button type="submit" className="btn btn-success ml-2" disabled={status === "accepted" || status === "rejected" || currentDate.getTime() - createDate.getTime() > 7 * 24 * 60 * 60 * 1000}>SAVE</button>
+            <button type="submit" className="btn btn-success ml-2" disabled={articleDetail.status === "accepted" || articleDetail.status === "rejected" || currentDate.getTime() - createDate.getTime() > 7 * 24 * 60 * 60 * 1000}>SAVE</button>
             <button onClick={() => {
               navigate(-1);
             }} className="btn btn-danger ml-2">CANCLE</button>

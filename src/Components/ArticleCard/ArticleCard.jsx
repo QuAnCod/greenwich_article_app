@@ -82,7 +82,8 @@ export default function ArticleCard(props) {
             })}
           </div>
         </div>
-        {article.article_comment.map((comment, index) => {
+        {article.article_comment?.slice(0, 1).map((comment, index) => {
+          console.log(comment);
           return (
             <div
               key={index}

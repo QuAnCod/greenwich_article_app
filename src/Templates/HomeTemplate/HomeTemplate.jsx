@@ -3,16 +3,13 @@ import { Outlet, useNavigate, useParams } from "react-router";
 import { API, LOCAL_STORAGE, ROLE } from "../../Utils/constanst/localConstanst";
 import { useDispatch, useSelector } from "react-redux";
 import SignOutBtn from "../../Components/Buttons/SignOutBtn/SignOutBtn";
-import WriteModal from "../../Components/WriteModal/WriteModal";
 import { getAllClosures } from "../../Redux/reducers/closuresReducer";
 import { getAllAcademicYears } from "../../Redux/reducers/academicYearsReducer";
 import {
   getArticlesByFacultyIdAndAcademicYearId,
   getArticlesByUserId,
-  setArticleList,
-  setCurrentPage,
 } from "../../Redux/reducers/articleReducer";
-import { changeAvatarAction, changePasswordAction } from "../../Redux/reducers/userReducer";
+import { changePasswordAction } from "../../Redux/reducers/userReducer";
 import { useSearchParams } from "react-router-dom";
 import {
   findDeadline,

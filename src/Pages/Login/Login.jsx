@@ -1,11 +1,7 @@
 import React, { useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import ButtonsMod from "../../Components/Buttons/ButtonsMod";
-import {
-  validateConfirmPassword,
-  validateEmail,
-  validatePassword,
-} from "../../Utils/function/helperFunc";
+import { validatePassword } from "../../Utils/function/helperFunc";
 import { useDispatch, useSelector } from "react-redux";
 import { loginAction } from "../../Redux/reducers/userReducer";
 import { LOCAL_STORAGE, ROLE } from "../../Utils/constanst/localConstanst";
@@ -14,7 +10,7 @@ import { LOCAL_STORAGE, ROLE } from "../../Utils/constanst/localConstanst";
 import style from "./Login.module.css";
 
 function Login(props) {
-  const { error, data, loading } = useSelector(
+  const { data } = useSelector(
     (state) => state.userReducer.userLogin
   );
 

@@ -37,7 +37,7 @@ export const postComment = (data) => {
         try {
             const commentRes = await commentService.postComment(postComment);
             const changeStatusRes = await articleService.changeArticleStatus(changeArticleStatus);
-            if (commentRes.status === STATUS_CODE.SUCCESS && changeStatusRes.status === STATUS_CODE.SUCCESS) {
+            if (commentRes.status === STATUS_CODE.SUCCESS || changeStatusRes.status === STATUS_CODE.SUCCESS) {
                 alert("Post comment successfully");
             }
             dispatch(getArticles({ page: 0, limit: 10 }));
