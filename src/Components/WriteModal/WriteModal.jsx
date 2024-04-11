@@ -9,6 +9,7 @@ import {
 } from "../../Utils/function/helperFunc";
 import { Tooltip } from "antd";
 
+
 const checkValidSubmit = (newArticle, file, pictures) => {
   if (
     newArticle.name === "" ||
@@ -47,6 +48,8 @@ export default function WriteModal(props) {
 
   const { closures } = useSelector((state) => state.closuresReducer);
 
+  const { academicYears } = useSelector((state) => state.academicYearsReducer);
+
   const currentDate = new Date();
 
   const dispatch = useDispatch();
@@ -76,6 +79,13 @@ export default function WriteModal(props) {
 
   // handle submit form
   const handleOnSubmitArticle = (e) => {
+    // find academic year id with current = 1
+    const currentAcademicYear = academicYears.find((academicYear) => academicYear.current === 1);
+
+    setNewArticle({
+      ...newArticle,
+      academic_id: currentAcademicYear?.id,
+    })
     e.preventDefault();
     // check if the form is valid
     if (!checkValidSubmit(newArticle, file, pictures)) {
@@ -214,9 +224,13 @@ export default function WriteModal(props) {
                       input.type = "file";
                       input.accept = "image/*"; // specify the file types you want to allow
                       input.multiple = true;
-                      input.max = 3; // specify the maximum number of files allowed
+                      // input.max = 3; // specify the maximum number of files allowed
                       input.onchange = (event) => {
                         const files = event.target.files;
+                        if (files.length > 3) {
+                          alert("You can only select up to 3 pictures");
+                          return;
+                        }
                         // do something with the selected files
                         // console.log(files[0]);
                         const filesArray = Array.from(files);

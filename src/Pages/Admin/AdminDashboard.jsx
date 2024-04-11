@@ -194,11 +194,11 @@ export default function AdminDashboard(props) {
           />
           <div className="text-start">
             <h6 className="text-white text-2xl font-bold capitalize">
-              {data?.username}
+              {data?.username || JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER))?.username}
             </h6>
             <h6 className="text-white text-lg">
               <span>Role: </span>
-              <span>{data?.role?.name}</span>
+              <span>{data?.role?.name || "ADMIN"}</span>
             </h6>
           </div>
         </div>
