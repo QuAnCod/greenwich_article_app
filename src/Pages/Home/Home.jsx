@@ -87,16 +87,18 @@ export default function Home(props) {
           </span>
         </div>
       </div>
-      {articleList?.map((article, index) => {
-        return (
-          <ArticleCard
-            key={article.id}
-            article={article}
-            index={index}
-            articleList={articleList}
-          />
-        );
-      })}
+      {articleList
+        ?.filter((article) => article.status === "accepted")
+        .map((article, index) => {
+          return (
+            <ArticleCard
+              key={article.id}
+              article={article}
+              index={index}
+              articleList={articleList}
+            />
+          );
+        })}
       <Pagination
         hideOnSinglePage={true}
         defaultCurrent={1}

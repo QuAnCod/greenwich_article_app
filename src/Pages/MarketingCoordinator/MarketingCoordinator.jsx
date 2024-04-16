@@ -8,6 +8,7 @@ import {
   getArticlesByFacultyId,
   setArticleDetail,
   setCurrentPage,
+  updateArticle,
 } from "../../Redux/reducers/articleReducer";
 import { Table } from "antd";
 import { logOut } from "../../Redux/reducers/userReducer";
@@ -42,6 +43,56 @@ const columns = [
 ];
 
 export default function MarketingCoordinator(props) {
+  const columnsOfAccepted = [
+    {
+      title: "Date",
+      dataIndex: "created_at",
+      key: "created_at",
+      width: "25%",
+      render: (text, record) => new Date(text).toDateString(),
+    },
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      width: "25%",
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      width: "10%",
+    },
+    {
+      title: "Action",
+      dataIndex: "action",
+      key: "action",
+      render: (text, record) => {
+        return (
+          <div>
+            <button
+              onClick={() => {
+                const articleUpdate = {
+                  ...record,
+                  publish: 1,
+                };
+                dispatch(updateArticle(articleUpdate));
+              }}
+              className="btn btn-primary"
+            >
+              Publish this Article
+            </button>
+          </div>
+        );
+      },
+    },
+  ];
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -196,7 +247,7 @@ export default function MarketingCoordinator(props) {
           >
             <Table
               rowKey={(record) => record.id}
-              columns={columns}
+              columns={columnsOfAccepted}
               dataSource={filterArticleByStatus(
                 articleListByFaculty,
                 "accepted"
