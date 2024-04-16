@@ -287,15 +287,17 @@ export default function Guest(props) {
             role="tabpanel"
             aria-labelledby="computing-tab"
           >
-            {articleList?.map((article, index) => {
-              return (
-                <ArticleCard
-                  article={article}
-                  index={index}
-                  articleList={articleList}
-                />
-              );
-            })}
+            {articleList
+              ?.filter((article) => article.publish === true)
+              .map((article, index) => {
+                return (
+                  <ArticleCard
+                    article={article}
+                    index={index}
+                    articleList={articleList}
+                  />
+                );
+              })}
           </div>
           <div
             className="bg-[#235895] tab-pane"
@@ -303,15 +305,17 @@ export default function Guest(props) {
             role="tabpanel"
             aria-labelledby="business-tab"
           >
-            {articleList?.map((article, index) => {
-              return (
-                <ArticleCard
-                  article={article}
-                  index={index}
-                  articleList={articleList}
-                />
-              );
-            })}
+            {articleList
+              ?.filter((article) => article.publish === true)
+              .map((article, index) => {
+                return (
+                  <ArticleCard
+                    article={article}
+                    index={index}
+                    articleList={articleList}
+                  />
+                );
+              })}
           </div>
           <div
             className="bg-[#235895] tab-pane"
@@ -319,15 +323,17 @@ export default function Guest(props) {
             role="tabpanel"
             aria-labelledby="design-tab"
           >
-            {articleList?.map((article, index) => {
-              return (
-                <ArticleCard
-                  article={article}
-                  index={index}
-                  articleList={articleList}
-                />
-              );
-            })}
+            {articleList
+              ?.filter((article) => article.publish === true)
+              .map((article, index) => {
+                return (
+                  <ArticleCard
+                    article={article}
+                    index={index}
+                    articleList={articleList}
+                  />
+                );
+              })}
           </div>
         </div>
       </div>
