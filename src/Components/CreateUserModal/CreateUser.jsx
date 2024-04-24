@@ -2,9 +2,11 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setModalOpen } from "../../Redux/reducers/modalReducer";
 import { registerAction } from "../../Redux/reducers/userReducer";
+import { getAllFaculties } from "../../Redux/reducers/facultiesReducer";
 
 export default function CreateUser(props) {
   const { modalOpen } = useSelector((state) => state.modalReducer);
+  const { faculties } = useSelector((state) => state.facultiesReducer);
   const dispatch = useDispatch();
 
   const [newUser, setNewUser] = React.useState({
@@ -31,7 +33,9 @@ export default function CreateUser(props) {
     dispatch(registerAction(newUser));
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    dispatch(getAllFaculties());
+  }, []);
 
   return modalOpen ? (
     <div
@@ -133,9 +137,11 @@ export default function CreateUser(props) {
               onChange={handleOnChange}
             >
               <option value={0}>Choose Faculty</option>
-              <option value={1}>Faculty of Computer</option>
-              <option value={2}>Faculty of Business</option>
-              <option value={3}>Faculty of Design</option>
+              {faculties.map((faculty, index) => (
+                <option key={index} value={faculty.id}>
+                  {faculty.name}
+                </option>
+              ))}
             </select>
           </div>
           <div className="flex justify-end">

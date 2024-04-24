@@ -10,6 +10,7 @@ import {
 import { changePasswordAction, logOut } from "../../Redux/reducers/userReducer";
 import { getAllAcademicYears } from "../../Redux/reducers/academicYearsReducer";
 import ArticleCard from "../../Components/ArticleCard/ArticleCard";
+import { getAllFaculties } from "../../Redux/reducers/facultiesReducer";
 
 export default function Guest(props) {
   const dispatch = useDispatch();
@@ -18,6 +19,8 @@ export default function Guest(props) {
   const { data } = useSelector((state) => state.userReducer.userLogin);
 
   const { academicYears } = useSelector((state) => state.academicYearsReducer);
+
+  const { faculties } = useSelector((state) => state.facultiesReducer);
 
   const [changePassword, setChangePassword] = useState({
     password: "",
@@ -72,6 +75,7 @@ export default function Guest(props) {
     }
     dispatch(getAllAcademicYears());
     dispatch(getArticlesByFacultyIdAndAcademicYearId(filterOptions));
+    dispatch(getAllFaculties());
   }, []);
 
   return (
@@ -199,142 +203,62 @@ export default function Guest(props) {
         <div className="bg-[#FF751F] p-10 px-20">
           <div>
             <ul className="nav nav-tabs" id="myTab" role="tablist">
-              <li className="nav-item" role="presentation">
-                <button
-                  onClick={(e) => {
-                    setFilterOptions({
-                      ...filterOptions,
-                      faculty_id: 1,
-                    });
-                    dispatch(
-                      getArticlesByFacultyIdAndAcademicYearId({
-                        faculty_id: 1,
-                        academic_year_id: 0,
-                      })
-                    );
-                  }}
-                  className="nav-link active"
-                  id="computing-tab"
-                  data-bs-toggle="tab"
-                  data-bs-target="#computing"
-                  type="button"
-                  role="tab"
-                  aria-controls="computing"
-                  aria-selected="true"
-                >
-                  Computing
-                </button>
-              </li>
-              <li className="nav-item" role="presentation">
-                <button
-                  onClick={(e) => {
-                    setFilterOptions({
-                      ...filterOptions,
-                      faculty_id: 2,
-                    });
-                    dispatch(
-                      getArticlesByFacultyIdAndAcademicYearId({
-                        faculty_id: 2,
-                        academic_year_id: 0,
-                      })
-                    );
-                  }}
-                  className="nav-link"
-                  id="business-tab"
-                  data-bs-toggle="tab"
-                  data-bs-target="#business"
-                  type="button"
-                  role="tab"
-                  aria-controls="business"
-                  aria-selected="false"
-                >
-                  Business
-                </button>
-              </li>
-              <li className="nav-item" role="presentation">
-                <button
-                  onClick={(e) => {
-                    setFilterOptions({
-                      ...filterOptions,
-                      faculty_id: 3,
-                    });
-                    dispatch(
-                      getArticlesByFacultyIdAndAcademicYearId({
-                        faculty_id: 3,
-                        academic_year_id: 0,
-                      })
-                    );
-                  }}
-                  className="nav-link"
-                  id="design-tab"
-                  data-bs-toggle="tab"
-                  data-bs-target="#design"
-                  type="button"
-                  role="tab"
-                  aria-controls="design"
-                  aria-selected="false"
-                >
-                  Design
-                </button>
-              </li>
+              {faculties?.map((faculty, index) => {
+                return (
+                  <li className="nav-item" role="presentation">
+                    <button
+                      onClick={(e) => {
+                        setFilterOptions({
+                          ...filterOptions,
+                          faculty_id: faculty.id,
+                        });
+                        dispatch(
+                          getArticlesByFacultyIdAndAcademicYearId({
+                            faculty_id: faculty.id,
+                            academic_year_id: 0,
+                          })
+                        );
+                      }}
+                      className="nav-link"
+                      id={`${faculty.name.toLowerCase()}-tab`}
+                      data-bs-toggle="tab"
+                      data-bs-target={`#${faculty.name.toLowerCase()}`}
+                      type="button"
+                      role="tab"
+                      aria-controls={`${faculty.name.toLowerCase()}`}
+                      aria-selected="true"
+                    >
+                      {faculty.name}
+                    </button>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>
         <div className="tab-content">
-          <div
-            className="bg-[#235895] tab-pane active"
-            id="computing"
-            role="tabpanel"
-            aria-labelledby="computing-tab"
-          >
-            {articleList
-              ?.filter((article) => article.publish === true)
-              .map((article, index) => {
-                return (
-                  <ArticleCard
-                    article={article}
-                    index={index}
-                    articleList={articleList}
-                  />
-                );
-              })}
-          </div>
-          <div
-            className="bg-[#235895] tab-pane"
-            id="business"
-            role="tabpanel"
-            aria-labelledby="business-tab"
-          >
-            {articleList
-              ?.filter((article) => article.publish === true)
-              .map((article, index) => {
-                return (
-                  <ArticleCard
-                    article={article}
-                    index={index}
-                    articleList={articleList}
-                  />
-                );
-              })}
-          </div>
-          <div
-            className="bg-[#235895] tab-pane"
-            id="design"
-            role="tabpanel"
-            aria-labelledby="design-tab"
-          >
-            {articleList
-              ?.filter((article) => article.publish === true)
-              .map((article, index) => {
-                return (
-                  <ArticleCard
-                    article={article}
-                    index={index}
-                    articleList={articleList}
-                  />
-                );
-              })}
-          </div>
+          {faculties?.map((faculty, index) => {
+            return (
+              <div
+                className="bg-[#235895] tab-pane active"
+                id={faculty.name.toLowerCase()}
+                role="tabpanel"
+                aria-labelledby={`${faculty.name.toLowerCase()}-tab`}
+              >
+                {articleList
+                  ?.filter((article) => article.publish === true)
+                  .map((article, index) => {
+                    return (
+                      <ArticleCard
+                        article={article}
+                        index={index}
+                        articleList={articleList}
+                      />
+                    );
+                  })}
+              </div>
+            );
+          })}
         </div>
       </div>
       <div
@@ -368,9 +292,13 @@ export default function Guest(props) {
                 <option value={0} selected>
                   Choose Faculty
                 </option>
-                <option value={1}>IT</option>
-                <option value={2}>Bussiness</option>
-                <option value={3}>Design</option>
+                {faculties?.map((faculty, index) => {
+                  return (
+                    <option key={index} value={faculty.id}>
+                      {faculty.name}
+                    </option>
+                  );
+                })}
               </select>
             </div>
             <div className="form-group mb-3">

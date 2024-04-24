@@ -10,7 +10,7 @@ function ForgotPassword(props) {
 
   useEffect(() => {
     document.title = "Forgot Password";
-    if (!localStorage.getItem(LOCAL_STORAGE.TOKEN)) {
+    if (localStorage.getItem(LOCAL_STORAGE.TOKEN)) {
       navigate("/login");
     }
   }, []);

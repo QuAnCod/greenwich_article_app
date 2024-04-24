@@ -16,19 +16,15 @@ const mapAllArticlesToData = (facultyList, articles) => {
 export default function useArticlesByFaculty() {
   const dispatch = useDispatch();
 
-  const facultyList = [
-    { id: 1, name: "Computer" },
-    { id: 2, name: "Business" },
-    { id: 3, name: "Design" },
-  ];
+  const { faculties } = useSelector((state) => state.facultiesReducer);
   const { allArticles } = useSelector((state) => state.articleReducer);
 
   useEffect(() => {
     dispatch(getAllArticles());
   }, []);
 
-  const labels = facultyList.map((faculty) => faculty.name);
-  const data = mapAllArticlesToData(facultyList, allArticles);
+  const labels = faculties.map((faculty) => faculty.name);
+  const data = mapAllArticlesToData(faculties, allArticles);
 
   return { labels, data };
 }

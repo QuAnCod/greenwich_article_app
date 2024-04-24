@@ -44,6 +44,9 @@ export const API = {
   GET_COMMENT: DOMAIN + "comments",
   DELETE_COMMENT: DOMAIN + "comments",
 
+  // ------------------ FACULTIES -------------
+  GET_ALL_FACULTIES: DOMAIN + "faculties",
+
   // --------------- LIKE ---------------
 
   // --------------- FOLLOW ---------------

@@ -6,9 +6,12 @@ import {
   updateClosure,
 } from "../../Redux/reducers/closuresReducer";
 import { setDisplayDetailAcademicYear } from "../../Redux/reducers/academicYearsReducer";
+import { getAllFaculties } from "../../Redux/reducers/facultiesReducer";
 
 export default function EditClosure() {
   const dispatch = useDispatch();
+
+  const { faculties } = useSelector((state) => state.facultiesReducer);
 
   const { displayEditClosure, detailClosure } = useSelector(
     (state) => state.closuresReducer
@@ -48,6 +51,7 @@ export default function EditClosure() {
       final_deadline: detailClosure.finalDeadline,
       academic_year_id: detailClosure.academicYear?.id,
     });
+    dispatch(getAllFaculties());
   }, [detailClosure]);
 
   return displayEditClosure ? (
@@ -81,9 +85,6 @@ export default function EditClosure() {
               Faculty
             </label>
             <select
-              onChange={(e) => {
-                handleChanges(e);
-              }}
               className="form-control"
               id="faculty_id"
               value={editClosure.faculty_id}
@@ -92,9 +93,11 @@ export default function EditClosure() {
               <option value={0} disabled>
                 Select Faculty
               </option>
-              <option value={1}>Computing</option>
-              <option value={2}>Business</option>
-              <option value={3}>Design</option>
+              {faculties.map((faculty) => (
+                <option key={faculty.id} value={faculty.id}>
+                  {faculty.name}
+                </option>
+              ))}
             </select>
           </div>
           <div className="form-group mb-3">

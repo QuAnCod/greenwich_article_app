@@ -1,16 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   postClosure,
   setDisplayAddClosure,
 } from "../../Redux/reducers/closuresReducer";
 import { setDisplayDetailAcademicYear } from "../../Redux/reducers/academicYearsReducer";
-import { set } from "lodash";
+import { getAllFaculties } from "../../Redux/reducers/facultiesReducer";
+// import { set } from "lodash";
 
 export default function AddClosure(props) {
   const dispatch = useDispatch();
 
   const { displayAddClosure } = useSelector((state) => state.closuresReducer);
+
+  const { faculties } = useSelector((state) => state.facultiesReducer);
 
   const { detailAcademicYear } = useSelector(
     (state) => state.academicYearsReducer
@@ -69,6 +72,10 @@ export default function AddClosure(props) {
     dispatch(postClosure(newClosure));
   };
 
+  useEffect(() => {
+    dispatch(getAllFaculties());
+  }, []);
+
   return displayAddClosure ? (
     <div
       style={{
@@ -110,9 +117,13 @@ export default function AddClosure(props) {
               <option value={0} disabled>
                 Select Faculty
               </option>
-              <option value={1}>Computing</option>
-              <option value={2}>Business</option>
-              <option value={3}>Design</option>
+              {faculties.map((faculty, index) => {
+                return (
+                  <option key={index} value={faculty.id}>
+                    {faculty.name}
+                  </option>
+                );
+              })}
             </select>
           </div>
           <div className="form-group mb-3">

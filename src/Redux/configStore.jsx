@@ -5,6 +5,7 @@ import closuresReducer from "./reducers/closuresReducer";
 import articleReducer from "./reducers/articleReducer";
 import academicYearsReducer from "./reducers/academicYearsReducer";
 import commentReducer from "./reducers/commentReducer";
+import facultiesReducer from "./reducers/facultiesReducer";
 
 export const store = configureStore({
   reducer: {
@@ -14,5 +15,6 @@ export const store = configureStore({
     closuresReducer: closuresReducer,
     academicYearsReducer: academicYearsReducer,
     commentReducer: commentReducer,
+    facultiesReducer: facultiesReducer,
   },
 });

@@ -14,6 +14,7 @@ import useDataForLineChart from "../../hooks/useDataForLineChart";
 import useArticlesByStatus from "../../hooks/useArticlesByStatus";
 import useArticlesByFaculty from "../../hooks/useArticlesByFaculty";
 import MostValueStudents from "../../Components/MostValueUsers/MostValueStudents";
+import { getAllFaculties } from "../../Redux/reducers/facultiesReducer";
 
 const columns = [
   {
@@ -61,13 +62,15 @@ export default function MarketingManager(props) {
   const articlesByStatus = useArticlesByStatus();
   const articlesByFaculty = useArticlesByFaculty();
 
+  const { faculties } = useSelector((state) => state.facultiesReducer);
+
   useEffect(() => {
     if (!localStorage.getItem("token")) {
       navigate("/login");
     } else {
       if (
         data?.role?.id !== ROLE.MARKETING_MANAGER &&
-        JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER)).role_id !==
+        JSON.parse(localStorage.getItem(LOCAL_STORAGE.USER))?.role_id !==
           ROLE.MARKETING_MANAGER
       ) {
         alert("You dont have permission to access this page");
@@ -91,6 +94,7 @@ export default function MarketingManager(props) {
       }
     }
     dispatch(getArticlesByFacultyId(facultyId));
+    dispatch(getAllFaculties());
   }, []);
 
   return (
@@ -173,9 +177,13 @@ export default function MarketingManager(props) {
               <option selected value={0}>
                 Choose Faculty
               </option>
-              <option value={1}>Computing</option>
-              <option value={2}>Business</option>
-              <option value={3}>Design</option>
+              {faculties?.map((faculty, index) => {
+                return (
+                  <option key={index} value={faculty.id}>
+                    {faculty.name}
+                  </option>
+                );
+              })}
             </select>
             <button
               className="btn btn-warning"

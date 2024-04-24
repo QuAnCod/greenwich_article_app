@@ -18,6 +18,7 @@ import {
   findDeadline,
   findFinalDeadline,
 } from "../../Utils/function/helperFunc";
+import { getAllFaculties } from "../../Redux/reducers/facultiesReducer";
 
 export default function HomeTemplate(props) {
   const navigate = useNavigate();
@@ -30,6 +31,8 @@ export default function HomeTemplate(props) {
 
   const { articleListByUserId } = useSelector((state) => state.articleReducer);
 
+  const { faculties } = useSelector((state) => state.facultiesReducer);
+
   useEffect(() => {
     if (!localStorage.getItem(LOCAL_STORAGE.TOKEN)) {
       navigate("/login");
@@ -37,6 +40,7 @@ export default function HomeTemplate(props) {
     dispatch(getAllClosures());
     dispatch(getAllAcademicYears());
     dispatch(getArticlesByUserId(data?.id));
+    dispatch(getAllFaculties());
   }, []);
 
   // console.log(articleListByUserId);
@@ -303,9 +307,13 @@ export default function HomeTemplate(props) {
                 <option value={0} selected>
                   Choose Faculty
                 </option>
-                <option value={1}>IT</option>
-                <option value={2}>Bussiness</option>
-                <option value={3}>Design</option>
+                {faculties?.map((faculty, index) => {
+                  return (
+                    <option key={index} value={faculty.id}>
+                      {faculty.name}
+                    </option>
+                  );
+                })}
               </select>
             </div>
             <div className="form-group mb-3">

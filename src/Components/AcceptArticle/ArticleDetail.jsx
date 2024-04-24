@@ -14,7 +14,9 @@ export default function ArticleDetail(props) {
 
   const { data } = useSelector((state) => state.userReducer.userLogin);
 
-  const [comment, setComment] = useState(articleDetail.article_comment[0]?.content);
+  const [comment, setComment] = useState(
+    articleDetail.article_comment[0]?.content
+  );
   const [status, setStatus] = useState(articleDetail.status);
 
   const currentDate = new Date();
@@ -96,17 +98,20 @@ export default function ArticleDetail(props) {
           width="60%"
           height="500px"
         ></iframe> */}
-        <form className="accept-area w-2/5 px-5" onSubmit={(e) => {
-          e.preventDefault();
-          const sendData = {
-            content: comment,
-            article_id: articleDetail.id,
-            user_id: data.id,
-            status,
-            fileName: articleDetail.fileName,
-          }
-          dispatch(postComment(sendData));
-        }}>
+        <form
+          className="accept-area w-2/5 px-5"
+          onSubmit={(e) => {
+            e.preventDefault();
+            const sendData = {
+              content: comment,
+              article_id: articleDetail.id,
+              user_id: data.id,
+              status,
+              fileName: articleDetail.fileName,
+            };
+            dispatch(postComment(sendData));
+          }}
+        >
           <div className="comment-status">
             <div className="form-group mb-3">
               <label htmlFor="comment" className="text-lg form-label">
@@ -121,16 +126,21 @@ export default function ArticleDetail(props) {
                   setComment(e.target.value);
                 }}
                 value={comment}
-                disabled={status === "accepted" || status === "rejected"}
+                disabled={
+                  status === "accepted" ||
+                  status === "rejected" ||
+                  currentDate.getTime() - createDate.getTime() >
+                    7 * 24 * 60 * 60 * 1000
+                }
               ></textarea>
             </div>
             {(() => {
-              if (currentDate.getTime() - createDate.getTime() > 7 * 24 * 60 * 60 * 1000) {
-                return (
-                  <div>The deadline to accept has passed </div>
-                )
-              }
-              else {
+              if (
+                currentDate.getTime() - createDate.getTime() >
+                7 * 24 * 60 * 60 * 1000
+              ) {
+                return <div>The deadline to accept has passed </div>;
+              } else {
                 return (
                   <div className="form-group mb-3">
                     <label htmlFor="status" className="text-lg form-label">
@@ -146,22 +156,27 @@ export default function ArticleDetail(props) {
                       }}
                       disabled={status === "accepted" || status === "rejected"}
                     >
-                      <option value="pendding">
-                        Pendding
-                      </option>
+                      <option value="pendding">Pendding</option>
                       <option value="accepted">Accepted</option>
                       <option value="rejected">Rejected</option>
                     </select>
                   </div>
-                )
+                );
               }
             })()}
           </div>
           <div className="flex justify-end">
-            <button type="submit" className="btn btn-success">SAVE</button>
-            <button onClick={() => {
-              navigate(-1);
-            }} className="btn btn-danger ml-2">CANCLE</button>
+            <button type="submit" className="btn btn-success">
+              SAVE
+            </button>
+            <button
+              onClick={() => {
+                navigate(-1);
+              }}
+              className="btn btn-danger ml-2"
+            >
+              CANCLE
+            </button>
           </div>
         </form>
       </div>
