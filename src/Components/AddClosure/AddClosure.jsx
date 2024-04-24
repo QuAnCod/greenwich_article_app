@@ -45,31 +45,31 @@ export default function AddClosure(props) {
     e.preventDefault();
     console.log(newClosure);
     // set academic year id
-    const academic_year_id = detailAcademicYear.id;
-    setNewClosure({
+    const updatedClosure = {
       ...newClosure,
-      academic_year_id: academic_year_id,
-    });
+      academic_year_id: detailAcademicYear.id,
+    };
+    console.log(updatedClosure);
     // check if the user has selected a faculty
-    if (newClosure.faculty_id === 0) {
+    if (updatedClosure.faculty_id === 0) {
       alert("Please select a faculty");
       return;
     }
     // check if the user has selected a deadline
-    if (newClosure.deadline === "") {
+    if (updatedClosure.deadline === "") {
       alert("Please select a deadline");
       return;
     }
     // check if the user has selected a final deadline
-    if (newClosure.final_deadline === "") {
+    if (updatedClosure.final_deadline === "") {
       alert("Please select a final deadline");
       return;
     }
-    if (newClosure.deadline >= newClosure.final_deadline) {
+    if (updatedClosure.deadline >= updatedClosure.final_deadline) {
       alert("Final deadline must be after deadline");
       return;
     }
-    dispatch(postClosure(newClosure));
+    dispatch(postClosure(updatedClosure));
   };
 
   useEffect(() => {

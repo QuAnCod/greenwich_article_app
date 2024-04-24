@@ -8,7 +8,11 @@ import {
 } from "../../Redux/reducers/userReducer";
 import { useNavigate } from "react-router";
 import SignOutBtn from "../../Components/Buttons/SignOutBtn/SignOutBtn";
-import { LOCAL_STORAGE, ROLE } from "../../Utils/constanst/localConstanst";
+import {
+  LOCAL_STORAGE,
+  ROLE,
+  STATUS_CODE,
+} from "../../Utils/constanst/localConstanst";
 import CreateUser from "../../Components/CreateUserModal/CreateUser";
 import {
   setModalCreateAcademicYearOpen,
@@ -20,6 +24,7 @@ import {
   deleteAcademicYear,
   getAllAcademicYears,
   setDetailAcademicYear,
+  setDetailAcademicYearMiddleware,
   setDisplayDetailAcademicYear,
   updateAcademicYear,
 } from "../../Redux/reducers/academicYearsReducer";
@@ -93,9 +98,7 @@ export default function AdminDashboard(props) {
           <div
             className="cursor-pointer"
             onClick={() => {
-              dispatch(setDetailAcademicYear(record));
-              dispatch(getClosuresByAcademicYear(record.id));
-              dispatch(setDisplayDetailAcademicYear(true));
+              dispatch(setDetailAcademicYearMiddleware(record));
             }}
           >
             {record.year}

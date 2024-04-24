@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { academicYearsService } from "../services/AcademicYearsService";
 import { STATUS_CODE } from "../../Utils/constanst/localConstanst";
 import { setModalCreateAcademicYearOpen } from "./modalReducer";
+import { getClosuresByAcademicYear } from "./closuresReducer";
 
 const initialState = {
   academicYears: [],
@@ -38,6 +39,20 @@ export const {
 export default academicYearsReducer.reducer;
 
 // ------------- API CALLS -------------
+
+export const setDetailAcademicYearMiddleware = (data) => {
+  return async (dispatch) => {
+    console.log(data);
+    try {
+      await dispatch(setDetailAcademicYear(data));
+      await dispatch(getClosuresByAcademicYear(data.id));
+      dispatch(setDisplayDetailAcademicYear(true));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
 export const getAllAcademicYears = () => {
   return async (dispatch) => {
     try {

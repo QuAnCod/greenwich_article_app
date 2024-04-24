@@ -62,7 +62,10 @@ export const postClosure = (data) => {
   return async (dispatch) => {
     try {
       const res = await closuresService.postClosure(data);
-      if (res.status === STATUS_CODE.CREATED) {
+      if (
+        res.status === STATUS_CODE.CREATED ||
+        res.status === STATUS_CODE.SUCCESS
+      ) {
         alert("Create closure successfully!");
         await dispatch(getClosuresByAcademicYear(res.data.academicYear.id));
         // reset data
